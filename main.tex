@@ -1,0 +1,950 @@
+\documentclass[a4paper,english,titlepage,12pt]{article} 
+\usepackage[english]{babel}
+\usepackage[table]{xcolor}
+
+% Some default packages
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}  % Should help with special characters
+\usepackage{ifpdf}        % PDF check
+\usepackage{fancyhdr}	  % Page number on top
+\usepackage{parskip}	  % Change paragraphs with space not indent
+\usepackage{pdfpages}	 % Attach PDF documents
+\usepackage{setspace}	 % Control line space
+\usepackage{graphicx}	 % Graphics
+\usepackage{float}	     % Graphics layout
+\usepackage{caption}
+
+% Neutral links
+\usepackage[pdfpagemode=None, colorlinks=true, urlcolor=blue, linkcolor=black, citecolor=black, pdfstartview=FitH]{hyperref}
+
+% Math packages
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{latexsym}
+
+% Source code
+%\usepackage{listings}
+
+% Sub figures
+%\usepackage{subfig}
+\usepackage{subcaption}
+\usepackage{graphicx}
+
+% Algorithm pseudo code
+\usepackage{algorithm}
+\usepackage{algorithmic}
+
+% Natural references, e.g. Name [2001], [Name 1992]
+\usepackage[square,numbers]{natbib}
+
+% To-do comments
+\usepackage[colorinlistoftodos]{todonotes}
+
+% Table settings
+% \setlength{\arrayrulewidth}{1mm}
+% \setlength{\tabcolsep}{18pt}
+\renewcommand{\arraystretch}{1.5}
+
+% Inline comment
+\newcommand{\todoinline}{\todo[inline,color=green!40]}
+
+% Vectors, transposes, norms, absolutes, floor made easy
+\newcommand{\vect}[1]{\ensuremath{\mathbf{#1}}}
+\newcommand{\trans}[1]{\ensuremath\vect{#1}^\top}
+\newcommand{\norm}[1]{\ensuremath\Vert #1 \Vert}
+\newcommand{\abs}[1]{\ensuremath|#1|}
+\newcommand{\floor}[1]{\ensuremath\lfloor#1\rfloor}
+
+% Domains of real and natural numbers
+\newcommand{\R}{\ensuremath\mathbb{R}}
+\newcommand{\N}{\ensuremath\mathbb{N}}
+
+\begin{document}
+
+\ifpdf
+\DeclareGraphicsExtensions{.pdf, .jpg, .tif}
+\else
+\DeclareGraphicsExtensions{.eps, .jpg}
+\fi
+
+% Page numbering begins with roman numbers (titlepage parameter removes page number from first page)
+\pagenumbering{roman}
+\pagestyle{empty} % Hides page numbers from beginning
+
+\begin{titlepage}
+	Aalto University \\
+	School of Science \\
+	Degree programme in Engineering Physics and Mathematics \\
+	
+	\vfill
+	
+	\begin{center}
+		\begin{spacing}{1.75}
+		{\LARGE Comparison of line search methods in unconstrained optimization}
+		\end{spacing}
+		
+		Bachelor's Thesis \\
+	    1.5.2019
+
+		\vspace{3cm}
+
+		{\large Einari Tuukkanen}
+
+	\end{center}
+
+	\vfill
+
+	% Licensing
+	The document can be stored and made available to the public on the open internet pages of Aalto University. \\\\
+	All other rights are reserved.
+\end{titlepage}
+
+% TIIVISTELMÄPOHJA
+%  Lataa tiivistelmäpohja täytettäväksi osoitteesta
+%  https://noppa.aalto.fi/noppa/kurssi/tfm.kand/materiaali
+%  ja tallenna se PDF-muodossa nimellä tiivistelma.pdf tähän hakemistoon
+%
+\includepdf{tiivistelma}
+
+% Sisällysluettelo
+\tableofcontents
+\newpage
+
+% Aloita todellinen sivunumerointi ensimmäisestä sisältösivusta
+\pagestyle{fancy}
+
+% Tyhjennetään kentät ja muotoilu
+\fancyhf{}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+
+% Sivunnumero ylhäällä oikealla
+\rhead{\footnotesize \thepage} 
+\pagenumbering{arabic}
+
+% Ensimmäisellä sivulla ei kuitenkaan näytetä numeroa
+\thispagestyle{empty} 
+
+
+\section{Introduction}
+
+
+There are a number of sources for real-life unconstrained nonlinear optimization problems from different fields of sciences and technologies. In general an unconstrained optimization problem can be formulated as
+\begin{equation}
+    \mathrm{min}_{\vect{x} \in \R^n} f(\vect{x}).
+\end{equation}
+
+Depending on the methods used, there may also be additional requirements for $f$, such as being continuously differentiable up to $n$ times or being convex i.e. having one unique global minimum. While there are a number of real-life problems that do satisfy these conditions they are often extremely complex. Therefore artificial problems are often used to develop and test optimization algorithms. \cite{test_function_collection_artifical}
+
+The optimization algorithms are iterative processes that abuse the properties of the target function combined with the raw processing powers of computers. The commonly used methods are based on the same principle of having some termination condition checking if the minimum was found, and if not, continuing by choosing a direction and a step size and moving to the next point and repeating. The step size is often chosen by a separate algorithm called a line search, which transforms the target function into one-dimensional function of step size $\lambda$ and using the new function to calculate the optimal step size for each iteration of the main method. Similarly to the main methods, there are a number of different algorithms for finding the optimal step size, the simplest being just using a constant $\lambda$ for every iteration.
+
+In this thesis we will be exploring the effects of line search method selection on the overall performance of the optimization method. Due to the limiting factor of the scope of the bachelor's thesis, this will be in no way a comprehensive statistical research. Instead the main goal is to provide insight on few use cases, primarily on the ones introduced on the Nonlinear Optimization (2018-2019) course in the Aalto University.
+
+\todoinline{Should I mention the target functions, main methods and line search methods explored already here on intro?}
+
+\todoinline{General points: should I write in past or present tense? How about writing "I" or "we", or rather use passive?\\
+What is the recommended style for e.g. marking vectors?\\
+Which equations should I numerate?}
+    
+
+\section{Theory}
+
+
+\subsection{Target Functions}
+
+
+\subsubsection{Choosing target functions}
+
+
+One of the biggest factors effecting the performance of an optimization algorithm is the complexity of the target function we are using the method for. In this thesis we are going to focus on two different functions. Both of the functions are convex and differentiable since some of the methods we will be comparing require these properties. To increase the complexity of the problems a bit, we are going to use 50-dimensional versions of the two functions. Therefore we are going to pick functions that are defined in $\R^n$ or similar domain and then set $n = 50$.
+
+
+\subsubsection{Step size function}
+
+
+Each optimization method involves a step in form of $\mathrm{argmin}_{\lambda \in \mathbb{R}} {f(x_i + \lambda d_i})$. To programmatically produce this step, we are going to define step size function $g(\lambda)$ related to each of the target functions. Then on each iteration of the main optimization method, a new step size function is seeded with the updated point $\vect{x}$ and direction vector $\vect{d}$.
+
+
+\subsubsection{Matrix Square Sum}
+
+
+The Matrix Square Sum is an extended version of the regular Sum Squares Function, which is defined as
+\begin{equation}
+    f(\mathbf{x})=f(x_1, ..., x_n)=\sum_{i=1}^{n}{ix_i^2}.
+\end{equation}
+
+To make Sum Squares problem less trivial, we are going modify it by adding three constants $A$, $b$ and $c$. Together they form what we are going to call a Matrix Square Sum function, defined as
+\begin{equation}
+    f(\vect{x}) = \norm{A \vect{x} + \vect{b}} ^ 2 + c \norm{\vect{x}} ^ 2,
+\end{equation}
+
+where $A$ is a positive definite (PD) $n \times n$ matrix, $\vect{x}$ and $\vect{b}$ are vectors of length $n$, and the scalar $c$ is a positive constant.
+
+While $A$ could in theory be any $m \times n$ matrix, we are limiting it to a square PD-matrices only to ensure that the function is convex and has an unique global minimum. The matrix $A$ is formed in few steps by first generating an initial $n \times n$ matrix $A'$ with random values $a_{ij} \in [-0.5, 0.5]\ \forall\ i,j = 1 \dots n$. Then we attempt to make a PD-matrix by $A = 0.5 * (A' + A'^\top)$. Finally, if  $A$ does not happen to be a PD-matrix yet, it is modified by the formula 
+\begin{equation}
+    A = A + (\abs{\lambda_{min}} + d) I,
+\end{equation}
+where $\lambda_{min}$ is the minimal eigenvalue of $A$ and $d$ is a constant. The value of $d$ also determines the A's condition number defined as $\frac{\lambda_{max}}{\lambda_{min}}$. Smaller values of $d$ make the function more elliptic and harder for gradient methods to solve, while larger values produce more circular gradient curves, which are easy for methods like Gradient Descent to solve. The value of $d$ used in the thesis is 5, resulting in condition number of around 6.5.
+
+Some of the optimization methods require access to the function's gradient, Hessian matrix and the step size function with its first two derivatives, so let's calculate them in advance. While at it, we should also derive the formula for calculating the correct optima so we can use it to determine whether our algorithms produce the correct solution. Lets begin by expanding the function into more easily differentiable form:
+\begin{align*}
+    f(\vect{x}) &= \norm{A \vect{x} + \vect{b}} ^ 2 + c \norm{\vect{x}} ^ 2 \\
+               &= (A \vect{x} + \vect{b})^\top(A \vect{x} + \vect{b}) + c \trans{x} \vect{x} \\
+               &= (\trans{x} A^\top + \trans{b})(A\vect{x} + \vect{b}) + c \trans{x} \vect{x} \\
+               &= \trans{x} A^\top A \vect{x} + \vect{x} A^\top \vect{b} + \trans{b} A \vect{x} + \trans{b} \vect{b} + c \trans{x} \vect{x} \\
+               &= \trans{x} A^\top A \vect{x} + 2 \trans{b} A \vect{x} + \trans{b} \vect{b} + c \trans{x} \vect{x}.
+\end{align*}
+
+Now let's calculate the gradient and then Hessian matrix:
+\begin{align}
+    \nabla f(\vect{x}) &= \nabla(\trans{x} A^\top A \vect{x}) + 2 \nabla(\trans{b} A \vect{x}) + \nabla(\trans{b} \vect{b}) + \nabla(c \trans{x} \vect{x}) \nonumber \\
+    &= (\trans{x} A^\top A)^\top + A^\top A \vect{x} + 2 (\trans{b} A)^\top + c (\trans{x})^\top + c \vect{x} \nonumber \\
+    &= 2 A^\top A \vect{x} + 2 A^\top \vect{b} + 2 c \vect{x} \\
+    &\nonumber \\
+    \textbf{H} &= \nabla^2 f(\vect{x}) = 2 A^\top A + 2 c I
+\end{align}
+
+From the gradient we get the necessary optimality condition
+\begin{equation}
+    (A^\top A + c I) \vect{x} = - A^\top \vect{b}
+\end{equation}
+and because the function is convex (the Hessian is positive definite for all $\vect{x} \in \mathbb{R}^n$), we get the unique optimal solution
+\begin{equation}
+    \vect{x} = - (A^\top A + c I)^{-1} A^\top \vect{b}
+\end{equation}
+
+Let's now form the step size function and its derivatives:
+\begin{align}
+    g(\lambda) =\ &f(\vect{x} + \lambda \vect{d}) = \norm{A (\vect{x} + \lambda \vect{d}) + \vect{b}} ^ 2 + c \norm{(\vect{x} + \lambda \vect{d})} ^ 2 \nonumber \\
+    =\ &\lambda \trans{d} A^\top ( 2 A \vect{x} + \lambda A \vect{d} + 2 \vect{b}) + \trans{x} A^\top ( A \vect{x} + 2 \vect{b} ) + \trans{b} \vect{b} \\
+    &+ c ( \trans{x} \vect{x} + 2 \lambda \trans{d} \vect{x} + \lambda ^ 2 \trans{d} \vect{d}) \nonumber \\
+    g'(\lambda) =\ &\trans{d} A^\top ( 2 A \vect{x} + 2 \lambda A \vect{d} + 2 \vect{b} ) + 2 c \trans{d} ( \vect{x} + \lambda \vect{d} ) \\
+    g''(\lambda) =\ &2 \trans{d} ( A^\top A \vect{d} + c \vect{d})
+\end{align}
+
+
+\subsubsection{Negative Entropy}
+
+
+The second target function reviewed is a variation of entropy maximization problem, in which the maximation problem is inverted therefore making it a minimization problem. We will be calling this convex minimization problem a Negative Entropy problem and it can be formulated as follows:
+\begin{equation}
+	f(\vect{x}) = \sum_{i=1}^{n} x_i \log x_i,
+\end{equation}
+where $\vect{x} \in \mathbb{R}_{> 0}^n$. Since the domain is now limited we have to do some adjustments to our algorithms, which we will get into in a moment.
+
+The global minima of the function can be found by calculating the zero point of the gradient:
+\begin{align}
+    \nabla f(\vect{x}) &= \frac{\delta}{\delta x_i} \sum_{i=1}^{n} x_i \log x_i \\
+                      &= \sum_{i=1}^{n} (\log x_i + 1) = 0.
+\end{align}
+
+Because the $\log x_i + 1$ is truly positive, the answer is the same for every term $x_i$. Therefore we get the minima: $\log x_i = -1 \Leftrightarrow x_i = \frac{1}{e}$, for every $i = 1 \dots n$.
+
+In addition to the gradient, we need to calculate the Hessian matrix and the one dimensional step size function $g(\lambda) = f(\vect{x} + \lambda \vect{d})$ with its first and second derivatives in regard to $\lambda$.
+
+As we already know the gradient of $f$, the Hessian can be derived with ease since $\frac{\delta^2}{\delta x_i \delta x_j} \sum_{i=1}^{n} x_i \log x_i = 0$ for every $i, j$ where $i \neq j$. For the diagonal cases, i.e. when $i = j$, we are left with the second derivative $\frac{1}{x_i}$. Therefore we get the following Hessian matrix:
+\begin{equation}
+    \textbf{H} =
+    \begin{bmatrix}
+    x_1^{-1} & 0        & 0      & \dots  & 0      \\
+    0        & x_2^{-1} & 0      & \dots  & 0      \\
+    \vdots   & \vdots   & \vdots & \ddots & \vdots \\
+    0        & 0        & 0      & \dots  & x_n^{-1}
+\end{bmatrix}.
+\end{equation}
+
+Finally, the step size function for $\lambda$ with its first two derivatives are as follows:
+\begin{align}
+    g(\lambda) &= \sum_{i=1}^{n} (x_i + \lambda d_i) \log (x_i + \lambda d_i) \\
+    g'(\lambda) &= \sum_{i=1}^{n} d_i (\log(x_i + \lambda d_i) + 1) \\
+    g''(\lambda) &= \sum_{i=1}^{n} \frac{d_i^2}{x_i + \lambda d_i}.
+\end{align}
+
+Because the domain of this function is only positive numbers, we are going to have make some changes to our starting points, parameters and algorithms. Therefore the starting point must only have positive coordinates and the following domain limiter was added to the line search algorithms which update the starting point so that it could otherwise go negative:
+
+\begin{algorithm}[H]
+\caption{Domain Limiter}
+\label{alg_domain_limiter}
+\begin{algorithmic}[1]
+\STATE \textbf{initialize} $\gamma \in [0, 1]$
+\WHILE{min $(\vect{x} + \lambda \vect{d}) <= 0$}
+    \STATE $\lambda = \lambda \gamma$
+\ENDWHILE
+\RETURN $\lambda$
+\end{algorithmic}
+\end{algorithm}
+
+The domain limiter will be called from all of the line search methods before any evaluation of $f(\lambda)$ to reduce the step size to such value that it prevents evaulation of negative logarithms. In the context of this thesis we are going to set $d = 0.99$, but it could also be added as a parameter for each of the line search functions as some methods will require more iterations on the while-loop than others.
+
+
+\subsection{Main Methods}
+
+
+The main methods as I call them in the scope of this thesis are methods for finding minimums for unconstrained, differentiable and convex functions. While some of the methods or line search methods do not require all these properties, they are included anyway for this analysis.
+
+
+\subsubsection{Newton's Method}
+
+
+Newton's method is \todo{source?} commonly used for finding global minimums for differentiable and convex functions. The algorithm is a more general version of its line search version, utilizing the gradient and hessian matrix of the function instead of its first and second single derivatives.
+
+\begin{algorithm}[H]
+\caption{Newton's Method}
+\label{alg_newtons}
+\begin{algorithmic}[1]
+\STATE \textbf{initialize} $l > 0, k = 0$, $k_{max} \in \N$, $\vect{x} = \vect{x_0} \in \R^n$, step size function $g_{\vect{x}, \vect{d}}(\lambda)$ and line search method $L$.
+\WHILE{$\norm{\nabla \theta(\vect{x})} > l$ \AND $k < k_{max}$}
+    \STATE $\vect{d} = -H(\vect{x})^{-1} \nabla \theta(\vect{x})$
+    \STATE $\lambda = L(g_{\vect{x}, \vect{d}})$
+    \STATE $\vect{x} = \vect{x} + \lambda \vect{d}$
+    \STATE $k = k + 1$
+\ENDWHILE
+\RETURN $\lambda$
+\end{algorithmic}
+\end{algorithm}
+
+
+\subsubsection{Gradient Descent Method}
+
+
+Gradient descent method can be interpret as a simpler version of Newton's method as it only advances one gradient at a time. The algorithm is exactly the same as in Newton's method except for line 3 where the descent direction $d$ is calculated in a little bit simpler manner.
+
+\begin{algorithm}[H]
+\caption{Gradient Descent Method}
+\label{alg_gradient_descent}
+\begin{algorithmic}[1]
+\STATE \textbf{initialize} $l > 0, k = 0$, $k_{max} \in \N$, $\vect{x} = \vect{x_0} \in \R^n$, step size function $g_{\vect{x}, \vect{d}}(\lambda)$ and line search method $L$.
+\WHILE{$\norm{\nabla \theta(\vect{x})} > l$ \AND $k < k_{max}$}
+    \STATE $\vect{d} = -\nabla \theta(\vect{x})$
+    \STATE $\lambda = L(g_{\vect{x}, \vect{d}})$
+    \STATE $\vect{x} = \vect{x} + \lambda \vect{d}$
+    \STATE $k = k + 1$
+\ENDWHILE
+\RETURN $\lambda$
+\end{algorithmic}
+\end{algorithm}
+
+
+\subsubsection{Conjugate Gradient Method}
+
+
+Conjugate gradient method uses the information from the previous and current iterations to calculate ratio of gradients to calculate optimal next point. The method should theoretically \todo{source?} require less steps than gradient descent method.
+
+The algorithm involves a second loop which runs for $n$ times per every iteration on the main loop. The $n$ is equal to the dimensions of the problem (i.e. $\mathrm{dim}(\vect{x})$) and also the inner iterations are calculated towards the total iterations.
+
+\begin{algorithm}[H]
+\caption{Conjugate Gradient Method}
+\label{alg_conjugate_gradient}
+\begin{algorithmic}[1]
+\STATE \textbf{initialize} $l > 0, k = 0$, $k_{max} \in \N$, $\alpha \in \R$, $\vect{x} = \vect{x_0} \in \R^n$, step size function $g_{\vect{x}, \vect{d}}(\lambda)$ and line search method $L$.
+\STATE $\vect{d} = -\nabla \theta(\vect{x})$
+\WHILE{$\norm{\nabla \theta(\vect{x})} > l$ \AND $k < k_{max}$}
+    \STATE $\vect{y} = \vect{x}$
+    \FOR{$i = 1 \dots n$}
+        \STATE $\lambda = L(g_{\vect{y}, \vect{d}})$
+        \STATE $\vect{y_{prev}} = \vect{y}$, \ $\vect{y} = \vect{y} + \lambda \vect{d}$
+        \STATE $\alpha = \frac{\nabla \theta(\vect{y})^2}{\nabla \theta(\vect{y_{prev}})^2}$
+        \STATE $\vect{d} = -\nabla \theta(\vect{y}) + \alpha \vect{d}$
+        \STATE $k = k + 1$
+    \ENDFOR
+    \STATE $\vect{x} = \vect{y}$, \ $\vect{d} = \nabla \theta(\vect{x})$
+\ENDWHILE
+\RETURN $\lambda$
+\end{algorithmic}
+\end{algorithm}
+
+
+\subsubsection{Heavy Ball Method}
+
+
+Heavy ball method is basically an extension of gradient descent as only adds one term for the direction vector calculation step. The name of the method comes from the \todo{source?} physical representation of momentum of a ball rolling downhill. The algorithm for the method is basically the same as Gradient descent with a single additional term with multiplier $\beta$ in descent direction $d$.
+
+\begin{algorithm}[H]
+\caption{Heavy Ball Method}
+\label{alg_heavy_ball}
+\begin{algorithmic}[1]
+\STATE \textbf{initialize} $l > 0, k = 0$, $k_{max} \in \N$, $\beta \in \R$, $\vect{x} = \vect{x_{prev}} = \vect{x_0} \in \R^n$, step size function $g_{\vect{x}, \vect{d}}(\lambda)$ and line search method $L$.
+\WHILE{$\norm{\nabla \theta(\vect{x})} > l$ \AND $k < k_{max}$}
+    \STATE $\vect{d} = -\nabla \theta(\vect{x}) + \beta (\vect{x} - \vect{x_{prev}})$
+    \STATE $\lambda = L(g_{\vect{x}, \vect{d}})$
+    \STATE $\vect{x_{prev}} = \vect{x}$, \ $\vect{x} = \vect{x} + \lambda \vect{d}$
+    \STATE $k = k + 1$
+\ENDWHILE
+\RETURN $\lambda$
+\end{algorithmic}
+\end{algorithm}
+
+
+\subsection{Line Search Methods}
+
+
+Most line search methods are based on a single idea, which we are going to call the theorem 1:
+
+Theorem 1: Let $\theta$ : R $\rightarrow$ R be strictly quasiconvex over the interval $[a, b]$, and let $\lambda$, $\mu$ $\in$ $[a, b]$ such that $\lambda < \mu$. If $\theta(\lambda) > \theta(\mu)$, then $\theta(z) \geq \theta(\mu)$
+for all $z \in [a, \lambda]$. If $\theta(\lambda) \leq \theta(\mu)$, then $\theta(z) \leq \theta(\lambda)$ for all $z \in [\mu, b]$. \cite{course_material_nonlinear_optimisation}
+
+
+\subsubsection{Constant Step Size}
+
+
+While not actually a search, the use of single step size value $\lambda$ is sometimes enough to provide correct and high performance solutions for the main methods. In this thesis I will be considering constant $\lambda$ as one of the search methods to provide comprehensive comparison.
+
+\begin{center}
+\rowcolors{2}{white}{gray!5}
+\captionof{table}{Parameters tested for ConstantSearch}
+\label{tab:params_ConstantSearch}
+\begin{tabular}{|c|c|c|}
+\hline
+\rowcolor{gray!25}
+Parameter & MatrixSquareSum & NegativeEntropy \\
+\hline
+$\lambda$ & 0.0001, 0.1, 0.25, 0.5, 0.9 & 0.1, 0.25, 0.5 \\
+\hline
+\end{tabular}
+\end{center}
+
+
+\subsubsection{Golden Section Search}
+
+While golden section and fibonacci numbers are closely related, the golden section search does take much more straight forward way for calculating the new step size bounds using the approximation of $\phi = 0.618$. \todoinline{is this approx good enough or should I add more digits?}
+
+\begin{algorithm}[H]
+\caption{Golden Section Search}
+\label{alg_golden_section}
+\begin{algorithmic}[1]
+\STATE \textbf{initialize} tolerance $l > 0$, $\alpha = 0.618$, $k = 0$, $k_{max} \in \N$, $(a, b) \in \R$.
+\STATE $\lambda = a + (1 - \alpha) (b - a)$, $\mu = a + \alpha (b - a)$.
+\WHILE{$b - a > l$ \AND $k < k_{max}$}
+    \IF{$\theta(\lambda) > \theta(\mu)$}
+        \STATE $a = \lambda$, \ $\lambda = \mu$, \ $\mu = a + \alpha (b - a)$
+    \ELSE
+        \STATE $b = \mu$, \ $\mu = \lambda$, \ $\lambda = a + (1 - \alpha) (b - a)$
+    \ENDIF
+    \STATE $k = k + 1$
+\ENDWHILE
+\RETURN $\lambda = \frac{a + b}{2}$
+\end{algorithmic}
+\end{algorithm}
+
+\begin{center}
+\rowcolors{2}{white}{gray!5}
+\captionof{table}{Parameters tested for GoldenSectionSearch}
+\label{tab:params_GoldenSectionSearch}
+\begin{tabular}{|c|c|c|}
+\hline
+\rowcolor{gray!25}
+Parameter & MatrixSquareSum & NegativeEntropy \\
+\hline
+$a$ & -10, -5 & -10, -5 \\
+$b$ & 10, 5 & 10, 5 \\
+$l$ & 0.0001, 1e-07 & 0.0001, 1e-07 \\
+\hline
+\end{tabular}
+\end{center}
+
+
+\subsubsection{Bisection Search}
+
+
+Bisection method is \todo{source?} commonly used line search method for differentiable functions. It basically narrows down the optimal step size range using the first derivative of the target function as a direction of which bound to move next.
+
+\begin{algorithm}[H]
+\caption{Bisection Search}
+\label{alg_bisection}
+\begin{algorithmic}[1]
+\STATE \textbf{initialize} $l > 0, k = 0$, $k_{max} \in \N$, $(a, b) \in \R$.
+\WHILE{$\abs{b - a} > l$ \AND $k < k_{max}$}
+    \STATE $\lambda = \frac{b + a}{2}$
+    \IF{$\theta'(\lambda) = 0$}
+        \RETURN $\lambda$
+    \ELSIF{$\theta'(\lambda) > 0$}
+        \STATE $b = \lambda$
+    \ELSE
+        \STATE $a = \lambda$
+    \ENDIF
+    \STATE $k = k + 1$
+\ENDWHILE
+\RETURN $\lambda = \frac{a + b}{2}$
+\end{algorithmic}
+\end{algorithm}
+
+\begin{center}
+\rowcolors{2}{white}{gray!5}
+\captionof{table}{Parameters tested for BisectionSearch}
+\label{tab:params_BisectionSearch}
+\begin{tabular}{|c|c|c|}
+\hline
+\rowcolor{gray!25}
+Parameter & MatrixSquareSum & NegativeEntropy \\
+\hline
+$a$ & -10, -5 & -10, -5 \\
+$b$ & 10, 5 & 10, 5 \\
+$l$ & 0.0001, 1e-07 & 0.0001, 1e-07 \\
+\hline
+\end{tabular}
+\end{center}
+
+
+\subsubsection{Dichotomous Search}
+
+
+Dichotomous search is an example of sequentical searches. It uses the information of the previous evaulation of $\theta$ resulting in higher performance than e.g. uniform search.
+
+\begin{algorithm}[H]
+\caption{Dichotomous Search}
+\label{alg_dichotomous}
+\begin{algorithmic}[1]
+\STATE \textbf{initialize} $l > 0, k = 0$, $k_{max} \in \N$, $(a, b) \in \R$.
+\WHILE{$b - a > l$ \AND $k < k_{max}$}
+    \STATE $\lambda = \frac{b + a}{2} - \epsilon$, \ $\mu = \frac{b + a}{2} + \epsilon$
+    \IF{$\theta(\lambda) < \theta(\mu)$}
+        \STATE $b = \mu$
+    \ELSE
+        \STATE $a = \lambda$
+    \ENDIF
+    \STATE $k = k + 1$
+\ENDWHILE
+\RETURN $\lambda = \frac{a + b}{2}$
+\end{algorithmic}
+\end{algorithm}
+
+\begin{center}
+\rowcolors{2}{white}{gray!5}
+\captionof{table}{Parameters tested for DichotomousSearch}
+\label{tab:params_DichotomousSearch}
+\begin{tabular}{|c|c|c|}
+\hline
+\rowcolor{gray!25}
+Parameter & MatrixSquareSum & NegativeEntropy \\
+\hline
+$a$ & -10, -5 & -10, -5 \\
+$b$ & 10, 5 & 5, 10 \\
+$\epsilon$ & 1e-07, 1e-08 & 1e-06, 1e-07 \\
+$l$ & 0.0001 & 0.0001, 1e-05 \\
+\hline
+\end{tabular}
+\end{center}
+
+
+
+\subsubsection{Fibonacci Search}
+
+
+Fibonacci is an interesting \todo[color=green!40]{or what term to use for methods that do not use derivative?} numerical method for providing optimal step sizes using fibonacci numbers when calculating the bounds for the step size. [better explanation of why this works?] The calculation may be somewhat heavy due to the requirement of calculating $n$ fibonacci numbers, where $n$ is determined by the required accuracy i.e. tolerance. However, in some real life applications these fibonacci numbers may of course be precalculated. In this thesis I will not be using a table for the fibonacci values but instead actually calculate them using a while loop. The iteration count for finding the fibonacci numbers will not be included in the performance comparison, but the time taken to find the values is included. \todoinline{is this fine, or should I also report the fibonacci iteration count and time?}
+
+\begin{algorithm}[H]
+\caption{Fibonacci Search}
+\label{alg_fibonacci}
+\begin{algorithmic}[1]
+\STATE \textbf{initialize} $l > 0, \epsilon > 0, k = 0$, $k_{max} \in \N$, $(a, b) \in \R, n = \mathrm{min}_n \{ \frac{b - a}{F_n} \leq l \}$.
+\STATE $\lambda = a + \frac{F_{n-2}}{F_n} (b - a)$, \  $\mu = a + \frac{F_{n-1}}{F_n} (b - a)$
+\WHILE{$k \leq n - 1$ \AND $k < k_{max}$}
+    \IF{$\theta(\lambda) < \theta(\mu)$}
+        \STATE $a = \lambda$, \ $\lambda = \mu$, $\mu = a + \frac{F_{n-k-1}}{F_{n-k}} (b - a)$
+    \ELSE
+        \STATE $b = \mu$, \ $\lambda = \mu$, $\lambda = a + \frac{F_{n-k-2}}{F_{n-k}} (b - a)$
+    \ENDIF
+    \STATE $k = k + 1$
+\ENDWHILE
+\STATE $\lambda = \theta(\lambda)$
+\IF{$\theta(\lambda) > \theta(\mu + \epsilon)$}
+    \STATE $a = \lambda$
+\ELSE
+    \STATE $b = \mu$
+\ENDIF
+\RETURN $\lambda = \frac{a + b}{2}$
+\end{algorithmic}
+\end{algorithm}
+
+The $F_n$ represents $n$:th Fibonacci number. To optimize algorithm performance, the values of $F_n$ could be pre-evaluated but for our use case we are just going to generate the Fibonacci numbers using single loop algorithm of time complexity $O(n)$.
+
+\begin{center}
+\rowcolors{2}{white}{gray!5}
+\captionof{table}{Parameters tested for FibonacciSearch}
+\label{tab:params_FibonacciSearch}
+\begin{tabular}{|c|c|c|}
+\hline
+\rowcolor{gray!25}
+Parameter & MatrixSquareSum & NegativeEntropy \\
+\hline
+$a$ & -10, -5 & -10, -5 \\
+$b$ & 10, 5 & 10, 5 \\
+$\epsilon$ & 0.01, 1e-05, 1e-08 & 0.01, 1e-05, 1e-08 \\
+$l$ & 0.0001, 1e-07 & 0.0001, 1e-07 \\
+\hline
+\end{tabular}
+\end{center}
+
+
+\subsubsection{Uniform Search}
+
+
+Uniform search works by dividing a constrained section of a function into intervals, then choosing the interval with the lowest value and performing the same procedure again for it. To increase the precision of the method we also increase the number of intervals we divide the newly selected interval into.
+
+More formally: break $[a, b]$ into $n$ uniform intervals of size $\delta$, which leads to $n + 1$ grid points $a_0 + k \delta$ with $b = a_n = a_0 + n\delta,\ k = 0, . . . , n$. \cite{course_material_nonlinear_optimisation}
+
+In addition we are going to define $n$ as the interval count and $m$ as the interval count multiplier.
+
+\begin{algorithm}[H]
+\caption{Uniform Search}
+\label{alg_uniform}
+\begin{algorithmic}[1]
+\STATE \textbf{initialize} $l > 0, k = 0$, $(k_{max}, n) \in \N$, $(a, b, m) \in \R$
+\STATE $s = \frac{b - a}{n}$, \ $p_{min} = a$
+\WHILE{$s > l$ \AND $k < k_{max}$}
+    \FOR{$i = 0, \dots, n$}
+        \STATE $x = a + i s$
+        \IF{$\theta(x) < \theta(p_{min})$}
+            \STATE $p_{min} = x$
+        \ENDIF
+        \STATE $k = k + 1$
+    \ENDFOR
+    \STATE $a = p_{min} - s$, \ $b = p_{min} + s$
+    \STATE $n = \floor{n m}$, \ $s = \frac{b - a}{n}$
+\ENDWHILE
+\RETURN $\lambda = \frac{a + b}{2}$
+\end{algorithmic}
+\end{algorithm}
+
+\begin{center}
+\rowcolors{2}{white}{gray!5}
+\captionof{table}{Parameters tested for UniformSearch}
+\label{tab:params_UniformSearch}
+\begin{tabular}{|c|c|c|}
+\hline
+\rowcolor{gray!25}
+Parameter & MatrixSquareSum & NegativeEntropy \\
+\hline
+$a$ & -10, -5 & -10, -5 \\
+$b$ & 10, 5 & 10, 5 \\
+$n$ & 10, 100 & 10, 100 \\
+$m$ & 1, 1.5 & 1, 1.5 \\
+$l$ & 0.0001, 1e-07 & 0.0001, 1e-07 \\
+\hline
+\end{tabular}
+\end{center}
+
+
+\subsubsection{Newton's Search}
+
+
+Newton's method is another very common example of line search methods. Similarily to bisection method, Newton's method requires the target function to be differentiable up to two times as it uses the ratio of first and second derivatives to move the optimal step size forward.
+
+\begin{algorithm}[H]
+\caption{Newton's Search}
+\label{alg_newtons_search}
+\begin{algorithmic}[1]
+\STATE \textbf{initialize} $l > 0, k = 0$, $k_{max} \in \N$, $\lambda \in \R$
+\WHILE{$\abs{\theta'(\lambda)} > l$ \AND $k < k_{max}$}
+    \STATE $\lambda = \lambda -\frac{\theta'(\lambda)}{\theta''(\lambda)}$
+    \STATE $k = k + 1$
+\ENDWHILE
+\RETURN $\lambda$
+\end{algorithmic}
+\end{algorithm}
+
+\begin{center}
+\rowcolors{2}{white}{gray!5}
+\captionof{table}{Parameters tested for NewtonsSearch}
+\label{tab:params_NewtonsSearch}
+\begin{tabular}{|c|c|c|}
+\hline
+\rowcolor{gray!25}
+Parameter & MatrixSquareSum & NegativeEntropy \\
+\hline
+$\lambda$ & 1, 5, 10, 50 & 0.5, 1.0 \\
+$l$ & 1e-07, 1e-08 & 1e-06, 1e-07 \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsubsection{Armijo's Search}
+
+Armijo's search is the only backtracking method of the ones included in this thesis. \todo[inline]{include more in depth explanation of backtracking algorithms?}
+
+\begin{algorithm}[H]
+\caption{Armijo's Search}
+\label{alg_armijo}
+\begin{algorithmic}[1]
+\STATE \textbf{initialize} $l > 0, k = 0$, $k_{max} \in \N$, $(\lambda, \alpha, \beta) \in \R$
+\STATE $\theta_0 = \theta(0)$, \ $\theta'_0 = \theta'(0)$
+\WHILE{$\theta(\lambda) > \theta_0 + \alpha \lambda \theta'_0$ \AND $k < k_{max}$}
+    \STATE $\lambda = \lambda \beta$
+    \STATE $k = k + 1$
+\ENDWHILE
+\RETURN $\lambda$
+\end{algorithmic}
+\end{algorithm}
+
+% \begin{figure}[H]
+% 	\centering
+% 	\includegraphics[width=0.6\textwidth]{placeholder.png}
+% 	\caption{Dichotomous Search. \cite{course_material_nonlinear_optimisation}}
+% 	\label{fig:uniform_search}
+% \end{figure}
+
+
+\section{Methods}
+
+
+Our goal is to determine how does the selection of line search method effect the overall performance of an optimization method. To answer this question with the resources described in theory section, we are going to run each of the target function, main method and line search method permutations multiple times. In addition we need to take into account all the different parameters for each of the algorithms.
+
+Choosing the best parameters for each method for each target function would be a high level problem of its own if performed accurately. Since that is something we are not especially interested in within the scope of this thesis, we are going to manually test and select few different values for each parameters for each algorithm. Next, we are going to programmatically generate all the parameter permutations for each algorithm and test them with $m$ starting points of dimension $n$, where $n$ is the same value used for the actual overall performance testing. In addition we are going to have to limit the absolute value of coordinates into some specific area. For all the parameter selection and performance testing we used the same setup by generating 100 points $x_0$ of dimension $n = 50$ with each $x_i \in [-10, 10]$. Because negative entropy problem has the domain $\R_{>0}$, we are going to generate a separate set of 100 points otherwise similar to the first one but with positive values only: $x_i \in ]0, 10]$. In addition, as the matrix square sum problem has the option for randomly generated constants $A$, $b$ and $c$, we are going to use that in our favor and generate 100 randomized versions of that function in advance as well. This way we can in the best way compensate for our relatively small sample size. Another way to compensate for the sample size is to generate the starting points more evenly by controlling the randomness of the points. Once again, because this is something of a completely different research topic to handle perfectly, we ended up using non-perfect but simple algorithm for generating our starting point distribution.
+
+\begin{algorithm}[H]
+\caption{Generating Even Distribution of Random Starting Points}
+\label{alg_x0_distribution}
+\begin{algorithmic}[1]
+\STATE \textbf{initialize} $(d_{min}, x_{min}, x_{max}) \in \R, (n, p, q) \in \N, Z = \{\vect{z}_1, \dots ,\vect{z}_m\}, i = 0, q = 1, \vect{z}_1 = \mathbf{random}_{n}(x_{min}, x_{max})$
+\WHILE{$i < p$}
+    \STATE $\vect{x} = \mathbf{random}_{n}(x_{min}, x_{max})$
+    \STATE $\mathrm{ok} =$ \TRUE
+    \FOR{$j = 1 \dots q$}
+        \IF{$\norm{\vect{z}_j - \vect{x}} < d_{min}$}
+            \STATE $\mathrm{ok} = $ \FALSE
+            \STATE \textbf{break}
+        \ENDIF
+    \ENDFOR
+    \IF{ok}
+        \STATE $q = q + 1$, \ $i = i + 1$
+        \STATE $\vect{z}_q = \vect{x}$
+    \ENDIF
+\ENDWHILE
+\RETURN $Z$
+\end{algorithmic}
+\end{algorithm}
+
+The algorithm generates $p = 100$ points of dimension $n$. Function $\mathbf{random}_n(x_{min}, x_{max})$ generates vector $\vect{x}$ of size $n$ filled with random values $x_i \in [x_{min}, x_{max}], i = 1 \dots n$. We then compare distance of newly generated point $x$ and every point generated before i.e. $z_j, z < q$ and if for any pair of points the Euclidean distance is less than $d_{min}$ we skip to the next iteration and generate a new candidate $x$. In theory the algorithm could get stuck as it depends on random values on the exit condition, but using small enough $d_{min}$ will result in fast and even distribution of random numbers within targeted area of values. The points will likely never get optimally distributed but it is still better than completely randomized points where portions of the targeted area could be left completely empty of starting points.
+
+
+\subsubsection{Comparing Performance}
+
+Performance comparison is going to be based mostly on total iterations meaning iterations of main method plus total iterations of the line search methods that the main method ran. The iterations of main method and line search methods are treated as equally valuable. Execution times are also recorded but not used as primary tool for performance tracking since with such little repetitions and the value of $n$ certain randomness plays too big of a part in the duration parameter. In addition, duration is heavily dependant on the programming language and style used so while the results could be comparable within the same language, they might behave differently under another setup. In comparison iterations are somewhat universal and thus make a better measure for performance. Another aspect that is recorded is the total number of function calls $n_f$ performed by both the main method and line search together. All the calls of $\theta$, its gradient and Hessian matrix, as well as the function calls of the step size function $f(\vect{x} + \lambda \vect{d})$ and its derivatives made by the line search method are calculated towards the same total count. This number is used as a secondary tool for comparison of the algorithms' performance.
+
+
+\section{Results}
+
+
+\begin{center}
+\rowcolors{2}{white}{gray!5}
+\captionof{table}{Average performances of NewtonsMethod when minimizing MatrixSquareSum using different line search methods and 1000 randomly generated starting points}
+\label{tab:performance_results_MatrixSquareSum}
+\begin{tabular}{|l|r|r|r|r|r|r|}
+\hline
+\rowcolor{gray!25}
+\multicolumn{1}{|c|}{Line Search Name} & \multicolumn{1}{c|}{$s$ (\%)} & \multicolumn{1}{c|}{$t$ (ms)} & \multicolumn{1}{c|}{$k$} & \multicolumn{1}{c|}{$f_n$} & \multicolumn{1}{c|}{$t_{LS}$ (ms)} & \multicolumn{1}{c|}{$k_{LS}$} \\
+ConstantSearch & 100.0 & 445.8 & 1.0 & 7.0 & 0.0 & 0.0 \\
+GoldenSectionSearch & 100.0 & 445.0 & 1.0 & 101.0 & 2.6 & 47.0 \\
+BisectionSearch & 99.6 & 535.9 & 1.0 & 35.0 & 89.0 & 28.0 \\
+DichotomousSearch & 100.0 & 892.1 & 2.0 & 91.0 & 2.0 & 40.0 \\
+FibonacciSearch & 100.0 & 453.2 & 1.0 & 119.0 & 4.5 & 55.0 \\
+UniformSearch & 100.0 & 455.0 & 1.0 & 156.0 & 7.2 & 148.0 \\
+NewtonsSearch & 100.0 & 443.5 & 1.0 & 8.0 & 0.5 & 0.0 \\
+ArmijoSearch & 99.7 & 3525.2 & 8.0 & 59.0 & 4.8 & 0.0 \\
+
+\hline
+\end{tabular}
+\end{center}
+
+\begin{center}
+\rowcolors{2}{white}{gray!5}
+\captionof{table}{Average performances of GradientDescentMethod when minimizing MatrixSquareSum using different line search methods and 1000 randomly generated starting points}
+\label{tab:performance_results_MatrixSquareSum}
+\begin{tabular}{|l|r|r|r|r|r|r|}
+\hline
+\rowcolor{gray!25}
+\multicolumn{1}{|c|}{Line Search Name} & \multicolumn{1}{c|}{$s$ (\%)} & \multicolumn{1}{c|}{$t$ (ms)} & \multicolumn{1}{c|}{$k$} & \multicolumn{1}{c|}{$f_n$} & \multicolumn{1}{c|}{$t_{LS}$ (ms)} & \multicolumn{1}{c|}{$k_{LS}$} \\
+ConstantSearch & 98.9 & 4681.2 & 2942.0 & 8828.9 & 141.2 & 0.0 \\
+GoldenSectionSearch & 99.4 & 283.7 & 33.1 & 1784.1 & 155.4 & 841.0 \\
+BisectionSearch & 99.4 & 823.5 & 33.0 & 696.6 & 749.8 & 594.5 \\
+DichotomousSearch & 99.4 & 270.1 & 33.1 & 1491.1 & 142.6 & 694.4 \\
+FibonacciSearch & 99.4 & 354.3 & 33.1 & 2615.3 & 238.6 & 1223.5 \\
+UniformSearch & 99.4 & 389.2 & 33.1 & 3508.2 & 282.3 & 3372.9 \\
+NewtonsSearch & 99.4 & 453.3 & 33.1 & 241.2 & 355.7 & 35.3 \\
+ArmijoSearch & 99.6 & 209.3 & 25.8 & 343.2 & 97.9 & 185.5 \\
+
+\hline
+\end{tabular}
+\end{center}
+
+\begin{center}
+\rowcolors{2}{white}{gray!5}
+\captionof{table}{Average performances of ConjugateGradientMethod when minimizing MatrixSquareSum using different line search methods and 1000 randomly generated starting points}
+\label{tab:performance_results_MatrixSquareSum}
+\begin{tabular}{|l|r|r|r|r|r|r|}
+\hline
+\rowcolor{gray!25}
+\multicolumn{1}{|c|}{Line Search Name} & \multicolumn{1}{c|}{$s$ (\%)} & \multicolumn{1}{c|}{$t$ (ms)} & \multicolumn{1}{c|}{$k$} & \multicolumn{1}{c|}{$f_n$} & \multicolumn{1}{c|}{$t_{LS}$ (ms)} & \multicolumn{1}{c|}{$k_{LS}$} \\
+ConstantSearch & 99.6 & 989.3 & 300.1 & 1216.2 & 23.9 & 0.0 \\
+GoldenSectionSearch & 100.0 & 429.5 & 50.0 & 2722.9 & 198.9 & 1258.5 \\
+BisectionSearch & 100.0 & 1154.9 & 50.0 & 1106.0 & 1003.4 & 900.0 \\
+DichotomousSearch & 100.0 & 426.3 & 50.0 & 2306.0 & 177.1 & 1050.0 \\
+FibonacciSearch & 100.0 & 517.8 & 50.0 & 4006.0 & 298.5 & 1850.0 \\
+UniformSearch & 100.0 & 558.2 & 50.0 & 5356.0 & 348.9 & 5100.0 \\
+NewtonsSearch & 100.0 & 552.8 & 50.6 & 364.0 & 347.5 & 35.0 \\
+ArmijoSearch & 100.0 & 405.3 & 50.0 & 914.8 & 157.6 & 558.8 \\
+
+\hline
+\end{tabular}
+\end{center}
+
+\begin{center}
+\rowcolors{2}{white}{gray!5}
+\captionof{table}{Average performances of HeavyBallMethod when minimizing MatrixSquareSum using different line search methods and 1000 randomly generated starting points}
+\label{tab:performance_results_MatrixSquareSum}
+\begin{tabular}{|l|r|r|r|r|r|r|}
+\hline
+\rowcolor{gray!25}
+\multicolumn{1}{|c|}{Line Search Name} & \multicolumn{1}{c|}{$s$ (\%)} & \multicolumn{1}{c|}{$t$ (ms)} & \multicolumn{1}{c|}{$k$} & \multicolumn{1}{c|}{$f_n$} & \multicolumn{1}{c|}{$t_{LS}$ (ms)} & \multicolumn{1}{c|}{$k_{LS}$} \\
+ConstantSearch & 98.9 & 4711.5 & 2941.9 & 8828.8 & 134.5 & 0.0 \\
+GoldenSectionSearch & 99.4 & 227.7 & 24.3 & 1303.4 & 127.1 & 613.8 \\
+BisectionSearch & 99.4 & 666.6 & 24.4 & 514.9 & 607.0 & 438.8 \\
+DichotomousSearch & 99.4 & 209.4 & 24.4 & 904.9 & 99.3 & 414.4 \\
+FibonacciSearch & 99.4 & 353.2 & 32.7 & 2585.0 & 239.5 & 1209.3 \\
+UniformSearch & 99.4 & 322.4 & 24.4 & 2587.4 & 232.0 & 2486.9 \\
+NewtonsSearch & 99.4 & 375.1 & 24.4 & 179.6 & 295.0 & 26.4 \\
+ArmijoSearch & 99.6 & 217.3 & 25.8 & 343.1 & 99.6 & 185.4 \\
+
+\hline
+\end{tabular}
+\end{center}
+
+
+\begin{center}
+\rowcolors{2}{white}{gray!5}
+\captionof{table}{Average performances of NewtonsMethod when minimizing NegativeEntropy using different line search methods and 1000 randomly generated starting points}
+\label{tab:performance_results_NegativeEntropy}
+\begin{tabular}{|l|r|r|r|r|r|r|}
+\hline
+\rowcolor{gray!25}
+\multicolumn{1}{|c|}{Line Search Name} & \multicolumn{1}{c|}{$s$ (\%)} & \multicolumn{1}{c|}{$t$ (ms)} & \multicolumn{1}{c|}{$k$} & \multicolumn{1}{c|}{$f_n$} & \multicolumn{1}{c|}{$t_{LS}$ (ms)} & \multicolumn{1}{c|}{$k_{LS}$} \\
+ConstantSearch & 100.0 & 3718.1 & 10.7 & 45.7 & 1.0 & 0.0 \\
+GoldenSectionSearch & 100.0 & 2038.3 & 5.6 & 426.9 & 29.4 & 200.7 \\
+BisectionSearch & 100.0 & 2191.6 & 5.6 & 116.9 & 161.4 & 91.5 \\
+DichotomousSearch & 100.0 & 2231.2 & 6.0 & 265.5 & 52.0 & 119.2 \\
+FibonacciSearch & 100.0 & 2100.7 & 5.6 & 738.5 & 59.0 & 350.9 \\
+UniformSearch & 100.0 & 2316.0 & 6.1 & 510.3 & 132.5 & 476.7 \\
+NewtonsSearch & 100.0 & 2266.0 & 5.7 & 192.6 & 348.6 & 53.7 \\
+ArmijoSearch & 100.0 & 2206.9 & 6.3 & 52.6 & 3.1 & 5.5 \\
+
+\hline
+\end{tabular}
+\end{center}
+
+\begin{center}
+\rowcolors{2}{white}{gray!5}
+\captionof{table}{Average performances of GradientDescentMethod when minimizing NegativeEntropy using different line search methods and 1000 randomly generated starting points}
+\label{tab:performance_results_NegativeEntropy}
+\begin{tabular}{|l|r|r|r|r|r|r|}
+\hline
+\rowcolor{gray!25}
+\multicolumn{1}{|c|}{Line Search Name} & \multicolumn{1}{c|}{$s$ (\%)} & \multicolumn{1}{c|}{$t$ (ms)} & \multicolumn{1}{c|}{$k$} & \multicolumn{1}{c|}{$f_n$} & \multicolumn{1}{c|}{$t_{LS}$ (ms)} & \multicolumn{1}{c|}{$k_{LS}$} \\
+ConstantSearch & 100.0 & 13.1 & 16.3 & 51.8 & 0.8 & 0.0 \\
+GoldenSectionSearch & 100.0 & 53.4 & 8.6 & 400.1 & 47.9 & 185.7 \\
+BisectionSearch & 100.0 & 92.2 & 8.6 & 158.4 & 87.0 & 129.7 \\
+DichotomousSearch & 100.0 & 54.7 & 8.6 & 289.3 & 48.9 & 130.2 \\
+FibonacciSearch & 100.0 & 58.4 & 8.6 & 610.8 & 52.6 & 282.4 \\
+UniformSearch & 100.0 & 121.8 & 10.9 & 889.6 & 114.6 & 842.8 \\
+NewtonsSearch & 100.0 & 458.8 & 8.8 & 687.6 & 453.8 & 216.5 \\
+ArmijoSearch & 100.0 & 11.6 & 10.2 & 96.5 & 5.6 & 32.0 \\
+
+\hline
+\end{tabular}
+\end{center}
+
+\begin{center}
+\rowcolors{2}{white}{gray!5}
+\captionof{table}{Average performances of ConjugateGradientMethod when minimizing NegativeEntropy using different line search methods and 1000 randomly generated starting points}
+\label{tab:performance_results_NegativeEntropy}
+\begin{tabular}{|l|r|r|r|r|r|r|}
+\hline
+\rowcolor{gray!25}
+\multicolumn{1}{|c|}{Line Search Name} & \multicolumn{1}{c|}{$s$ (\%)} & \multicolumn{1}{c|}{$t$ (ms)} & \multicolumn{1}{c|}{$k$} & \multicolumn{1}{c|}{$f_n$} & \multicolumn{1}{c|}{$t_{LS}$ (ms)} & \multicolumn{1}{c|}{$k_{LS}$} \\
+ConstantSearch & 99.9 & 4393.4 & 163.2 & 663.3 & 4248.0 & 0.0 \\
+GoldenSectionSearch & 100.0 & 539.7 & 100.0 & 4681.2 & 451.2 & 2136.6 \\
+NewtonsSearch & 100.0 & 2801.7 & 100.0 & 4147.0 & 2716.9 & 1213.0 \\
+ArmijoSearch & 100.0 & 198.4 & 99.8 & 1119.4 & 112.0 & 412.8 \\
+BisectionSearch & 100.0 & 759.5 & 100.0 & 1228.3 & 672.9 & 777.8 \\
+DichotomousSearch & 100.0 & 576.4 & 102.7 & 3496.1 & 485.5 & 1538.6 \\
+FibonacciSearch & 100.0 & 623.7 & 100.0 & 7155.1 & 534.0 & 3273.5 \\
+UniformSearch & 100.0 & 6371.1 & 100.0 & 8208.0 & 6277.0 & 7700.0 \\
+
+\hline
+\end{tabular}
+\end{center}
+
+\begin{center}
+\rowcolors{2}{white}{gray!5}
+\captionof{table}{Average performances of HeavyBallMethod when minimizing NegativeEntropy using different line search methods and 1000 randomly generated starting points}
+\label{tab:performance_results_NegativeEntropy}
+\begin{tabular}{|l|r|r|r|r|r|r|}
+\hline
+\rowcolor{gray!25}
+\multicolumn{1}{|c|}{Line Search Name} & \multicolumn{1}{c|}{$s$ (\%)} & \multicolumn{1}{c|}{$t$ (ms)} & \multicolumn{1}{c|}{$k$} & \multicolumn{1}{c|}{$f_n$} & \multicolumn{1}{c|}{$t_{LS}$ (ms)} & \multicolumn{1}{c|}{$k_{LS}$} \\
+ConstantSearch & 100.0 & 8.3 & 14.0 & 45.0 & 0.3 & 0.0 \\
+GoldenSectionSearch & 100.0 & 92.4 & 17.3 & 808.4 & 80.5 & 376.8 \\
+BisectionSearch & 100.0 & 131.7 & 11.8 & 223.7 & 124.6 & 185.4 \\
+DichotomousSearch & 100.0 & 68.8 & 11.8 & 486.5 & 60.9 & 224.1 \\
+FibonacciSearch & 100.0 & 72.1 & 11.8 & 843.4 & 64.3 & 390.8 \\
+UniformSearch & 100.0 & 134.9 & 12.9 & 1051.1 & 126.6 & 996.3 \\
+NewtonsSearch & 100.0 & 541.0 & 12.8 & 806.1 & 533.7 & 250.6 \\
+ArmijoSearch & 100.0 & 15.5 & 14.4 & 113.2 & 6.9 & 23.6 \\
+
+\hline
+\end{tabular}
+\end{center}
+
+
+\section{Conclusion and Future Research}
+
+
+To make the results completely comprehensive we should consider all existing functions as possible target functions. However as this is practically impossible, one substantial way to improve the coverage would be increasing the number of target functions: other similar research has used up to 80 different problems to calculate the performance for \cite{monotone_line_search_performance},
+
+Another major factor in increasing the reliability of the results are the starting points. In this research we limited the area of where the points were generated to $[-10, 10]$ or $]0, 10]$ depending on the domain of the target function. In a perfect world we could test the algorithms for every single starting point. Even though that is practically impossible, a wider range of points could be utilized. Anyways the selection of starting point is very target function related and should always be considered per function. In addition the number of starting points tested could be raised within the computing power available.
+
+
+
+% % Esimerkkitaulukko
+% \begin{table}
+% 	\centering
+
+% 	\caption{Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed risus libero, vestibulum.}
+% 	\label{tab:lorem1}
+% 	\begin{tabular}{r|cccc}
+% 	nimi	& $N_1$ & $N_2$ & $N_3$ & $N_4$ \\
+% 	\hline
+% 	yksi	& 314   & 188.4 & 999.9 & 1 \\
+% 	kaksi	& 218   & 278   & 744   & 249.554 \\
+% 	neljä	& 452   & 1189  & N/A   & 22 \\
+% 	\end{tabular}
+% \end{table}
+
+
+% %
+% % LÄHDELUETTELO
+% %  BibTeX-tiedoston kokoaminen onnistuu näppärästi esim. 
+% %  Firefoxin Zotero-lisäosalla http://www.zotero.org/
+% %  joka osaa poimia viitteet suoraan Google Scholarista.
+% %
+\newpage
+% \bibliographystyle{plainnat}
+\bibliographystyle{abbrvnat}
+%\bibliographystyle{plain} % valitse tämä jos et käytä natbib-pakettia
+
+% Ladataan library.bib
+\bibliography{library}
+
+\newpage
+\section{Attachments}
+\input{parameters.tex}
+
+% %
+% % LIITTEET
+% %
+% \newpage
+% \appendix
+% \section{Ensimmäinen liite}
+
+% Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Proin eget neque elit. Pellentesque commodo dui vitae ipsum volutpat vestibulum. Curabitur porta, dui in ultricies consequat, tellus velit laoreet odio, tristique adipiscing lectus tortor eu sapien. Integer faucibus iaculis turpis nec sagittis. In eu eleifend nibh. Mauris quis nulla ut ante sodales posuere eu a leo. Mauris tempor porttitor dolor, sed mollis erat interdum vitae.
+
+\end{document}
