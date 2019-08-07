@@ -13,6 +13,7 @@
 \usepackage{graphicx}	 % Graphics
 \usepackage{float}	     % Graphics layout
 \usepackage{caption}
+\usepackage{geometry}
 
 % Neutral links
 \usepackage[pdfpagemode=None, colorlinks=true, urlcolor=blue, linkcolor=black, citecolor=black, pdfstartview=FitH]{hyperref}
@@ -897,6 +898,73 @@ ArmijoSearch & 100.0 & 15.5 & 14.4 & 113.2 & 6.9 & 23.6 \\
 
 \subsection{Analysis}
 
+There are multiple metrics we could look into when analyzing the results. Since our goal is to compare the effect in performance of the main methods caused by the line search methods, one natural way of analyzing the results is finding the overall best line search method. This is done by firstly prioritizing success rate and secondly the average duration in which the solutions were found. After sorting the line search methods with these two metrics per target function and per main method, we can then score them. For scoring we are going to use two methods: first is to give each line method a rank so that the fastest method gets 8 points, the second fastest 7 points and so on until each line method has gotten 1 to 8 points, and then repeat this separately for each combination of target functions and main methods. The pros of this method is that it takes the success rate into account unlike the second method we are using which is calculating the total sum of average durations for each line search.
+
+\begin{table}[]
+\begin{tabular}{|l|r|r|r|}
+\hline
+\rowcolor[HTML]{C0C0C0} 
+\textbf{LineSearchMethod} & \multicolumn{1}{l|}{\cellcolor[HTML]{C0C0C0}\textbf{SUM MSS}} & \multicolumn{1}{l|}{\cellcolor[HTML]{C0C0C0}\textbf{SUM NE}} & \multicolumn{1}{l|}{\cellcolor[HTML]{C0C0C0}\textbf{SUM TOTAL}} \\ \hline
+ConstantSearch            & 10                                                            & \cellcolor[HTML]{97D5B7}24                                   & 34                                                              \\ \hline
+GoldenSectionSearch       & \cellcolor[HTML]{97D5B7}25                                    & 18                                                           & \cellcolor[HTML]{ABDDC5}43                                      \\ \hline
+BisectionSearch           & \cellcolor[HTML]{E67B73}6                                     & \cellcolor[HTML]{EEA7A1}13                                   & \cellcolor[HTML]{E67B73}19                                      \\ \hline
+DichotomousSearch         & \cellcolor[HTML]{97D5B7}24                                    & \cellcolor[HTML]{ABDDC5}22                                   & \cellcolor[HTML]{97D5B7}46                                      \\ \hline
+FibonacciSearch           & 19                                                            & \cellcolor[HTML]{F6D0CD}16                                   & 35                                                              \\ \hline
+UniformSearch             & \cellcolor[HTML]{F6D0CD}16                                    & \cellcolor[HTML]{EEA7A1}13                                   & \cellcolor[HTML]{F6D0CD}29                                      \\ \hline
+NewtonsSearch             & 18                                                            & \cellcolor[HTML]{E67B73}11                                   & \cellcolor[HTML]{F6D0CD}29                                      \\ \hline
+ArmijoSearch              & \cellcolor[HTML]{56BB8A}26                                    & \cellcolor[HTML]{56BB8A}27                                   & \cellcolor[HTML]{56BB8A}53                                      \\ \hline
+\end{tabular}
+\end{table}
+
+
+\begin{table}[]
+\begin{tabular}{|l|r|r|r|r|}
+\hline
+\rowcolor[HTML]{C0C0C0} 
+\textbf{LineSearchmethod} & \multicolumn{1}{l|}{\cellcolor[HTML]{C0C0C0}\textbf{NM}} & \multicolumn{1}{l|}{\cellcolor[HTML]{C0C0C0}\textbf{GDM}} & \multicolumn{1}{l|}{\cellcolor[HTML]{C0C0C0}\textbf{CGM}} & \multicolumn{1}{l|}{\cellcolor[HTML]{C0C0C0}\textbf{HBM}} \\ \hline
+ConstantSearch            & \cellcolor[HTML]{56BB8A}14                               & 8                                                         & \cellcolor[HTML]{E67B73}3                                 & 9                                                         \\ \hline
+GoldenSectionSearch       & 8                                                        & \cellcolor[HTML]{9BD7B9}12                                & \cellcolor[HTML]{9BD7B9}13                                & \cellcolor[HTML]{E3F4ED}10                                \\ \hline
+BisectionSearch           & \cellcolor[HTML]{E67B73}4                                & \cellcolor[HTML]{EFABA4}5                                 & \cellcolor[HTML]{EFABA4}5                                 & \cellcolor[HTML]{EFABA4}5                                 \\ \hline
+DichotomousSearch         & 8                                                        & \cellcolor[HTML]{9BD7B9}12                                & \cellcolor[HTML]{9BD7B9}13                                & \cellcolor[HTML]{9BD7B9}13                                \\ \hline
+FibonacciSearch           & \cellcolor[HTML]{F8DEDD}7                                & 9                                                         & \cellcolor[HTML]{E3F4ED}10                                & 9                                                         \\ \hline
+UniformSearch             & \cellcolor[HTML]{9BD7B9}11                               & \cellcolor[HTML]{EFABA4}6                                 & \cellcolor[HTML]{EFABA4}5                                 & \cellcolor[HTML]{F8DEDD}7                                 \\ \hline
+NewtonsSearch             & \cellcolor[HTML]{56BB8A}14                               & \cellcolor[HTML]{E67B73}4                                 & \cellcolor[HTML]{F8DEDD}7                                 & \cellcolor[HTML]{E67B73}4                                 \\ \hline
+ArmijoSearch              & \cellcolor[HTML]{EFABA4}6                                & \cellcolor[HTML]{56BB8A}16                                & \cellcolor[HTML]{56BB8A}16                                & \cellcolor[HTML]{56BB8A}15                                \\ \hline
+\end{tabular}
+\end{table}
+
+\begin{table}[]
+\begin{tabular}{|l|r|r|r|}
+\hline
+\rowcolor[HTML]{C0C0C0} 
+\textbf{LineSearchMethod} & \multicolumn{1}{l|}{\cellcolor[HTML]{C0C0C0}\textbf{SUM MSS}} & \multicolumn{1}{l|}{\cellcolor[HTML]{C0C0C0}\textbf{SUM NE}} & \multicolumn{1}{l|}{\cellcolor[HTML]{C0C0C0}\textbf{SUM TOTAL}} \\ \hline
+ConstantSearch            & \cellcolor[HTML]{E67B73}10 993,40                             & \cellcolor[HTML]{E67B73}8 132,90                             & \cellcolor[HTML]{E67B73}19 126,30                               \\ \hline
+GoldenSectionSearch       & \cellcolor[HTML]{56BB8A}1 385,90                              & \cellcolor[HTML]{DDF1E8}2 723,80                             & \cellcolor[HTML]{56BB8A}4 109,70                                \\ \hline
+BisectionSearch           & \cellcolor[HTML]{FDF1F0}3 015,30                              & 3 175,00                                                     & 6 190,30                                                        \\ \hline
+DichotomousSearch         & 1 797,90                                                      & \cellcolor[HTML]{DDF1E8}2 931,10                             & \cellcolor[HTML]{56BB8A}4 729,00                                \\ \hline
+FibonacciSearch           & \cellcolor[HTML]{DDF1E8}1 678,50                              & \cellcolor[HTML]{DDF1E8}2 854,90                             & \cellcolor[HTML]{56BB8A}4 533,40                                \\ \hline
+UniformSearch             & \cellcolor[HTML]{DDF1E8}1 724,80                              & \cellcolor[HTML]{E67B73}8 943,80                             & \cellcolor[HTML]{F3BCB8}10 668,60                               \\ \hline
+NewtonsSearch             & 1 824,70                                                      & \cellcolor[HTML]{F3BCB8}6 067,50                             & \cellcolor[HTML]{FDF1F0}7 892,20                                \\ \hline
+ArmijoSearch              & \cellcolor[HTML]{F3BCB8}4 357,10                              & \cellcolor[HTML]{56BB8A}2 432,40                             & 6 789,50                                                        \\ \hline
+\end{tabular}
+\end{table}
+
+
+\begin{table}[]
+\begin{tabular}{|l|r|r|r|r|}
+\hline
+\rowcolor[HTML]{C0C0C0} 
+\textbf{LineSearchmethod} & \multicolumn{1}{l|}{\cellcolor[HTML]{C0C0C0}\textbf{NM}} & \multicolumn{1}{l|}{\cellcolor[HTML]{C0C0C0}\textbf{GDM}} & \multicolumn{1}{l|}{\cellcolor[HTML]{C0C0C0}\textbf{CGM}} & \multicolumn{1}{l|}{\cellcolor[HTML]{C0C0C0}\textbf{HBM}} \\ \hline
+ConstantSearch            & \cellcolor[HTML]{F4C1BD}4 163,90                         & \cellcolor[HTML]{E67B73}4 694,30                          & \cellcolor[HTML]{F4C1BD}5 548,30                          & \cellcolor[HTML]{E67B73}4 719,80                          \\ \hline
+GoldenSectionSearch       & \cellcolor[HTML]{7BC9A3}2 483,30                         & \cellcolor[HTML]{A6DBC1}337,10                            & \cellcolor[HTML]{A6DBC1}969,20                            & \cellcolor[HTML]{A6DBC1}320,10                            \\ \hline
+BisectionSearch           & 2 727,50                                                 & \cellcolor[HTML]{FDF1F0}915,70                            & 1 748,80                                                  & \cellcolor[HTML]{FDF1F0}798,30                            \\ \hline
+DichotomousSearch         & \cellcolor[HTML]{FDF1F0}3 123,30                         & \cellcolor[HTML]{A6DBC1}324,80                            & \cellcolor[HTML]{A6DBC1}1 002,70                          & \cellcolor[HTML]{7BC9A3}278,20                            \\ \hline
+FibonacciSearch           & \cellcolor[HTML]{7BC9A3}2 553,90                         & \cellcolor[HTML]{DCF1E7}412,70                            & \cellcolor[HTML]{A6DBC1}1 141,50                          & 425,30                                                    \\ \hline
+UniformSearch             & 2 771,00                                                 & 511,00                                                    & \cellcolor[HTML]{E67B73}6 929,30                          & 457,30                                                    \\ \hline
+NewtonsSearch             & \cellcolor[HTML]{DCF1E7}2 709,50                         & \cellcolor[HTML]{FDF1F0}912,10                            & \cellcolor[HTML]{F4C1BD}3 354,50                          & \cellcolor[HTML]{FDF1F0}916,10                            \\ \hline
+ArmijoSearch              & \cellcolor[HTML]{E67B73}5 732,10                         & \cellcolor[HTML]{7BC9A3}220,90                            & \cellcolor[HTML]{7BC9A3}603,70                            & \cellcolor[HTML]{7BC9A3}232,80                            \\ \hline
+\end{tabular}
+\end{table}
 
 \section{Conclusion and Future Research}
 
