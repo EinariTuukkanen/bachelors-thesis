@@ -677,13 +677,6 @@ Armijo's search is the only backtracking method of the ones included in this the
 \end{algorithmic}
 \end{algorithm}
 
-% \begin{figure}[H]
-% 	\centering
-% 	\includegraphics[width=0.6\textwidth]{placeholder.png}
-% 	\caption{Dichotomous Search. \cite{course_material_nonlinear_optimisation}}
-% 	\label{fig:uniform_search}
-% \end{figure}
-
 
 \section{Methods}
 
@@ -720,6 +713,7 @@ The algorithm generates $p = 100$ points of dimension $n$. Function $\mathbf{ran
 
 \subsubsection{Comparing Performance}
 
+
 Performance comparison is going to be based mostly on total iterations meaning iterations of main method plus total iterations of the line search methods that the main method ran. The iterations of main method and line search methods are treated as equally valuable. Execution times are also recorded but not used as primary tool for performance tracking since with such little repetitions and the value of $n$ certain randomness plays too big of a part in the duration parameter. In addition, duration is heavily dependant on the programming language and style used so while the results could be comparable within the same language, they might behave differently under another setup. In comparison iterations are somewhat universal and thus make a better measure for performance. Another aspect that is recorded is the total number of function calls $n_f$ performed by both the main method and line search together. All the calls of $\theta$, its gradient and Hessian matrix, as well as the function calls of the step size function $f(\vect{x} + \lambda \vect{d})$ and its derivatives made by the line search method are calculated towards the same total count. This number is used as a secondary tool for comparison of the algorithms' performance.
 
 
@@ -742,7 +736,6 @@ FibonacciSearch & 100.0 & 453.2 & 1.0 & 119.0 & 4.5 & 55.0 \\
 UniformSearch & 100.0 & 455.0 & 1.0 & 156.0 & 7.2 & 148.0 \\
 NewtonsSearch & 100.0 & 443.5 & 1.0 & 8.0 & 0.5 & 0.0 \\
 ArmijoSearch & 99.7 & 3525.2 & 8.0 & 59.0 & 4.8 & 0.0 \\
-
 \hline
 \end{tabular}
 \end{center}
@@ -763,7 +756,6 @@ FibonacciSearch & 99.4 & 354.3 & 33.1 & 2615.3 & 238.6 & 1223.5 \\
 UniformSearch & 99.4 & 389.2 & 33.1 & 3508.2 & 282.3 & 3372.9 \\
 NewtonsSearch & 99.4 & 453.3 & 33.1 & 241.2 & 355.7 & 35.3 \\
 ArmijoSearch & 99.6 & 209.3 & 25.8 & 343.2 & 97.9 & 185.5 \\
-
 \hline
 \end{tabular}
 \end{center}
@@ -784,7 +776,6 @@ FibonacciSearch & 100.0 & 517.8 & 50.0 & 4006.0 & 298.5 & 1850.0 \\
 UniformSearch & 100.0 & 558.2 & 50.0 & 5356.0 & 348.9 & 5100.0 \\
 NewtonsSearch & 100.0 & 552.8 & 50.6 & 364.0 & 347.5 & 35.0 \\
 ArmijoSearch & 100.0 & 405.3 & 50.0 & 914.8 & 157.6 & 558.8 \\
-
 \hline
 \end{tabular}
 \end{center}
@@ -805,7 +796,6 @@ FibonacciSearch & 99.4 & 353.2 & 32.7 & 2585.0 & 239.5 & 1209.3 \\
 UniformSearch & 99.4 & 322.4 & 24.4 & 2587.4 & 232.0 & 2486.9 \\
 NewtonsSearch & 99.4 & 375.1 & 24.4 & 179.6 & 295.0 & 26.4 \\
 ArmijoSearch & 99.6 & 217.3 & 25.8 & 343.1 & 99.6 & 185.4 \\
-
 \hline
 \end{tabular}
 \end{center}
@@ -827,7 +817,6 @@ FibonacciSearch & 100.0 & 2100.7 & 5.6 & 738.5 & 59.0 & 350.9 \\
 UniformSearch & 100.0 & 2316.0 & 6.1 & 510.3 & 132.5 & 476.7 \\
 NewtonsSearch & 100.0 & 2266.0 & 5.7 & 192.6 & 348.6 & 53.7 \\
 ArmijoSearch & 100.0 & 2206.9 & 6.3 & 52.6 & 3.1 & 5.5 \\
-
 \hline
 \end{tabular}
 \end{center}
@@ -848,7 +837,6 @@ FibonacciSearch & 100.0 & 58.4 & 8.6 & 610.8 & 52.6 & 282.4 \\
 UniformSearch & 100.0 & 121.8 & 10.9 & 889.6 & 114.6 & 842.8 \\
 NewtonsSearch & 100.0 & 458.8 & 8.8 & 687.6 & 453.8 & 216.5 \\
 ArmijoSearch & 100.0 & 11.6 & 10.2 & 96.5 & 5.6 & 32.0 \\
-
 \hline
 \end{tabular}
 \end{center}
@@ -869,7 +857,6 @@ BisectionSearch & 100.0 & 759.5 & 100.0 & 1228.3 & 672.9 & 777.8 \\
 DichotomousSearch & 100.0 & 576.4 & 102.7 & 3496.1 & 485.5 & 1538.6 \\
 FibonacciSearch & 100.0 & 623.7 & 100.0 & 7155.1 & 534.0 & 3273.5 \\
 UniformSearch & 100.0 & 6371.1 & 100.0 & 8208.0 & 6277.0 & 7700.0 \\
-
 \hline
 \end{tabular}
 \end{center}
@@ -890,7 +877,6 @@ FibonacciSearch & 100.0 & 72.1 & 11.8 & 843.4 & 64.3 & 390.8 \\
 UniformSearch & 100.0 & 134.9 & 12.9 & 1051.1 & 126.6 & 996.3 \\
 NewtonsSearch & 100.0 & 541.0 & 12.8 & 806.1 & 533.7 & 250.6 \\
 ArmijoSearch & 100.0 & 15.5 & 14.4 & 113.2 & 6.9 & 23.6 \\
-
 \hline
 \end{tabular}
 \end{center}
@@ -978,29 +964,28 @@ ArmijoSearch              & \cellcolor[HTML]{E67B73}5 732,10                    
 \end{tabular}
 \end{table}
 
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=1.0\textwidth]{images/boxplot_mss.png}
+	\caption{Box plot of solution times per line search and main method for MatrixSquareSum target function.}
+	\label{fig:boxplot_mss}
+\end{figure}
+
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=1.0\textwidth]{images/boxplot_ne.png}
+	\caption{Box plot of solution times per line search and main method for NegativeEntropy target function.}
+	\label{fig:boxplot_ne}
+\end{figure}
+
 \section{Conclusion and Future Research}
 
 
 To make the results completely comprehensive we should consider all existing functions as possible target functions. However as this is practically impossible, one substantial way to improve the coverage would be increasing the number of target functions: other similar research has used up to 80 different problems to calculate the performance for \cite{monotone_line_search_performance},
 
 Another major factor in increasing the reliability of the results are the starting points. In this research we limited the area of where the points were generated to $[-10, 10]$ or $]0, 10]$ depending on the domain of the target function. In a perfect world we could test the algorithms for every single starting point. Even though that is practically impossible, a wider range of points could be utilized. Anyways the selection of starting point is very target function related and should always be considered per function. In addition the number of starting points tested could be raised within the computing power available.
-
-
-
-% % Esimerkkitaulukko
-% \begin{table}
-% 	\centering
-
-% 	\caption{Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed risus libero, vestibulum.}
-% 	\label{tab:lorem1}
-% 	\begin{tabular}{r|cccc}
-% 	nimi	& $N_1$ & $N_2$ & $N_3$ & $N_4$ \\
-% 	\hline
-% 	yksi	& 314   & 188.4 & 999.9 & 1 \\
-% 	kaksi	& 218   & 278   & 744   & 249.554 \\
-% 	neljä	& 452   & 1189  & N/A   & 22 \\
-% 	\end{tabular}
-% \end{table}
 
 
 % %
@@ -1017,9 +1002,6 @@ Another major factor in increasing the reliability of the results are the starti
 % Ladataan library.bib
 \bibliography{library}
 
-\newpage
-\section{Attachments}
-\input{parameters.tex}
 
 % %
 % % LIITTEET
@@ -1028,6 +1010,10 @@ Another major factor in increasing the reliability of the results are the starti
 % \appendix
 % \section{Ensimmäinen liite}
 
-% Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Proin eget neque elit. Pellentesque commodo dui vitae ipsum volutpat vestibulum. Curabitur porta, dui in ultricies consequat, tellus velit laoreet odio, tristique adipiscing lectus tortor eu sapien. Integer faucibus iaculis turpis nec sagittis. In eu eleifend nibh. Mauris quis nulla ut ante sodales posuere eu a leo. Mauris tempor porttitor dolor, sed mollis erat interdum vitae.
+\newpage
+\section{Attachments}
+% TODO: enable
+% \input{parameters.tex}
+
 
 \end{document}
