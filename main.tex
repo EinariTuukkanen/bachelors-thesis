@@ -143,8 +143,7 @@ In this thesis we will be exploring the effects of line search method selection 
 
 \todoinline{Should I mention the target functions, main methods and line search methods explored already here on intro?}
 
-\todoinline{General points: should I write in past or present tense? How about writing "I" or "we", or rather use passive?\\
-What is the recommended style for e.g. marking vectors?\\
+\todoinline{What is the recommended style for e.g. marking vectors?\\
 Which equations should I numerate?}
     
 
@@ -166,7 +165,7 @@ One of the biggest factors effecting the performance of an optimization algorith
 Each optimization method involves a step in form of $\mathrm{argmin}_{\lambda \in \mathbb{R}} {f(x_i + \lambda d_i})$. To programmatically produce this step, we are going to define step size function $g(\lambda)$ related to each of the target functions. Then on each iteration of the main optimization method, a new step size function is seeded with the updated point $\vect{x}$ and direction vector $\vect{d}$.
 
 
-\subsubsection{Matrix Square Sum}
+\subsubsection{Matrix Square Sum} \label{sect:matrix_square_sum}
 
 
 The Matrix Square Sum is an extended version of the regular Sum Squares Function, which is defined as
@@ -181,11 +180,13 @@ To make Sum Squares problem less trivial, we are going modify it by adding three
 
 where $A$ is a positive definite (PD) $n \times n$ matrix, $\vect{x}$ and $\vect{b}$ are vectors of length $n$, and the scalar $c$ is a positive constant.
 
-While $A$ could in theory be any $m \times n$ matrix, we are limiting it to a square PD-matrices only to ensure that the function is convex and has an unique global minimum. The matrix $A$ is formed in few steps by first generating an initial $n \times n$ matrix $A'$ with random values $a_{ij} \in [-0.5, 0.5]\ \forall\ i,j = 1 \dots n$. Then we attempt to make a PD-matrix by $A = 0.5 * (A' + A'^\top)$. Finally, if  $A$ does not happen to be a PD-matrix yet, it is modified by the formula 
+While $A$ could in theory be any $m \times n$ matrix, we are limiting it to a square PD-matrices only to ensure that the function is convex and has an unique global minimum. The matrix $A$ is formed in few steps by first generating an initial $n \times n$ matrix $A'$ with random values $a_{ij} \in [-0.5, 0.5]\ \forall\ i,j = 1 \dots n$. Then we attempt to make a PD-matrix by $A = 0.5 (A' + A'^\top)$. Finally, if  $A$ does not happen to be a PD-matrix yet, it is modified by the formula 
 \begin{equation}
     A = A + (\abs{\lambda_{min}} + d) I,
 \end{equation}
 where $\lambda_{min}$ is the minimal eigenvalue of $A$ and $d$ is a constant. The value of $d$ also determines the A's condition number defined as $\frac{\lambda_{max}}{\lambda_{min}}$. Smaller values of $d$ make the function more elliptic and harder for gradient methods to solve, while larger values produce more circular gradient curves, which are easy for methods like Gradient Descent to solve. The value of $d$ used in the thesis is 5, resulting in condition number of around 6.5.
+
+The values of $b$ and $c$ are also randomized so that for each element of $b$ applies $b_i \in [-0.5, 0.5]$ and $c$ is a scalar randomly generated from range $[-0.5, 0.5]$.
 
 Some of the optimization methods require access to the function's gradient, Hessian matrix and the step size function with its first two derivatives, so let's calculate them in advance. While at it, we should also derive the formula for calculating the correct optima so we can use it to determine whether our algorithms produce the correct solution. Lets begin by expanding the function into more easily differentiable form:
 \begin{align*}
@@ -681,43 +682,86 @@ Armijo's search is the only backtracking method of the ones included in this the
 \section{Methods}
 
 
-Our goal is to determine how does the selection of line search method effect the overall performance of an optimization method. To answer this question with the resources described in theory section, we are going to run each of the target function, main method and line search method permutations multiple times. In addition we need to take into account all the different parameters for each of the algorithms.
+Our goal is to determine how does the selection of line search method effect the overall performance of an optimization method. To answer this question with the resources introduced in the theory section, we first need to tackle the problem of choosing parameters.
 
-Choosing the best parameters for each method for each target function would be a high level problem of its own if performed accurately. Since that is something we are not especially interested in within the scope of this thesis, we are going to manually test and select few different values for each parameters for each algorithm. Next, we are going to programmatically generate all the parameter permutations for each algorithm and test them with $m$ starting points of dimension $n$, where $n$ is the same value used for the actual overall performance testing. In addition we are going to have to limit the absolute value of coordinates into some specific area. For all the parameter selection and performance testing we used the same setup by generating 100 points $x_0$ of dimension $n = 50$ with each $x_i \in [-10, 10]$. Because negative entropy problem has the domain $\R_{>0}$, we are going to generate a separate set of 100 points otherwise similar to the first one but with positive values only: $x_i \in ]0, 10]$. In addition, as the matrix square sum problem has the option for randomly generated constants $A$, $b$ and $c$, we are going to use that in our favor and generate 100 randomized versions of that function in advance as well. This way we can in the best way compensate for our relatively small sample size. Another way to compensate for the sample size is to generate the starting points more evenly by controlling the randomness of the points. Once again, because this is something of a completely different research topic to handle perfectly, we ended up using non-perfect but simple algorithm for generating our starting point distribution.
+
+\subsection{Parameter Selection}
+
+Optimization method parameter selection is a whole large topic of its own, and it is not our main focus on this thesis. Therefore a very straightforward method for picking the parameters is going to be appropriate.
+
+Using the same setup as when we are comparing the performances of different method combinations, we can also compare the effects of different parameters. Using the manually picked parameter values shown in the theory section, we can programmatically generate all the permutations for each parameter and optimization method combination.
+
+\subsection{Starting Point Selection}
+
+So we are going to compare the performances of each line search method and main method combination with their related parameter options. We are running the tests with 100 starting points of dimension $n = 50$. For practical reasons we are also going to use a limited space for the points to be randomized from.
+
+Let a single starting point be $x = \{x_1, x_2, \dots x_{50}\}$. For MatrixSquareSum the points are generated so that for each point applies $x_i \in  [-10, 10]\ \forall\ i$. Because NegativeEntropy's domain is $\R_{>0}$, the same rule applies but with the bounds being $]0, 10]$ instead.
+
+Since we are interested in overall performance, we prefer starting points that are random but evenly distributed so that no two point are the same, or too close to each other. To generate a point distribution which is random but evenly filled with points, we use the following algorithm.
 
 \begin{algorithm}[H]
 \caption{Generating Even Distribution of Random Starting Points}
 \label{alg_x0_distribution}
 \begin{algorithmic}[1]
-\STATE \textbf{initialize} $(d_{min}, x_{min}, x_{max}) \in \R, (n, p, q) \in \N, Z = \{\vect{z}_1, \dots ,\vect{z}_m\}, i = 0, q = 1, \vect{z}_1 = \mathbf{random}_{n}(x_{min}, x_{max})$
+\STATE \textbf{initialize} $(d_{min}, x_{min}, x_{max}) \in \R, (n, p) \in \N, \vect{x}_1 = \mathbf{random}_{n}(x_{min}, x_{max})$, $q = 1$
 \WHILE{$i < p$}
-    \STATE $\vect{x} = \mathbf{random}_{n}(x_{min}, x_{max})$
+    \STATE $\vect{y} = \mathbf{random}_{n}(x_{min}, x_{max})$
     \STATE $\mathrm{ok} =$ \TRUE
     \FOR{$j = 1 \dots q$}
-        \IF{$\norm{\vect{z}_j - \vect{x}} < d_{min}$}
+        \IF{$\norm{\vect{x}_j - \vect{y}} < d_{min}$}
             \STATE $\mathrm{ok} = $ \FALSE
             \STATE \textbf{break}
         \ENDIF
     \ENDFOR
     \IF{ok}
         \STATE $q = q + 1$, \ $i = i + 1$
-        \STATE $\vect{z}_q = \vect{x}$
+        \STATE $\vect{x}_q = \vect{y}$
     \ENDIF
 \ENDWHILE
-\RETURN $Z$
+\RETURN $\{ x_1, x_2, ..., x_p\}$
 \end{algorithmic}
 \end{algorithm}
 
-The algorithm generates $p = 100$ points of dimension $n$. Function $\mathbf{random}_n(x_{min}, x_{max})$ generates vector $\vect{x}$ of size $n$ filled with random values $x_i \in [x_{min}, x_{max}], i = 1 \dots n$. We then compare distance of newly generated point $x$ and every point generated before i.e. $z_j, z < q$ and if for any pair of points the Euclidean distance is less than $d_{min}$ we skip to the next iteration and generate a new candidate $x$. In theory the algorithm could get stuck as it depends on random values on the exit condition, but using small enough $d_{min}$ will result in fast and even distribution of random numbers within targeted area of values. The points will likely never get optimally distributed but it is still better than completely randomized points where portions of the targeted area could be left completely empty of starting points.
+The algorithm generates $p$ points of dimension $n$. The generated points are stored in variables $x_i$. The function $\mathbf{random}_n(x_{min}, x_{max})$ generates a single point of dimension $n$ filled with random values from the range $[x_{min}, x_{max}]$. On every iteration, we test to see if the newly generated point is closer than $d_{min}$ to some existing point and if so, we discard the new point and try again.
+
+This is by means not a perfect algorithm since its performance heavily depends on the $d_{min}$ value used. The minimum distance selection depends on the point count and the available point space: too high values cause the algorithm to end up on infinite loop and too low values do not provide the even distribution we are looking for. Via trial and error the values presented in table \ref{tab:dmin_values} are picked.
+
+\begin{table}[H]
+\centering
+\captionof{table}{The minimum Eucleidean distances used for different target functions on distributions of 100 and 1000 points.}
+\label{tab:dmin_values}
+\begin{tabular}{|r|r|r|}
+\hline
+\rowcolor[HTML]{C0C0C0} 
+Point count                       & MSS $d_{min}$ & NE $d_{min}$ \\ \hline
+\cellcolor[HTML]{EFEFEF}100  & 56           & 28          \\ \hline
+\cellcolor[HTML]{EFEFEF}1000 & 48           & 24          \\ \hline
+\end{tabular}
+\end{table}
+
+After successfully generating the starting points once, we are going to save them into a file from which they are loaded during future runs. This way we maintain the same level of randomness for each run.
+
+\subsection{Randomizing Target Function}
+
+In addition to randomizing the starting points, we are going to use randomized parameters for Matrix Square Sum target function. The values of parameters $A$, $b$ and $c$ are going to be randomized as described in section \ref{sect:matrix_square_sum} but for each starting point separately. To control the randomness between runs, we give the function a random seed of the index of the current point. This way we end up with number of random functions equal to the number of starting points used. Combined with the saving of points, we can guarantee to get the same setup for each run.
+
+\subsection{Comparing Performance}
 
 
-\subsubsection{Comparing Performance}
+There are multiple metrics that we could analyze, like algorithm success rate, main method or line search duration, iterations or function calls. The most important metric we are going to focus on is the success rate i.e. from how many of the 1000 starting points did the algorithm reach correct optimum. The solution is interpret as correct if the first 8 decimals of the found solution and correct one match.
+Since it is excepted that most of the algorithms find the solution correctly every time, we also need a secondary comparison metric. Here we choose to use the total duration of the algorithm, since it is often the most interesting value for real life use cases and it is comparable within different methods unlike for example total iteration count. The other metrics will also be recorded and listed in the results section, but they will not be taken into consideration when scoring the methods.
+
+% Performance comparison is going to be based mostly on total iterations meaning iterations of main method plus total iterations of the line search methods that the main method ran. The iterations of main method and line search methods are treated as equally valuable. Execution times are also recorded but not used as primary tool for performance tracking since with such little repetitions and the value of $n$ certain randomness plays too big of a part in the duration parameter. In addition, duration is heavily dependant on the programming language and style used so while the results could be comparable within the same language, they might behave differently under another setup. In comparison iterations are somewhat universal and thus make a better measure for performance. Another aspect that is recorded is the total number of function calls $n_f$ performed by both the main method and line search together. All the calls of $\theta$, its gradient and Hessian matrix, as well as the function calls of the step size function $f(\vect{x} + \lambda \vect{d})$ and its derivatives made by the line search method are calculated towards the same total count. This number is used as a secondary tool for comparison of the algorithms' performance.
 
 
-Performance comparison is going to be based mostly on total iterations meaning iterations of main method plus total iterations of the line search methods that the main method ran. The iterations of main method and line search methods are treated as equally valuable. Execution times are also recorded but not used as primary tool for performance tracking since with such little repetitions and the value of $n$ certain randomness plays too big of a part in the duration parameter. In addition, duration is heavily dependant on the programming language and style used so while the results could be comparable within the same language, they might behave differently under another setup. In comparison iterations are somewhat universal and thus make a better measure for performance. Another aspect that is recorded is the total number of function calls $n_f$ performed by both the main method and line search together. All the calls of $\theta$, its gradient and Hessian matrix, as well as the function calls of the step size function $f(\vect{x} + \lambda \vect{d})$ and its derivatives made by the line search method are calculated towards the same total count. This number is used as a secondary tool for comparison of the algorithms' performance.
+\subsubsection{Parameter Selection}
 
 
 \section{Results}
+
+The results are going to be represented in a table with average performances of each line search method for each permutation of main methods and target functions. The performances are calculated using the best parameters found for each setup as described in the previous section. The algorithms are run with a similar setup as when calculating the best parameters, but this time with 1000 evenly randomized starting points instead of 100. Again for each starting point a unique target function configuration is generated in the case of MatrixSquareSum using the same randomizing rules as described in the previous section. The random seeds were again starting point indices i.e. integers from 0 to 1000.
+
+After running the performance tests, we are left with the results introduced in the following eight tables. The row's of the table show the line search method used, the success rate of the algorithm, average duration, iteration count and function calls of the algorithm. The function call count includes all calls to the function and to its gradients or step size functions. In addition to these, the average duration and iterations taken by the line search algorithm alone is listed in the result tables. A table including all eight line search methods with their representative performances is generated for each main method and target function combination.
 
 
 \begin{center}
