@@ -901,6 +901,9 @@ ArmijoSearch & 100.0 & 15.5 & 14.4 & 113.2 & 6.9 & 23.6 \\
 There are multiple metrics we could look into when analyzing the results. Since our goal is to compare the effect in performance of the main methods caused by the line search methods, one natural way of analyzing the results is finding the overall best line search method. This is done by firstly prioritizing success rate and secondly the average duration in which the solutions were found. After sorting the line search methods with these two metrics per target function and per main method, we can then score them. For scoring we are going to use two methods: first is to give each line method a rank so that the fastest method gets 8 points, the second fastest 7 points and so on until each line method has gotten 1 to 8 points, and then repeat this separately for each combination of target functions and main methods. The pros of this method is that it takes the success rate into account unlike the second method we are using which is calculating the total sum of average durations for each line search.
 
 \begin{table}[]
+\centering
+\captionof{table}{Ranking scores of line search methods per target function. Data is colored column-wise so that darker green is better and darker red is worse.}
+\label{tab:scores_rank_target_function}
 \begin{tabular}{|l|r|r|r|}
 \hline
 \rowcolor[HTML]{C0C0C0} 
@@ -918,6 +921,9 @@ ArmijoSearch              & \cellcolor[HTML]{56BB8A}26                          
 
 
 \begin{table}[]
+\centering
+\captionof{table}{Ranking scores of line search methods per main method. Data is colored column-wise so that darker green is better and darker red is worse.}
+\label{tab:scores_rank_main_method}
 \begin{tabular}{|l|r|r|r|r|}
 \hline
 \rowcolor[HTML]{C0C0C0} 
@@ -934,6 +940,9 @@ ArmijoSearch              & \cellcolor[HTML]{EFABA4}6                           
 \end{table}
 
 \begin{table}[]
+\centering
+\captionof{table}{Average durations of line search methods per target function. Data is colored column-wise so that darker green is better and darker red is worse.}
+\label{tab:scores_duration_target_function}
 \begin{tabular}{|l|r|r|r|}
 \hline
 \rowcolor[HTML]{C0C0C0} 
@@ -951,6 +960,9 @@ ArmijoSearch              & \cellcolor[HTML]{F3BCB8}4 357,10                    
 
 
 \begin{table}[]
+\centering
+\captionof{table}{Average durations of line search methods per main method. Data is colored column-wise so that darker green is better and darker red is worse.}
+\label{tab:scores_duration_main_method  }
 \begin{tabular}{|l|r|r|r|r|}
 \hline
 \rowcolor[HTML]{C0C0C0} 
