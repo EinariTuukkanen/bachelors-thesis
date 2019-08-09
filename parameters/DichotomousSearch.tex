@@ -15,7 +15,6 @@ $l$ & 0.0001, 1e-05 & 0.0001, 1e-05 \\
 \end{tabular}
 \end{center}
 
-\newgeometry{textwidth=16cm}
 \begin{figure}[H]
 \captionof{figure}{Best parameter permutations for different main methods using DichotomousSearch for optimizing the MatrixSquareSum function with 10 sample points.}
 \label{fig:param_comp_MatrixSquareSum_DichotomousSearch}
@@ -29,11 +28,11 @@ $l$ & 0.0001, 1e-05 & 0.0001, 1e-05 \\
 \rowcolor{gray!25}
 $(a,b,l,\epsilon)$ & $s$ (\%) & $t$ (ms) \\
 \hline
-(-5, 5, 1e-07, 1e-05) & 100.0 & 784.6 \\
-(-5, 10, 1e-08, 0.0001) & 100.0 & 794.3 \\
-(-5, 5, 1e-08, 0.0001) & 100.0 & 842.0 \\
-(-5, 5, 1e-08, 1e-05) & 100.0 & 843.6 \\
-(-5, 10, 1e-07, 1e-05) & 100.0 & 864.0 \\
+(-5, 10, 1e-10, 1e-09) & 100.0 & 388.3 \\
+(-10, 10, 1e-10, 1e-09) & 100.0 & 436.4 \\
+(-5, 5, 1e-10, 1e-09) & 100.0 & 439.6 \\
+(-10, 5, 1e-10, 1e-09) & 100.0 & 455.0 \\
+(-5, 10, 1e-07, 1e-05) & 100.0 & 840.8 \\
 \hline
 \end{tabular}
 \caption{Top 5 permutations with NewtonsMethod}
@@ -191,4 +190,3 @@ $(a,b,l,\epsilon,\beta_{HBM})$ & $s$ (\%) & $t$ (ms) \\
 \label{subfig:param_comp_NegativeEntropy_HeavyBallMethod_DichotomousSearch}
 \end{subfigure}
 \end{figure}
-\restoregeometry
