@@ -928,7 +928,7 @@ ArmijoSearch & 100.0 & 15.5 & 14.4 & 113.2 & 6.9 & 23.6 \\
 
 \subsection{Analysis}
 
-There are multiple metrics we could look into when analyzing the results. Since our goal is to compare the effect in performance of the main methods caused by the line search methods, one natural way of analyzing the results is finding the overall best line search method. This is done by firstly prioritizing success rate and secondly the average duration in which the solutions were found. After sorting the line search methods with these two metrics per target function and per main method, we can then score them. For scoring we are going to use two methods: first is to give each line method a rank so that the fastest method gets 8 points, the second fastest 7 points and so on until each line method has gotten 1 to 8 points, and then repeat this separately for each combination of target functions and main methods. The pros of this method is that it takes the success rate into account unlike the second method we are using which is calculating the total sum of average durations for each line search.
+% There are multiple metrics we could look into when analyzing the results. Since our goal is to compare the effect in performance of the main methods caused by the line search methods, one natural way of analyzing the results is finding the overall best line search method. This is done by firstly prioritizing success rate and secondly the average duration in which the solutions were found. After sorting the line search methods with these two metrics per target function and per main method, we can then score them. For scoring we are going to use two methods: first is to give each line method a rank so that the fastest method gets 8 points, the second fastest 7 points and so on until each line method has gotten 1 to 8 points, and then repeat this separately for each combination of target functions and main methods. The pros of this method is that it takes the success rate into account unlike the second method we are using which is calculating the total sum of average durations for each line search.
 
 \todoinline{Explain the min and max values of rankings}
 
@@ -1052,7 +1052,7 @@ There are multiple metrics we could look into when analyzing the results. Since 
 \begin{table}[]
     \centering
     \captionof{table}{The average of the durations for finding the minimum for both Matrix Square Sum and Negative Entropy Functions listed separately for each main method. Colored per column so that darker red is worse (slower) and darker green is better (faster).}
-    \label{tab:colors_avg_durations}
+    \label{tab:colors_avg_overall_mm}
     \begin{tabular}{|l|r|r|r|r|}
     \hline
     \rowcolor[HTML]{C0C0C0} 
@@ -1072,7 +1072,7 @@ There are multiple metrics we could look into when analyzing the results. Since 
 \begin{table}[]
     \centering
     \captionof{table}{The average of the durations for finding the minimum with all the main methods listed separately for each target function. Colored per column so that darker red is worse (slower) and darker green is better (faster).}
-    \label{tab:colors_avg_durations}
+    \label{tab:colors_avg_overall}
     \begin{tabular}{|l|r|r|r|}
     \hline
     \rowcolor[HTML]{C0C0C0} 
@@ -1155,11 +1155,19 @@ In addition to just comparing the raw numbers, the boxplots in figures \ref{fig:
 
 % While the table \ref{tab:scores_rank_main_method} tells us mostly the same story as the previous one, there are still some interesting new aspects to note from here. First and foremost it seems that while Armijo's Search is still superior in overall performance, it severely lacks behind in performance in case of Newton's Method. Looking back at the raw results in tables \ref{tab:performance_results_MSS_NM} and \ref{tab:performance_results_NE_NM}, we can see that this is indeed the case but only for combination of Newton's Method with Matrix Square Sum target function. Overall the results seem to have taken a surprising turn in case of Newton's Method since the overall worst performers Uniform Search, Newton's Search and even Constant Search have scored the highest ranks for this setup. And while Golden Section Search seems to have scored pretty average score, a closer look into the table \ref{tab:performance_results_MSS_NM} reveals that the differences in performance were minimal, which can be clearly seen if we..
 
-\subsubsection{Constant Search}
+\subsubsection*{Constant Search}
 
-Since Constant Search simply provides us constant step sizes it should be used as a baseline for other line search methods. It will not take any time to compute the step size so the main stress remains on the main method and how well can it find the solution with never changing step size.
+Since Constant Search simply provides constant step sizes it should provide a good baseline for comparing other line search methods. The exeuction of Constant Search does basically cost zero time, so the main stress remains on the main method. This way we may be able to conclude something about the baseline performance of the main methods as well.
 
-% The results for Constant Search look surprisingly good at first: from the overall ranking table (table \ref{tab:scores_rank_target_function}) we can see that while constant step size did not score too well on Matrix Square Sum, it seems like the second strongest choice for Negative Entropy target function. However, taking a closer look at the actual average durations in tables \ref{tab:scores_duration_target_function} and \ref{tab:scores_duration_main_method} we notice that the situation is a bit different. The Constant Search has scored the bottom or close to bottom score for all target functions and for each main method. Investigating this further, we can see from tables \ref{tab:performance_results_MSS_NM} to \ref{tab:performance_results_NE_HBM} that the Constant Search scored really well on Gradient Descent and Heavy Ball Methods for Negative Entropy function explaining the above average ranking. Since this was mainly an issue caused by the choice of ranking algorithm, it is safe to say that Constant Search performed largely as expected as can be seen from the high average durations from the tables \ref{tab:scores_duration_target_function} and \ref{tab:scores_duration_main_method}. However, as the data tells us, there exists scenarios in which with a good choice of main method and target function, Constant Search may prove itself really effective, but these scenarios should most likely be tested beforehand to avoid otherwise not just poor completion time but below average success rate.
+Looking at the overall durations of Constant Search in table \ref{tab:colors_avg_overall} and the success rates at tables \ref{tab:colors_success_mss} and \ref{tab:colors_success_ne} we can quickly see that the Constant Search is the worse performing method as expected. The only scenario where constant step sizes prove themselves as rather effective are when optimizing the Negative Entropy function using Gradient Descent or Heavy Ball methods. In those cases, Constant Search was actually the best or second to best performer. This is due to the overall effectivity of gradient descent based methods for the said problem in general, and since the Constant Search is the fastest to execute, it provides a slightly better performance. This can be proven to be the case when looking at the overall duration and line search duration columns in tables \ref{tab:performance_results_NE_GDM} and \ref{tab:performance_results_NE_HBM}: most of the overall duration is from the line searches.
+
+\subsubsection*{Golden Section Search}
+
+Comparing the overall results in tables \ref{tab:colors_avg_overall_mm} and \ref{tab:colors_avg_overall}, we immediately notice from the solid green colored rows that Golden Section Search is one of the best performers. The success rates of this methods are also great as it does, like most methods tested, find the correct solution in almost all of the test cases.
+
+\subsubsection*{Bisection Search}
+
+
 
 
 \section{Conclusion and Future Research}
