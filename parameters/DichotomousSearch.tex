@@ -1,20 +1,3 @@
-\begin{center}
-\rowcolors{2}{white}{gray!5}
-\captionof{table}{Parameters tested for DichotomousSearch}
-\label{tab:params_DichotomousSearch}
-\begin{tabular}{|c|c|c|}
-\hline
-\rowcolor{gray!25}
-Parameter & MatrixSquareSum & NegativeEntropy \\
-\hline
-$a$ & -10, -5 & -10, -5 \\
-$b$ & 10, 5 & 5, 10 \\
-$\epsilon$ & 1e-07, 1e-08 & 1e-06, 1e-07 \\
-$l$ & 0.0001, 1e-05 & 0.0001, 1e-05 \\
-\hline
-\end{tabular}
-\end{center}
-
 \begin{figure}[H]
 \captionof{figure}{Best parameter permutations for different main methods using DichotomousSearch for optimizing the MatrixSquareSum function with 10 sample points.}
 \label{fig:param_comp_MatrixSquareSum_DichotomousSearch}
@@ -26,7 +9,7 @@ $l$ & 0.0001, 1e-05 & 0.0001, 1e-05 \\
 \multicolumn{3}{|c|}{NewtonsMethod} \\
 \hline
 \rowcolor{gray!25}
-$(a,b,l,\epsilon)$ & $s$ (\%) & $t$ (ms) \\
+$(a,b,\epsilon,l)$ & $s$ (\%) & $t$ (ms) \\
 \hline
 (-5, 10, 1e-10, 1e-09) & 100.0 & 388.3 \\
 (-10, 10, 1e-10, 1e-09) & 100.0 & 436.4 \\
@@ -47,7 +30,7 @@ $(a,b,l,\epsilon)$ & $s$ (\%) & $t$ (ms) \\
 \multicolumn{3}{|c|}{GradientDescentMethod} \\
 \hline
 \rowcolor{gray!25}
-$(a,b,l,\epsilon)$ & $s$ (\%) & $t$ (ms) \\
+$(a,b,\epsilon,l)$ & $s$ (\%) & $t$ (ms) \\
 \hline
 (-10, 5, 1e-07, 1e-05) & 100.0 & 234.8 \\
 (-10, 5, 1e-08, 0.0001) & 100.0 & 241.2 \\
@@ -68,7 +51,7 @@ $(a,b,l,\epsilon)$ & $s$ (\%) & $t$ (ms) \\
 \multicolumn{3}{|c|}{ConjugateGradientMethod} \\
 \hline
 \rowcolor{gray!25}
-$(a,b,l,\epsilon)$ & $s$ (\%) & $t$ (ms) \\
+$(a,b,\epsilon,l)$ & $s$ (\%) & $t$ (ms) \\
 \hline
 (-5, 10, 1e-07, 1e-05) & 100.0 & 354.2 \\
 (-5, 10, 1e-07, 0.0001) & 100.0 & 382.0 \\
@@ -89,7 +72,7 @@ $(a,b,l,\epsilon)$ & $s$ (\%) & $t$ (ms) \\
 \multicolumn{3}{|c|}{HeavyBallMethod} \\
 \hline
 \rowcolor{gray!25}
-$(a,b,l,\epsilon,\beta_{HBM})$ & $s$ (\%) & $t$ (ms) \\
+$(a,b,\epsilon,l,\beta_{HBM})$ & $s$ (\%) & $t$ (ms) \\
 \hline
 (-5, 5, 1e-07, 0.0001, 10.0) & 100.0 & 173.6 \\
 (-10, 10, 1e-07, 0.0001, 10.0) & 100.0 & 185.4 \\
@@ -114,7 +97,7 @@ $(a,b,l,\epsilon,\beta_{HBM})$ & $s$ (\%) & $t$ (ms) \\
 \multicolumn{3}{|c|}{NewtonsMethod} \\
 \hline
 \rowcolor{gray!25}
-$(a,b,l,\epsilon)$ & $s$ (\%) & $t$ (ms) \\
+$(a,b,\epsilon,l)$ & $s$ (\%) & $t$ (ms) \\
 \hline
 (-10, 10, 1e-07, 1e-05) & 100.0 & 1756.0 \\
 (-10, 5, 1e-06, 1e-05) & 100.0 & 1846.8 \\
@@ -135,7 +118,7 @@ $(a,b,l,\epsilon)$ & $s$ (\%) & $t$ (ms) \\
 \multicolumn{3}{|c|}{GradientDescentMethod} \\
 \hline
 \rowcolor{gray!25}
-$(a,b,l,\epsilon)$ & $s$ (\%) & $t$ (ms) \\
+$(a,b,\epsilon,l)$ & $s$ (\%) & $t$ (ms) \\
 \hline
 (-5, 5, 1e-07, 0.0001) & 100.0 & 54.3 \\
 (-5, 10, 1e-06, 0.0001) & 100.0 & 61.7 \\
@@ -156,7 +139,7 @@ $(a,b,l,\epsilon)$ & $s$ (\%) & $t$ (ms) \\
 \multicolumn{3}{|c|}{ConjugateGradientMethod} \\
 \hline
 \rowcolor{gray!25}
-$(a,b,l,\epsilon)$ & $s$ (\%) & $t$ (ms) \\
+$(a,b,\epsilon,l)$ & $s$ (\%) & $t$ (ms) \\
 \hline
 (-5, 5, 1e-06, 0.0001) & 100.0 & 640.6 \\
 (-10, 5, 1e-06, 0.0001) & 100.0 & 642.7 \\
@@ -177,7 +160,7 @@ $(a,b,l,\epsilon)$ & $s$ (\%) & $t$ (ms) \\
 \multicolumn{3}{|c|}{HeavyBallMethod} \\
 \hline
 \rowcolor{gray!25}
-$(a,b,l,\epsilon,\beta_{HBM})$ & $s$ (\%) & $t$ (ms) \\
+$(a,b,\epsilon,l,\beta_{HBM})$ & $s$ (\%) & $t$ (ms) \\
 \hline
 (-5, 5, 1e-06, 1e-05, 0.1) & 100.0 & 70.4 \\
 (-5, 5, 1e-06, 0.0001, 0.1) & 100.0 & 70.8 \\
