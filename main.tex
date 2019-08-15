@@ -1181,6 +1181,12 @@ Similarily to Uniform Search, Newton's Search has average performance when optim
 
 Armijo's Search proves to be the overall best performing method of the tested line searches. It has the best performance in five categories out of eight, and is right on par with the top performers in the rest of the categories as well. It also has a slightly better success rate than any other method on Matrix Square Sum optimization when using Gradient Descent or Heavy Ball Method. The overall performance is also approximately 10\% better than the next best overall performance of Golden Section Search. There are some differences in the variances: Armijo's Search has a slightly higher variance in Matrix Square Sum using Newton's Method but it outperforms most other method's variances when using other methods for the same function. For Negative Entropy the Armijo's Search has clearly lower variances than other methods.
 
+\subsection{Disclaimer}
+
+The results introduced in this thesis contain a number of assumptions as all research usually does. The assumptions made in this paper are discussed here briefly.
+
+One major factor to take into account when considering the results shown in this thesis is that there are only two types of different target functions that the methods are used for. Even though some variety is added by the randomization of parameters in Matrix Square Sum, both of the target functions remain relatively simple. The randomization of MSS parameters is also one factor to take into account. Randomized values are generated using different random seeds of 0 to 999 matching the index of starting points. The randomized values are selected from the range $[-0.5, 0.5]$ and therefore are not totally comprehensive set of certain type of function either.
+
 \section{Conclusion and Future Research}
 
 
