@@ -141,11 +141,6 @@ The optimization algorithms are iterative processes that abuse the properties of
 
 In this thesis we will be exploring the effects of line search method selection on the overall performance of the optimization method. The thesis focues primarily on the use cases introduced on the Nonlinear Optimization (2018-2019) course in the Aalto University. Since this bachelor's thesis will not be completely comprehensive, the main goal will be answering the question, will the selection of line searches effect the main method's performance and if so, by how much? In addition we will be making a comparison of performance differences caused by the line searches in a very specific testing setup with goal of providing a suggestion of how the line search methods could be ranked.
 
-\todoinline{Should I mention the target functions, main methods and line search methods explored already here on intro?}
-
-\todoinline{What is the recommended style for e.g. marking vectors?\\
-Which equations should I numerate?}
-
 \subsection*{Abbreviations and symbols used}
 
 \begin{table}[H]
@@ -993,8 +988,6 @@ ArmijoSearch & 100.0 & 15.5 & 14.4 & 113.2 & 6.9 & 23.6 \\
 \subsection{Analysis}
 
 % There are multiple metrics we could look into when analyzing the results. Since our goal is to compare the effect in performance of the main methods caused by the line search methods, one natural way of analyzing the results is finding the overall best line search method. This is done by firstly prioritizing success rate and secondly the average duration in which the solutions were found. After sorting the line search methods with these two metrics per target function and per main method, we can then score them. For scoring we are going to use two methods: first is to give each line method a rank so that the fastest method gets 8 points, the second fastest 7 points and so on until each line method has gotten 1 to 8 points, and then repeat this separately for each combination of target functions and main methods. The pros of this method is that it takes the success rate into account unlike the second method we are using which is calculating the total sum of average durations for each line search.
-
-\todoinline{Explain the min and max values of rankings}
 
 \begin{table}[H]
     \centering
