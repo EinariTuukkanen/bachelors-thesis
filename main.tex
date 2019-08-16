@@ -146,6 +146,8 @@ In this thesis we will be exploring the effects of line search method selection 
 \todoinline{What is the recommended style for e.g. marking vectors?\\
 Which equations should I numerate?}
 
+\subsection*{Abbreviations and symbols used}
+
 \begin{table}[H]
   \captionof{table}{Abbreviations used in this thesis, and their explanations.}
   \label{tab:abbreviations}
@@ -1181,20 +1183,38 @@ Similarily to Uniform Search, Newton's Search has average performance when optim
 
 Armijo's Search proves to be the overall best performing method of the tested line searches. It has the best performance in five categories out of eight, and is right on par with the top performers in the rest of the categories as well. It also has a slightly better success rate than any other method on Matrix Square Sum optimization when using Gradient Descent or Heavy Ball Method. The overall performance is also approximately 10\% better than the next best overall performance of Golden Section Search. There are some differences in the variances: Armijo's Search has a slightly higher variance in Matrix Square Sum using Newton's Method but it outperforms most other method's variances when using other methods for the same function. For Negative Entropy the Armijo's Search has clearly lower variances than other methods.
 
-\subsection{Disclaimer}
+\subsection{Assumptions}
 
 The results introduced in this thesis contain a number of assumptions as all research usually does. The assumptions made in this paper are discussed here briefly.
 
-One major factor to take into account when considering the results shown in this thesis is that there are only two types of different target functions that the methods are used for. Even though some variety is added by the randomization of parameters in Matrix Square Sum, both of the target functions remain relatively simple. The randomization of MSS parameters is also one factor to take into account. Randomized values are generated using different random seeds of 0 to 999 matching the index of starting points. The randomized values are selected from the range $[-0.5, 0.5]$ and therefore are not totally comprehensive set of certain type of function either.
+One major factor to take into account when considering the results shown in this thesis is that there are only two types of different target functions that the methods are used for. Even though some variety is added by the randomization of parameters in Matrix Square Sum, both of the target functions remain relatively simple. The randomization of MSS parameters is also one factor to take into account. Randomized values are generated using different random seeds of 0 to 999 matching the index of starting points. The randomized values are selected from the range $[-0.5, 0.5]$ and the way multiplier matrix $A$ is confirmed to be positive-definite only yields certain type of matrices. Therefore this can not be held as a totally comprehensive study of a signle type of target function either.
+
+Another major factor to discuss is the method we use for picking values for the optimization methods. Since the problem of picking the absolute best parameters is really complex in itself, the method of picking a set of options and then comparing the performance of each permutation separately for each setup, is justified. However, by implementing a better parameter selection, such as increasing the number of options and test cases, we can likely reach better results for each optimization methods. The tradeoff would be a higher computation time to find the optimal parameters, and while the results would highly likely improve, we can not know by how much.
+
+% While it is relatively clear that different parameters produce different results and performance, it is a really complex problem to choose the absolute best values for each parameter. Often picking a value for one parameter also effects the optimal values for other parameters and therefore we consider 
+
+
+% To make the results completely comprehensive we should consider all existing functions as possible target functions. However as this is practically impossible, one substantial way to improve the coverage would be increasing the number of target functions: other similar research has used up to 80 different problems to calculate the performance for \cite{monotone_line_search_performance},
+
+% Another major factor in increasing the reliability of the results are the starting points. In this research we limited the area of where the points were generated to $[-10, 10]$ or $]0, 10]$ depending on the domain of the target function. In a perfect world we could test the algorithms for every single starting point. Even though that is practically impossible, a wider range of points could be utilized. Anyways the selection of starting point is very target function related and should always be considered per function. In addition the number of starting points tested could be raised within the computing power available.
+
+
+% - parameter selection
+%   - manually set options
+%   - low iteration count on comparison
+% - domain limiter
+%   - parameter
+
+
 
 \section{Conclusion and Future Research}
 
+To conclude with a strict ranking for different line search methods, we should consider many more scenarios making the computation exponentially more complex. However, what we can conclude is the answer to the question introduced in the very beginning of this thesis: the choice of line search method seems to have a varying size of impact on the performance of an optimization method. Comparing the known to be worst line search methods with the best ones, there are differences of up to a single magnitude of ten. Between the more advanced methods, the differences are relatively small: half of the methods end up on a scale with just a little bit over 100 ms of difference in overall performances.
 
-To make the results completely comprehensive we should consider all existing functions as possible target functions. However as this is practically impossible, one substantial way to improve the coverage would be increasing the number of target functions: other similar research has used up to 80 different problems to calculate the performance for \cite{monotone_line_search_performance},
+Continuing from here with a goal of generalizing the results further, I would definitely focus on increasing the number of target functions first. The only issue in this would be that the optimal parameters are likely to change with the target functions, forcing us to re-run the comparisons and find new values for all the parameters. Since this requires very high computation times, a better method for parameter selection should be implemented prior to adding new target functions. This could be something simple such as deciding a strict set of few options for each parameter but then the final results could be highely intefered by the limited parameter values.
 
-Another major factor in increasing the reliability of the results are the starting points. In this research we limited the area of where the points were generated to $[-10, 10]$ or $]0, 10]$ depending on the domain of the target function. In a perfect world we could test the algorithms for every single starting point. Even though that is practically impossible, a wider range of points could be utilized. Anyways the selection of starting point is very target function related and should always be considered per function. In addition the number of starting points tested could be raised within the computing power available.
-
-
+To conclude, I would say it could be worth it to perform further research using the methods we introduce in this thesis but only if the targeted problem is something worth spending a while just to reach a potentially very slight optimization. In turn, if we would like to compare for example another set of line search methods, main methods or target functions, we should probably focus on finding better solutions to the choice of optimal parameters problems first.
+häiritä
 % %
 % % LÄHDELUETTELO
 % %  BibTeX-tiedoston kokoaminen onnistuu näppärästi esim. 
