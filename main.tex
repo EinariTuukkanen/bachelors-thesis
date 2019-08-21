@@ -183,19 +183,19 @@ In this thesis we will be exploring the effects of line search method selection 
 \subsubsection{Choosing target functions}
 
 
-One of the biggest factors effecting the performance of an optimization algorithm is the complexity of the target function we are using the method for. In this thesis we are going to focus on two different functions. Both of the functions are convex and differentiable since some of the methods we will be comparing require these properties. To increase the complexity of the problems a bit, we are going to use 50-dimensional versions of the two functions. Therefore we are going to pick functions that are defined in $\R^n$ or similar domain and then set $n = 50$.
+One of the biggest factors effecting the performance of an optimization algorithm is of course the problem we are solving with it. In this thesis we are going to focus on two different problems or target functions. Both of the functions are convex and differentiable since some of the methods tested require these two properties. To increase the complexity of the problems a bit, we are going solve both problems in 50-dimensions i.e. setting $n = 50$ for the functions when they're defined in $\R^n$ or similar domain.
 
 
 \subsubsection{Step size function}
 
 
-Each optimization method involves a step in form of $\mathrm{argmin}_{\lambda \in \mathbb{R}} {f(x_i + \lambda d_i})$. To programmatically produce this step, we are going to define step size function $g(\lambda)$ related to each of the target functions. Then on each iteration of the main optimization method, a new step size function is seeded with the updated point $\vect{x}$ and direction vector $\vect{d}$.
+Each optimization method involves a step in form of $\mathrm{argmin}_{\lambda \in \mathbb{R}} {f(\vect{x} + \lambda \vect{d}})$. In practice we are going to define a step size function $g_{\vect{x}, \vect{d}}(\lambda) = f(\vect{x} + \lambda \vect{d})$ related to each of the target functions. Then on each iteration of the main optimization method, a new step size function is generated with the updated point $\vect{x}$ and direction vector $\vect{d}$.
 
 
 \subsubsection{Matrix Square Sum} \label{sect:matrix_square_sum}
 
 
-The Matrix Square Sum is an extended version of the regular Sum Squares Function, which is defined as
+The Matrix Square Sum is an extension to the Sum Squares Function, which is defined as
 \begin{equation}
     f(\mathbf{x})=f(x_1, ..., x_n)=\sum_{i=1}^{n}{ix_i^2}.
 \end{equation}
@@ -255,7 +255,7 @@ Let's now form the step size function and its derivatives:
 \subsubsection{Negative Entropy}
 
 
-The second target function reviewed is a variation of entropy maximization problem, in which the maximation problem is inverted therefore making it a minimization problem. We will be calling this convex minimization problem a Negative Entropy problem and it can be formulated as follows:
+The second target function reviewed in this thesis is an inverted entropy maximization problem, which converts it into a minimization problem \cite{book:convex_optimization}. We will be calling this convex minimization problem a Negative Entropy problem and it can be formulated as follows:
 \begin{equation}
 	f(\vect{x}) = \sum_{i=1}^{n} x_i \log x_i,
 \end{equation}
@@ -309,7 +309,7 @@ The domain limiter will be called from all of the line search methods before any
 \subsection{Main Methods}
 
 
-To make a difference between the unconstrained optimization methods and line search methods, we are going to call the first mentioned as main methods in this thesis.
+In this thesis we are going to call all nonlinear unconstrained optimization methods as main methods. The main methods usually follow the same formula: start from some point $x_0$, select a step direction $d_k$ and a step size $\lambda_k$, then update the next point $x_{k + 1} = x_k + \lambda_k d_k$ and repeat until a method specific termination condition is reached. Choosing the step direction $\lambda$ is an optimization problem of its own and its solved by the line search methods introduced in the section \ref{sect:line_search_methods}. \cite{book:nonlinear_programming}
 
 
 \subsubsection{Newton's Method}
@@ -405,12 +405,12 @@ Heavy ball method is basically an extension of gradient descent as only adds one
 
 
 \subsection{Line Search Methods}
+\label{sect:line_search_methods}
 
 
-Most line search methods are based on a single idea, which we are going to call the theorem 1:
+Most line search methods are based on similar ideas: pick a section and begin reducing it until some stopping condition is satisfied. There are also other approaches like backtracking search and different methods exploiting the derivatives of the target function.
 
-Theorem 1: Let $\theta$ : R $\rightarrow$ R be strictly quasiconvex over the interval $[a, b]$, and let $\lambda$, $\mu$ $\in$ $[a, b]$ such that $\lambda < \mu$. If $\theta(\lambda) > \theta(\mu)$, then $\theta(z) \geq \theta(\mu)$
-for all $z \in [a, \lambda]$. If $\theta(\lambda) \leq \theta(\mu)$, then $\theta(z) \leq \theta(\lambda)$ for all $z \in [\mu, b]$. \cite{course_material_nonlinear_optimisation}
+There are also multiple small variations of the same methods available on different sources in the internet and print. Different sources also often tend to suggest different recommended values for the line search parameters. Because of limited resources available for optimizing the parameter selection, we decided to go with self evaluated options for the parameters with little to no inspiration from the external sources. \cite{book:convex_optimization} \cite{book:nonlinear_programming} 
 
 
 \subsubsection{Constant Step Size}
@@ -433,12 +433,12 @@ $\lambda$ & 0.0001, 0.1, 0.25, 0.5, 0.9 & 0.1, 0.25, 0.5 \\
 \end{tabular}
 \end{table}
 
-Because Constant Search has some convergence issues with some of the configurations with the test values listed in table \ref{tab:params_ConstantSearch}, a different set of values must be used for some main methods. For Matrix Square Sum and Newton's Method the test values of parameter $\lambda$ are $\{0.5, 0.9, 1.0, 1.1, 1.5\}$. For Negative Entropy different values are used for Newton's Method and Conjugate Gradient Methods, respectively $\{0.1, 0.25, 0.5, 0.9\}$ and $\{0.0001, 0.1, 0.15, 0.2\}$.
+Because Constant Search has some convergence issues with some of the configurations with the test values listed in table \ref{tab:params_ConstantSearch}, a different set of values must be used for some main methods. For Matrix Square Sum and Newton's Method the test values for parameter $\lambda$ are $\{0.5, 0.9, 1.0, 1.1, 1.5\}$. For Negative Entropy different values are used for Newton's Method and Conjugate Gradient Methods, respectively $\{0.1, 0.25, 0.5, 0.9\}$ and $\{0.0001, 0.1, 0.15, 0.2\}$.
 
 
 \subsubsection{Golden Section Search}
 
-While golden section and fibonacci numbers are closely related, the golden section search does take much more straight forward way for calculating the new step size bounds using the approximation of $\phi = 0.618$.
+Golden Section Search is a sequentical line search meaning that it utilizes the previous iterations when calculating the next value for the step size. The Golden Section method's name comes from it's unique reduction factor of $\phi = 0.618$. \cite{book:nonlinear_programming}
 
 \begin{algorithm}[H]
 \caption{Golden Section Search}
@@ -479,7 +479,7 @@ $l$ & 1e-04, 1e-07 & 1e-04, 1e-07 \\
 \subsubsection{Bisection Search}
 
 
-Bisection method is \todo{source?} commonly used line search method for differentiable functions. It basically narrows down the optimal step size range using the first derivative of the target function as a direction of which bound to move next.
+Bisection search is a line search that uses derivatives to progress. This requires the problems to be pseudoconvex and therefore differentiable within some closed bounds. \cite{book:nonlinear_programming}
 
 \begin{algorithm}[H]
 \caption{Bisection Search}
@@ -522,7 +522,7 @@ $l$ & 1e-04, 1e-07 & 1e-04, 1e-07 \\
 \subsubsection{Dichotomous Search}
 
 
-Dichotomous search is an example of sequentical searches. It uses the information of the previous evaulation of $\theta$ resulting in higher performance than e.g. uniform search.
+Similarily to Golden Section search, Dichotomous search is a sequentical search meaning it uses the past iterations to proceed. Dichotomous search progresses by selecting some closed bounds $[a, b]$ and selecting its mid-point, then selecting new bounds $\epsilon$ away from the midpoint. \cite{book:nonlinear_programming}
 
 \begin{algorithm}[H]
 \caption{Dichotomous Search}
@@ -560,13 +560,12 @@ $l$ & 1e-05, 1e-09 & 1e-04, 1e-05 \\
 \end{tabular}
 \end{table}
 
-Initial tests show that Dichotomous Search has problems converging with some of the test values when using Newton's Method with Negative Entropy. Because of this, a slight adjustment to test parameters is done by giving $a$ a value of $-10$ for NE + NM combination.
+Initial tests show that Dichotomous Search has problems converging with some of the test values when using Newton's Method with Negative Entropy. Because of this, a slight adjustment to test parameters is done by giving $a$ a set value of $-10$ for NE + NM combination.
 
 
 \subsubsection{Fibonacci Search}
 
-
-Fibonacci is an interesting \todo[color=green!40]{or what term to use for methods that do not use derivative?} numerical method for providing optimal step sizes using fibonacci numbers when calculating the bounds for the step size. [better explanation of why this works?] The calculation may be somewhat heavy due to the requirement of calculating $n$ fibonacci numbers, where $n$ is determined by the required accuracy i.e. tolerance. However, in some real life applications these fibonacci numbers may of course be precalculated. In this thesis I will not be using a table for the fibonacci values but instead actually calculate them using a while loop. The iteration count for finding the fibonacci numbers will not be included in the performance comparison, but the time taken to find the values is included. \todoinline{is this fine, or should I also report the fibonacci iteration count and time?}
+In many ways, Fibonacci Search is similar to previous sequentical searches such as Golden Section search. It also functions over a closed bounds reduces the interval with reduction factors. Instead of a constant reduction factor, Fibonacci seach instead calculates a new factor for each iteration using Fibonacci numbers. \cite{book:nonlinear_programming}
 
 \begin{algorithm}[H]
 \caption{Fibonacci Search}
@@ -592,7 +591,7 @@ Fibonacci is an interesting \todo[color=green!40]{or what term to use for method
 \end{algorithmic}
 \end{algorithm}
 
-The $F_n$ represents $n$:th Fibonacci number. To optimize algorithm performance, the values of $F_n$ could be pre-evaluated but for our use case we are just going to generate the Fibonacci numbers using single loop algorithm of time complexity $O(n)$.
+The $F_n$ represents $n$:th Fibonacci number. To optimize algorithm's performance, the values of $F_n$ should be pre-evaluated. After running some quick tests, it seems that the pre-evaluation doesn't effect performance significantly and so for our implementation we decided to generate the Fibonacci numbers run-time using a single loop algorithm of time complexity $O(n)$. 
 
 \begin{table}[H]
 \captionof{table}{Parameters tested for FibonacciSearch}
@@ -615,12 +614,10 @@ $l$ & 1e-06, 1e-10 & 1e-06, 1e-12 \\
 
 \subsubsection{Uniform Search}
 
+Uniform search divides a bounded section of a function into intervals, then chooses the interval with the lowest value and repeats the process again for it. To increase the precision of the method we may also increase the number of intervals to divide the new interval into. \cite{book:nonlinear_programming}
 
-Uniform search works by dividing a constrained section of a function into intervals, then choosing the interval with the lowest value and performing the same procedure again for it. To increase the precision of the method we also increase the number of intervals we divide the newly selected interval into.
+More specfically, choose a range $[a, b]$ and split it into $n$ sections, with one section's size being $\delta = \frac{b - a}{n}$. We end up with $n + 1$ subsections, from which we pick a $a_0 + k \delta$ with lowest value, where $k = 0 \dots n$. We then increase the section count by multiplying $n$ with $m \geq 1$ and repeat the process with the new section. \cite{course_material_nonlinear_optimisation}
 
-More formally: break $[a, b]$ into $n$ uniform intervals of size $\delta$, which leads to $n + 1$ grid points $a_0 + k \delta$ with $b = a_n = a_0 + n\delta,\ k = 0, . . . , n$. \cite{course_material_nonlinear_optimisation}
-
-In addition we are going to define $n$ as the interval count and $m$ as the interval count multiplier.
 
 \begin{algorithm}[H]
 \caption{Uniform Search}
@@ -666,7 +663,7 @@ $l$ & 1e-06, 1e-08 & 1e-05, 1e-06 \\
 \subsubsection{Newton's Search}
 
 
-Newton's method is another very common example of line search methods. Similarily to bisection method, Newton's method requires the target function to be differentiable up to two times as it uses the ratio of first and second derivatives to move the optimal step size forward.
+Newton's search is another line search that uses the derivatives of the target function. It exploits the function's quadratic approximations which yields an equation of second order differential. This means that the target function must be differentiable twice. \cite{book:nonlinear_programming}
 
 \begin{algorithm}[H]
 \caption{Newton's Search}
@@ -702,8 +699,7 @@ In addition to the parameters listed in table \ref{tab:params_NewtonsSearch}, th
 
 \subsubsection{Armijo's Search}
 
-
-Armijo's search is the only backtracking method of the ones included in this thesis. \todo[inline]{include more in depth explanation of backtracking algorithms?}
+Armijo's search is an example of an inexact line search meaning that the step size is chosen to approximately minimize the target function. Armijo's search is also the only backtracking method of the ones included in this thesis. Backtracking means that the initial step size is reduced on every iteration until we satisfy the stopping condition. \cite{book:convex_optimization}
 
 \begin{algorithm}[H]
 \caption{Armijo's Search}
@@ -1203,12 +1199,12 @@ Another major factor to discuss is the method we use for picking values for the 
 
 \section{Conclusion and Future Research}
 
-To conclude with a strict ranking for different line search methods, we should consider many more scenarios making the computation exponentially more complex. However, what we can conclude is the answer to the question introduced in the very beginning of this thesis: the choice of line search method seems to have a varying size of impact on the performance of an optimization method. Comparing the known to be worst line search methods with the best ones, there are differences of up to a single magnitude of ten. Between the more advanced methods, the differences are relatively small: half of the methods end up on a scale with just a little bit over 100 ms of difference in overall performances.
+To conclude with a strict ranking for different line search methods, we should consider many more scenarios making the computation exponentially more complex. However, what we can conclude is the answer to the question introduced in the very beginning of this thesis: the choice of line search method seems to have a varying size of impact on the performance of an optimization method. Comparing the known to be worst line search methods with the best ones, there are differences of up to a single magnitude of ten. The difference in performance for the best and second best method is around 11 \% and the fourth is around 23 \% slower than the fastest one.
 
 Continuing from here with a goal of generalizing the results further, I would definitely focus on increasing the number of target functions first. The only issue in this would be that the optimal parameters are likely to change with the target functions, forcing us to re-run the comparisons and find new values for all the parameters. Since this requires very high computation times, a better method for parameter selection should be implemented prior to adding new target functions. This could be something simple such as deciding a strict set of few options for each parameter but then the final results could be highely intefered by the limited parameter values.
 
 To conclude, I would say it could be worth it to perform further research using the methods we introduce in this thesis but only if the targeted problem is something worth spending a while just to reach a potentially very slight optimization. In turn, if we would like to compare for example another set of line search methods, main methods or target functions, we should probably focus on finding better solutions to the choice of optimal parameters problems first.
-häiritä
+
 % %
 % % LÄHDELUETTELO
 % %  BibTeX-tiedoston kokoaminen onnistuu näppärästi esim. 
@@ -1227,14 +1223,12 @@ häiritä
 % %
 % % LIITTEET
 % %
-% \newpage
-% \appendix
-% \section{Ensimmäinen liite}
 
 \newpage
-\section{Attachments}
+\appendix
+\section{Appendix}
 % TODO: enable
-\input{parameters.tex}
+% \input{parameters.tex}
 
 
 \end{document}
