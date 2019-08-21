@@ -129,13 +129,18 @@
 
 \section{Introduction}
 
-
-There are a number of sources for real-life unconstrained nonlinear optimization problems from different fields of sciences and technologies. In general an unconstrained optimization problem can be formulated as
-\begin{equation}
-    \mathrm{min}_{\vect{x} \in \R^n} f(\vect{x}).
+%% Juho
+Unconstrained nonlinear optimization has several real-life applications in different fields of science and technology, such as computational biology, machine learning, and finance.
+% There are a number of sources for real-life unconstrained nonlinear optimization problems from different fields of sciences and technologies. 
+In general, an unconstrained optimization problem can be formulated as
+\begin{equation}\label{eq:minfx}
+    \mathrm{min}_{\vect{x} \in \R^n} f(\vect{x})
 \end{equation}
 
-Depending on the methods used, there may also be additional requirements for $f$, such as being continuously differentiable up to $n$ times or being convex i.e. having one unique global minimum. While there are a number of real-life problems that do satisfy these conditions they are often extremely complex. Therefore artificial problems are often used to develop and test optimization algorithms. \cite{test_function_collection_artifical}
+%% Juho
+where $f : \R^n \rightarrow \R$ is called an \emph{objective function} for which we are looking for a vector $x^* \in \R^n$ that minimizes the value of $f(x^*)$. There are several optimization algorithms (or methods) that can be used to solve the problem \eqref{eq:minfx}, and the most suitable method depends on the properties of $f$. For example, we may use a different methods when $f$ is convex compared to the case where $f$ has multiple local optima.  
+% Depending on the methods used, there may also be additional requirements for $f$, such as being continuously differentiable up to $n$ times or being convex i.e. having one unique global minimum.
+While there are a number of real-life problems that do satisfy these conditions they are often extremely complex. Therefore artificial problems are often used to develop and test optimization algorithms. \cite{test_function_collection_artifical}
 
 The optimization algorithms are iterative processes that abuse the properties of the target function combined with the raw processing powers of computers. The commonly used methods are based on the same principle of having some termination condition checking if the minimum was found, and if not, continuing by choosing a direction and a step size and moving to the next point and repeating. The step size is often chosen by a separate algorithm called a line search, which transforms the target function into one-dimensional function of step size $\lambda$ and using the new function to calculate the optimal step size for each iteration of the main method. Similarly to the main methods, there are a number of different algorithms for finding the optimal step size, the simplest being just using a constant $\lambda$ for every iteration.
 
