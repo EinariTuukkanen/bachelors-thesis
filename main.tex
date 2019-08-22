@@ -263,7 +263,7 @@ Now let's calculate the gradient and then Hessian matrix:
     \textbf{H} &= \nabla^2 f(\vect{x}) = 2 A^\top A + 2 c I
 \end{align}
 
-From the gradient we get the necessary optimality condition
+From the gradientz we get the necessary optimality condition
 \begin{equation}
     (A^\top A + c I) \vect{x} = - A^\top \vect{b}
 \end{equation}
@@ -333,7 +333,7 @@ Because the domain of this function is only positive numbers, we are going to ha
 \end{algorithmic}
 \end{algorithm}
 
-The domain limiter will be called from all of the line search methods before any evaluation of $f(\lambda)$ to reduce the step size to such value that it prevents evaulation of negative logarithms. In the context of this thesis we are going to set $d = 0.99$, but it could also be added as a parameter for each of the line search functions as some methods will require more iterations on the while-loop than others.
+The domain limiter will be called from all of the line search methods before any evaluation of $f(\lambda)$ to reduce the step size to such value that it prevents evaluation of negative logarithms. In the context of this thesis we are going to set $d = 0.99$, but it could also be added as a parameter for each of the line search functions as some methods will require more iterations on the while-loop than others.
 
 
 \subsection{Main Methods}
@@ -433,6 +433,8 @@ Heavy ball method is basically an extension of gradient descent as only adds one
 \end{algorithmic}
 \end{algorithm}
 
+\todoinline{Add HBM parameters table}
+
 
 \subsection{Line Search Methods}
 \label{sect:line_search_methods}
@@ -469,6 +471,8 @@ Because Constant Search has some convergence issues with some of the configurati
 \subsubsection{Golden Section Search}
 
 Golden Section Search is a sequentical line search meaning that it utilizes the previous iterations when calculating the next value for the step size. The Golden Section method's name comes from it's unique reduction factor of $\phi = 0.618$. \cite{book:nonlinear_programming}
+
+The parameters tested for Golden Section Search are displayed in table \ref{tab:params_GoldenSectionSearch}.
 
 \begin{algorithm}[H]
 \caption{Golden Section Search}
@@ -509,7 +513,9 @@ $l$ & 1e-04, 1e-07 & 1e-04, 1e-07 \\
 \subsubsection{Bisection Search}
 
 
-Bisection search is a line search that uses derivatives to progress. This requires the problems to be pseudoconvex and therefore differentiable within some closed bounds. \cite{book:nonlinear_programming}
+Bisection search is a line search that uses derivatives to progress. This requires the problems to be pseudoconvex and therefore differentiable within some closed bounds. \cite{book:nonlinear_programming}.
+
+The parameters tested for Bisection Search are displayed in table \ref{tab:params_BisectionSearch}.
 
 \begin{algorithm}[H]
 \caption{Bisection Search}
@@ -590,12 +596,14 @@ $l$ & 1e-05, 1e-09 & 1e-04, 1e-05 \\
 \end{tabular}
 \end{table}
 
-Initial tests show that Dichotomous Search has problems converging with some of the test values when using Newton's Method with Negative Entropy. Because of this, a slight adjustment to test parameters is done by giving $a$ a set value of $-10$ for NE + NM combination.
+Initial tests show that Dichotomous Search has problems converging with some of the test values displayed in table \ref{tab:params_DichotomousSearch} when using Newton's Method with Negative Entropy problem. Because of this, a slight adjustment to test parameters is done by giving $a$ a set value of $-10$ for NE + NM combination.
 
 
 \subsubsection{Fibonacci Search}
 
 In many ways, Fibonacci Search is similar to previous sequentical searches such as Golden Section search. It also functions over a closed bounds reduces the interval with reduction factors. Instead of a constant reduction factor, Fibonacci seach instead calculates a new factor for each iteration using Fibonacci numbers. \cite{book:nonlinear_programming}
+
+The parameters tested for Fibonacci Search are displayed in table \ref{tab:params_FibonacciSearch}.
 
 \begin{algorithm}[H]
 \caption{Fibonacci Search}
@@ -647,6 +655,8 @@ $l$ & 1e-06, 1e-10 & 1e-06, 1e-12 \\
 Uniform search divides a bounded section of a function into intervals, then chooses the interval with the lowest value and repeats the process again for it. To increase the precision of the method we may also increase the number of intervals to divide the new interval into. \cite{book:nonlinear_programming}
 
 More specfically, choose a range $[a, b]$ and split it into $n$ sections, with one section's size being $\delta = \frac{b - a}{n}$. We end up with $n + 1$ subsections, from which we pick a $a_0 + k \delta$ with lowest value, where $k = 0 \dots n$. We then increase the section count by multiplying $n$ with $m \geq 1$ and repeat the process with the new section. \cite{course_material_nonlinear_optimisation}
+
+The parameters tested for Uniform Search are displayed in table \ref{tab:params_UniformSearch}.
 
 
 \begin{algorithm}[H]
@@ -731,6 +741,8 @@ In addition to the parameters listed in table \ref{tab:params_NewtonsSearch}, th
 
 Armijo's search is an example of an inexact line search meaning that the step size is chosen to approximately minimize the target function. Armijo's search is also the only backtracking method of the ones included in this thesis. Backtracking means that the initial step size is reduced on every iteration until we satisfy the stopping condition. \cite{book:convex_optimization}
 
+The parameters tested for Armijo's Search are displayed in table \ref{tab:params_ArmijoSearch}.
+
 \begin{algorithm}[H]
 \caption{Armijo's Search}
 \label{alg_armijo}
@@ -813,18 +825,18 @@ This is by means not a perfect algorithm since its performance heavily depends o
 
 \begin{table}[H]
 \centering
-\captionof{table}{The minimum Eucleidean distances used for different target functions on distributions of 100 and 1000 points.}
+\captionof{table}{The minimum Eucleidean distances used for different target functions on distributions of 10 and 1000 points.}
 \label{tab:dmin_values}
 \begin{tabular}{|r|r|r|}
 \hline
 \rowcolor[HTML]{C0C0C0} 
 Point count                       & MSS $d_{min}$ & NE $d_{min}$ \\ \hline
-\cellcolor[HTML]{EFEFEF}100  & 56           & 28          \\ \hline
+\cellcolor[HTML]{EFEFEF}10   & 64           & 32          \\ \hline
 \cellcolor[HTML]{EFEFEF}1000 & 48           & 24          \\ \hline
 \end{tabular}
 \end{table}
 
-After successfully generating the starting points once, we are going to save them into a file from which they are loaded during future runs. This way we maintain the same level of randomness for each run.
+After successfully generating the starting points once with the minimum distances shown in table \ref{tab:dmin_values}, we are going to save them into a file from which they are loaded during future runs. This way we maintain the same level of randomness for each run.
 
 \subsection{Randomizing Target Function}
 
@@ -846,7 +858,7 @@ Since it is excepted that most of the algorithms find the solution correctly eve
 
 The results are going to be represented in a table with average performances of each line search method for each permutation of main methods and target functions. The performances are calculated using the best parameters found for each setup as described in the previous section. The algorithms are run with a similar setup as when calculating the best parameters, but this time with 1000 evenly randomized starting points instead of 100. Again for each starting point a unique target function configuration is generated in the case of MatrixSquareSum using the same randomizing rules as described in the previous section. The random seeds were again starting point indices i.e. integers from 0 to 1000.
 
-After running the performance tests, we are left with the results introduced in the following eight tables. The row's of the table show the line search method used, the success rate of the algorithm, average duration, iteration count and function calls of the algorithm. The function call count includes all calls to the function and to its gradients or step size functions. In addition to these, the average duration and iterations taken by the line search algorithm alone is listed in the result tables. A table including all eight line search methods with their representative performances is generated for each main method and target function combination.
+After running the performance tests, we are left with the results introduced in the following tables \ref{tab:performance_results_MSS_NM} to \ref{tab:performance_results_NE_HBM}. The row's of the table show the line search method used, the success rate of the algorithm, average duration, average main method iteration count and function calls of the algorithm. The function call count includes all calls to the function and to its gradients or step size functions. In addition to these, the last two columns show average duration and iterations used by the line search algorithm alone. A table including all eight line search methods with their representative performances is generated for each main method and target function combination.
 
 
 \begin{center}
@@ -1013,7 +1025,8 @@ ArmijoSearch & 100.0 & 15.5 & 14.4 & 113.2 & 6.9 & 23.6 \\
 
 \subsection{Analysis}
 
-% There are multiple metrics we could look into when analyzing the results. Since our goal is to compare the effect in performance of the main methods caused by the line search methods, one natural way of analyzing the results is finding the overall best line search method. This is done by firstly prioritizing success rate and secondly the average duration in which the solutions were found. After sorting the line search methods with these two metrics per target function and per main method, we can then score them. For scoring we are going to use two methods: first is to give each line method a rank so that the fastest method gets 8 points, the second fastest 7 points and so on until each line method has gotten 1 to 8 points, and then repeat this separately for each combination of target functions and main methods. The pros of this method is that it takes the success rate into account unlike the second method we are using which is calculating the total sum of average durations for each line search.
+
+There are multiple metrics we could look into when analyzing the results. Since our goal is to compare the performances of the main methods in relation to the choice of line search method, we always want to analyze the data per line search method. We therefore group our data by line search method and either main method or target problem. The most important metric for performance is the actual success rate of the algorithm. However, since successrates seem to have lots of ties, we need a secondary metric, which we choose to be the average duration of the main method. While not universal within different implementations or problems, this provides us a decent comparison method of the line search methods within a specific main method or target problem. This means that all the values are mainly comparable within the same column in the following tables \ref{tab:colors_mss_durations} to \ref{tab:colors_avg_overall}. To visualize the column-wise differences, we apply a per column color scale so that darker red imply worse performance and darker greens imply better performance.
 
 \begin{table}[H]
     \centering
@@ -1056,7 +1069,7 @@ ArmijoSearch & 100.0 & 15.5 & 14.4 & 113.2 & 6.9 & 23.6 \\
 
 \begin{table}[H]
     \centering
-    \captionof{table}{The average of the durations for finding the minimum for both Matrix Square Sum and Negative Entropy Functions listed separately for each main method. Colored per column so that darker red is worse (slower) and darker green is better (faster).}
+    \captionof{table}{The average of the durations for finding the minimum for both Matrix Square Sum and Negative Entropy Functions combined and listed separately for each main method. Colored per column so that darker red is worse (slower) and darker green is better (faster).}
     \label{tab:colors_avg_overall_mm}
     \begin{tabular}{|l|r|r|r|r|}
     \hline
@@ -1092,6 +1105,9 @@ ArmijoSearch & 100.0 & 15.5 & 14.4 & 113.2 & 6.9 & 23.6 \\
     ArmijoSearch                                                              & \cellcolor[HTML]{57BB89}314,03                            & \cellcolor[HTML]{57BB89}608,10                           & \cellcolor[HTML]{57BB89}461,06                                \\ \hline
     \end{tabular}
 \end{table}
+
+
+While the primary metric for comparison is the success rate, it does not offer as interesting differences as the durations above. However, it is an important piece of information to be read along with the duration comparison to understand the relations of different line search methods better. The succcessrates are listed in the following tables \ref{tab:colors_success_mss} and \ref{tab:colors_success_ne} in a similar manner colored column-wise but this time coloring only the unoptimal results with red.
 
 
 \begin{table}[H]
@@ -1133,7 +1149,9 @@ ArmijoSearch & 100.0 & 15.5 & 14.4 & 113.2 & 6.9 & 23.6 \\
     \end{tabular}
 \end{table}
 
-In addition to just comparing the raw numbers, the boxplots in figures \ref{fig:boxplot_mss} and \ref{fig:boxplot_ne} give us valuable insight of the variance of the algorithm's performance.
+
+In addition to comparing the average performance, an important factor to consider is the consistency of the results. The boxplots in figures \ref{fig:boxplot_mss} and \ref{fig:boxplot_ne} give us valuable insight of the variance of the algorithm's performance. The box plot is generated so that half of the test points are included in the box area and the best and worse 25 \% are shown as whiskers above and below the box. The orange line within the box shows the actual average duration.
+
 
 \begin{figure}[H]
 	\centering
@@ -1211,6 +1229,10 @@ One major factor to take into account when considering the results shown in this
 
 Another major factor to discuss is the method we use for picking values for the optimization methods. Since the problem of picking the absolute best parameters is really complex in itself, the method of picking a set of options and then comparing the performance of each permutation separately for each setup, is justified. However, by implementing a better parameter selection, such as increasing the number of options and test cases, we can likely reach better results for each optimization methods. The tradeoff would be a higher computation time to find the optimal parameters, and while the results would highly likely improve, we can not know by how much.
 
+Some factors in performance are also extremly difficult to review accurately. These include the actual implementation of the methods which varies in different sources. Most notably one difference seems to be the positioning of the stopping condition within the main methods: some sources suggest that it is better to check the condition before updating the point but in our implementation the check is always done just after the update. Another optimization that could be done is the pre-calculation of line search values. This means that we pre-evaluate and save the values for each different input for each line search so that instead of running the algorithm during runtime we simply get the pre-evaluated value from our dictionary. \cite{book:convex_optimization} \cite{book:nonlinear_programming}
+
+In addition, factors like choice programming language and CPU or GPU performance may effect the optimal results. The tests within this thesis are performed with Python 3.7.3 using a multiprocessing library and an Intel i5-8500K CPU. Different implementations and programming languages, such as moving the heavy calculations to GPU's, may for example optimize matrix calculations differently causing potentially unexpected differences within otherwise same test setups. For this reason, if the goal is to fully optimize the process, one is suggested to always run the performance testing separately for each test setup in use.
+
 % While it is relatively clear that different parameters produce different results and performance, it is a really complex problem to choose the absolute best values for each parameter. Often picking a value for one parameter also effects the optimal values for other parameters and therefore we consider 
 
 
@@ -1258,7 +1280,7 @@ To conclude, I would say it could be worth it to perform further research using 
 \appendix
 \section{Appendix}
 % TODO: enable
-% \input{parameters.tex}
+\input{parameters.tex}
 
 
 \end{document}
