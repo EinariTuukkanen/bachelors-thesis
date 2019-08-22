@@ -130,21 +130,46 @@
 \section{Introduction}
 
 %% Juho
-Unconstrained nonlinear optimization has several real-life applications in different fields of science and technology, such as computational biology, machine learning, and finance.
+Unconstrained nonlinear optimization has numerous real-life applications in different fields of science and technology, such as in computational biology, machine learning, and finance.
 % There are a number of sources for real-life unconstrained nonlinear optimization problems from different fields of sciences and technologies. 
 In general, an unconstrained optimization problem can be formulated as
 \begin{equation}\label{eq:minfx}
-    \mathrm{min}_{\vect{x} \in \R^n} f(\vect{x})
+    \mathrm{min}_{\vect{x} \in \R^n} f(\vect{x}),
 \end{equation}
 
 %% Juho
-where $f : \R^n \rightarrow \R$ is called an \emph{objective function} for which we are looking for a vector $x^* \in \R^n$ that minimizes the value of $f(x^*)$. There are several optimization algorithms (or methods) that can be used to solve the problem \eqref{eq:minfx}, and the most suitable method depends on the properties of $f$. For example, we may use a different methods when $f$ is convex compared to the case where $f$ has multiple local optima.  
+where $f : \R^n \rightarrow \R$ is called an \emph{objective function} (or a \emph{target function}), and we are looking for a \emph{solution} vector $x^* \in \R^n$ that minimizes the value of $f$ such that $f(x^*) \leq f(x)$ for all $x\in \R^n$. There are several different optimization algorithms (or methods) that can be used to solve the problem \eqref{eq:minfx}, e.g., Newton's method and ... However, the performances of different optimization methods typically vary significantly for different objective functions $f$, and it can be difficult to find the best solution method for a given problem instance. For example, we may use a different method when $f$ is convex compared to when $f$ is non-convex and has multiple local optima. Moreover, some methods are feasible only when $f$ satisfies certain properties, such as being continuously differentiable up to $n$ times.
 % Depending on the methods used, there may also be additional requirements for $f$, such as being continuously differentiable up to $n$ times or being convex i.e. having one unique global minimum.
-While there are a number of real-life problems that do satisfy these conditions they are often extremely complex. Therefore artificial problems are often used to develop and test optimization algorithms. \cite{test_function_collection_artifical}
+%% Juho
+While there are countless real-life problems that satisfy these conditions, they are often extremely complex and finding a global minimizing solution can be difficult. 
+% While there are a number of real-life problems that do satisfy these conditions they are often extremely complex. 
+Therefore, artificial problems are often used instead to develop and test optimization algorithms. \cite{test_function_collection_artifical}
 
-The optimization algorithms are iterative processes that abuse the properties of the target function combined with the raw processing powers of computers. The commonly used methods are based on the same principle of having some termination condition checking if the minimum was found, and if not, continuing by choosing a direction and a step size and moving to the next point and repeating. The step size is often chosen by a separate algorithm called a line search, which transforms the target function into one-dimensional function of step size $\lambda$ and using the new function to calculate the optimal step size for each iteration of the main method. Similarly to the main methods, there are a number of different algorithms for finding the optimal step size, the simplest being just using a constant $\lambda$ for every iteration.
+%% Juho
+In general, optimization algorithms are iterative processes that harness the raw processing power of computers efficiently by exploiting the properties of the target function $f$ in order to converge to an optimal solution.
+% The optimization algorithms are iterative processes that abuse the properties of the target function combined with the raw processing powers of computers.
+%% Juho
+The commonly used optimization methods typically start from a given point, choose a direction and a step size, and move to a new point. Then, different stopping criteria can be used to check if a minimizing solution has been found, and if not, the process is repeated until a minimum solution is reached or some other condition, such as maximum time limit or iteration count, is exceeded.
+% The commonly used methods are based on the same principle of having some termination condition checking if the minimum was found, and if not, continuing by choosing a direction and a step size and moving to the next point and repeating. 
+%% Juho
+The step size is often computed by a separate \emph{line search} algorithm. After computing the target function value $f(x')$ at a given point $x'\in \R$ and a new direction $d\in \R^n$, the line search function is of the form $f(x' + \lambda d)$ which is a one-dimensional function of the step size $\lambda\in \R$. Line search algorithms try to find the value of $\lambda$ that minimizes this function, i.e., they try to solve the problem
+\begin{equation}\label{eq:ls}
+\min_{\lambda\in \R} f(x' + \lambda d)
+\end{equation}
+either approximately or exactly. Thus, line search algorithms are basically univariate optimization methods. Similarly to the multidimensional optimization methods, there are a number of different algorithms for finding the optimal step size, the simplest being just using a constant step size $\lambda$ for every iteration. 
+% The step size is often chosen by a separate algorithm called a line search, which transforms the target function into one-dimensional function of step size $\lambda$ and using the new function to calculate the optimal step size for each iteration of the main method. Similarly to the main methods, there are a number of different algorithms for finding the optimal step size, the simplest being just using a constant $\lambda$ for every iteration.
 
-In this thesis we will be exploring the effects of line search method selection on the overall performance of the optimization method. The thesis focues primarily on the use cases introduced on the Nonlinear Optimization (2018-2019) course in the Aalto University. Since this bachelor's thesis will not be completely comprehensive, the main goal will be answering the question, will the selection of line searches effect the main method's performance and if so, by how much? In addition we will be making a comparison of performance differences caused by the line searches in a very specific testing setup with goal of providing a suggestion of how the line search methods could be ranked.
+In this thesis, we will investigate the effects of different line search algorithms on the overall performance of different optimization methods.
+%% Juho
+The thesis focuses primarily on the use cases presented in the Nonlinear Optimization course that was lectured in Fall 2018 in Aalto University.
+% The thesis focuses primarily on the use cases introduced in the Nonlinear Optimization (2018-2019) course in the Aalto University.
+% Since this bachelor's thesis will not be completely comprehensive,
+%% Juho
+The main goal of this thesis is to investigate  how different line search algorithms affect the performance of optimization methods for unconstrained nonlinear optimization problems.
+% The main goal will be answering the question, will the selection of line searches effect the main method's performance and if so, by how much?
+%% Juho
+In addition, we will carefully analyze the performance differences caused by the different line search methods with the goal of providing a suggestions on how the line search methods could be ranked.
+% In addition, we will be making a comparison of performance differences caused by the line searches in a very specific testing setup with goal of providing a suggestion of how the line search methods could be ranked.
 
 \subsection*{Abbreviations and symbols used}
 
