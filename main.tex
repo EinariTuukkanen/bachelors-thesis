@@ -130,7 +130,7 @@
 \section{Introduction}
 
 %% Juho
-Unconstrained nonlinear optimization has numerous real-life applications in different fields of science and technology, such as in computational biology, machine learning, and finance.
+Unconstrained nonlinear optimization has numerous real-life applications in different fields of science and technology such as in computational biology, machine learning, and finance.
 % There are a number of sources for real-life unconstrained nonlinear optimization problems from different fields of sciences and technologies. 
 In general, an unconstrained optimization problem can be formulated as
 \begin{equation}\label{eq:minfx}
@@ -138,30 +138,30 @@ In general, an unconstrained optimization problem can be formulated as
 \end{equation}
 
 %% Juho
-where $f : \R^n \rightarrow \R$ is called an \emph{objective function} (or a \emph{target function}), and we are looking for a \emph{solution} vector $x^* \in \R^n$ that minimizes the value of $f$ such that $f(x^*) \leq f(x)$ for all $x\in \R^n$. There are several different optimization algorithms (or methods) that can be used to solve the problem \eqref{eq:minfx}, e.g., Newton's method and ... However, the performances of different optimization methods typically vary significantly for different objective functions $f$, and it can be difficult to find the best solution method for a given problem instance. For example, we may use a different method when $f$ is convex compared to when $f$ is non-convex and has multiple local optima. Moreover, some methods are feasible only when $f$ satisfies certain properties, such as being continuously differentiable up to $n$ times.
+where $f : \R^n \rightarrow \R$ is called an \emph{objective function} (or a \emph{target function}), and we are looking for a \emph{solution} vector $\vect{x}^* \in \R^n$ that minimizes the value of $f$ such that $f(\vect{x}^*) \leq f(\vect{x})$ for all $\vect{x}\in \R^n$. There are several different optimization algorithms (or methods) that can be used to solve the problem \eqref{eq:minfx}, e.g., Newton's method and ... However, the performances of different optimization methods typically vary significantly for different objective functions $f$, and it can be difficult to find the best solution method for a given problem instance. For example, we may use a different method when $f$ is convex compared to when $f$ is non-convex and has multiple local optima. Moreover, some methods are feasible only when $f$ satisfies certain properties, such as being continuously differentiable up to $n$ times.
 % Depending on the methods used, there may also be additional requirements for $f$, such as being continuously differentiable up to $n$ times or being convex i.e. having one unique global minimum.
 %% Juho
 While there are countless real-life problems that satisfy these conditions, they are often extremely complex and finding a global minimizing solution can be difficult. 
 % While there are a number of real-life problems that do satisfy these conditions they are often extremely complex. 
-Therefore, artificial problems are often used instead to develop and test optimization algorithms. \cite{test_function_collection_artifical}
+Therefore, artificial problems are often used instead in developing and testing optimization algorithms. \cite{test_function_collection_artifical}
 
 %% Juho
-In general, optimization algorithms are iterative processes that harness the raw processing power of computers efficiently by exploiting the properties of the target function $f$ in order to converge to an optimal solution.
+In general, optimization algorithms are iterative processes that harness the raw processing power of computers efficiently by exploiting the properties of the target function $f$ in order for it to converge to an optimal solution.
 % The optimization algorithms are iterative processes that abuse the properties of the target function combined with the raw processing powers of computers.
 %% Juho
 The commonly used optimization methods typically start from a given point, choose a direction and a step size, and move to a new point. Then, different stopping criteria can be used to check if a minimizing solution has been found, and if not, the process is repeated until a minimum solution is reached or some other condition, such as maximum time limit or iteration count, is exceeded.
 % The commonly used methods are based on the same principle of having some termination condition checking if the minimum was found, and if not, continuing by choosing a direction and a step size and moving to the next point and repeating. 
 %% Juho
-The step size is often computed by a separate \emph{line search} algorithm. After computing the target function value $f(x')$ at a given point $x'\in \R$ and a new direction $d\in \R^n$, the line search function is of the form $f(x' + \lambda d)$ which is a one-dimensional function of the step size $\lambda\in \R$. Line search algorithms try to find the value of $\lambda$ that minimizes this function, i.e., they try to solve the problem
+The step size is often computed by a separate \emph{line search} algorithm. After computing the target function value $f(\vect{x}')$ at a given point $\vect{x}'\in \R$, and a new direction $\vect{d}\in \R^n$, the line search function takes the form $f(\vect{x}' + \lambda \vect{d})$ which is a one-dimensional function of the step size $\lambda\in \R$. Line search algorithms try to find the value of $\lambda$ that minimizes this function, i.e., they try to solve the problem
 \begin{equation}\label{eq:ls}
-\min_{\lambda\in \R} f(x' + \lambda d)
+\mathop{\text{argmin}}_{\lambda\in \R} f(\vect{x}' + \lambda \vect{d})
 \end{equation}
 either approximately or exactly. Thus, line search algorithms are basically univariate optimization methods. Similarly to the multidimensional optimization methods, there are a number of different algorithms for finding the optimal step size, the simplest being just using a constant step size $\lambda$ for every iteration. 
 % The step size is often chosen by a separate algorithm called a line search, which transforms the target function into one-dimensional function of step size $\lambda$ and using the new function to calculate the optimal step size for each iteration of the main method. Similarly to the main methods, there are a number of different algorithms for finding the optimal step size, the simplest being just using a constant $\lambda$ for every iteration.
 
 In this thesis, we will investigate the effects of different line search algorithms on the overall performance of different optimization methods.
 %% Juho
-The thesis focuses primarily on the use cases presented in the Nonlinear Optimization course that was lectured in Fall 2018 in Aalto University.
+We focus primarily on the use cases presented in the Nonlinear Optimization course that was lectured in Fall 2018 in Aalto University.
 % The thesis focuses primarily on the use cases introduced in the Nonlinear Optimization (2018-2019) course in the Aalto University.
 % Since this bachelor's thesis will not be completely comprehensive,
 %% Juho
@@ -170,6 +170,8 @@ The main goal of this thesis is to investigate  how different line search algori
 %% Juho
 In addition, we will carefully analyze the performance differences caused by the different line search methods with the goal of providing a suggestions on how the line search methods could be ranked.
 % In addition, we will be making a comparison of performance differences caused by the line searches in a very specific testing setup with goal of providing a suggestion of how the line search methods could be ranked.
+
+\subsection{Organization of this thesis}
 
 \subsection*{Abbreviations and symbols used}
 
@@ -213,39 +215,50 @@ In addition, we will carefully analyze the performance differences caused by the
 \subsubsection{Choosing target functions}
 
 
-One of the biggest factors affecting the performance of an optimization algorithm is of course the problem we are solving with it. In this thesis we are going to focus on two different problems or target functions. Both of the functions are convex and differentiable since some of the methods tested require these two properties. To increase the complexity of the problems a bit, we are going solve both problems in 50-dimensions i.e. setting $n = 50$ for the functions when they're defined in $\R^n$ or similar domain.
+One of the biggest factors affecting the performance of an optimization algorithm is the target function of the problem we are solving. 
+%% Juho
+In this thesis we are going to examine two different problems with convex and differentiable target functions $f : \R^n \rightarrow \R$ of dimension $n = 50$. 
+% In this thesis we are going to focus on two different problems or target functions. Both of the functions are convex and differentiable since some of the methods tested require these two properties. To increase the complexity of the problems a bit, we are going solve both problems in 50-dimensions i.e. setting $n = 50$ for the functions when they're defined in $\R^n$ or similar domain.
 
 
 \subsubsection{Step size function}
 
-
-Each optimization method involves a step in form of $\mathrm{argmin}_{\lambda \in \mathbb{R}} {f(\vect{x} + \lambda \vect{d}})$. In practice we are going to define a step size function $g_{\vect{x}, \vect{d}}(\lambda) = f(\vect{x} + \lambda \vect{d})$ related to each of the target functions. Then on each iteration of the main optimization method, a new step size function is generated with the updated point $\vect{x}$ and direction vector $\vect{d}$.
-
-
-\subsubsection{Matrix Square Sum} \label{sect:matrix_square_sum}
+%% Juho
+Each optimization method involves computing a step at each iteration which is an optimization problem of the form \eqref{eq:ls}. In practice, at iteration $k$ we are at a point $\vect{x}^k$ and have computed the new direction vector $\vect{d}^k$. To simplify notation, we can define a step size function $g_{\vect{x}^k, \vect{d}^k}(\lambda) = f(\vect{x}^k + \lambda \vect{d}^k)$ for each of the target functions. Then at each iteration $k$ of the main optimization method, a new step size function is generated with the updated point $\vect{x}^k$ and direction vector $\vect{d}^k$.
+% Each optimization method involves a step in form of $\mathrm{argmin}_{\lambda \in \mathbb{R}} {f(\vect{x} + \lambda \vect{d}})$. In practice we are going to define a step size function $g_{\vect{x}, \vect{d}}(\lambda) = f(\vect{x} + \lambda \vect{d})$ related to each of the target functions. Then on each iteration of the main optimization method, a new step size function is generated with the updated point $\vect{x}$ and direction vector $\vect{d}$.
 
 
-The Matrix Square Sum is an extension to the Sum Squares Function, which is defined as
+\subsubsection{Matrix Square Sum}
+\label{sect:matrix_square_sum}
+
+
+The Matrix Square Sum is an extension to the Sum of Squares Function, which is defined as
 \begin{equation}
     f(\mathbf{x})=f(x_1, ..., x_n)=\sum_{i=1}^{n}{ix_i^2}.
 \end{equation}
 
-To make Sum Squares problem less trivial, we are going modify it by adding three constants $A$, $b$ and $c$. Together they form what we are going to call a Matrix Square Sum function, defined as
+To make Sum of Squares problem more difficult to solve, we are going modify it by adding three constants $A$, $b$ and $c$. Together they form what we are going to call a Matrix Square Sum function, defined as
 \begin{equation}
     f(\vect{x}) = \norm{A \vect{x} + \vect{b}} ^ 2 + c \norm{\vect{x}} ^ 2,
 \end{equation}
 
 where $A$ is a positive definite (PD) $n \times n$ matrix, $\vect{x}$ and $\vect{b}$ are vectors of length $n$, and the scalar $c$ is a positive constant.
 
-While $A$ could in theory be any $m \times n$ matrix, we are limiting it to a square PD-matrices only to ensure that the function is convex and has an unique global minimum. The matrix $A$ is formed in few steps by first generating an initial $n \times n$ matrix $A'$ with random values $a_{ij} \in [-0.5, 0.5]\ \forall\ i,j = 1 \dots n$. Then we attempt to make a PD-matrix by $A = 0.5 (A' + A'^\top)$. Finally, if  $A$ does not happen to be a PD-matrix yet, it is modified by the formula 
+While $A$ could in theory be any $m \times n$ matrix, we are limiting it to be a PD square matrix to ensure that the function is strictly convex and has a unique global minimum. The matrix $A$ is formed in a few steps by first generating an initial $n \times n$ matrix $A'$ with random values $a_{ij} \in [-0.5, 0.5]\ \forall\ i,j = 1 \dots n$. Then we attempt to transform $A$ into a PD-matrix by $A = 0.5 (A' + A'^\top)$. Finally, if  $A$ is still not PD, it is modified by the formula 
 \begin{equation}
     A = A + (\abs{\lambda_{min}} + d) I,
 \end{equation}
-where $\lambda_{min}$ is the minimal eigenvalue of $A$ and $d$ is a constant. The value of $d$ also determines the A's condition number defined as $\frac{\lambda_{max}}{\lambda_{min}}$. Smaller values of $d$ make the function more elliptic and harder for gradient methods to solve, while larger values produce more circular gradient curves, which are easy for methods like Gradient Descent to solve. The value of $d$ used in the thesis is 5, resulting in condition number of around 6.5.
+where $\lambda_{min}$ is the minimal eigenvalue of $A$ and $d$ is a constant. The value of $d$ also determines $A$'s condition number defined as $\frac{\lambda_{max}}{\lambda_{min}}$ [REF] Smaller values of $d$ make the function more elliptic and harder for gradient methods to solve, while larger values produce more circular gradient curves, which makes the problem easier for certain methods like Gradient Descent [REF]. The value of $d$ used in the thesis is 5, resulting in condition numbers of around 6.5.
 
-The values of $b$ and $c$ are also randomized so that for each element of $b$ applies $b_i \in [-0.5, 0.5]$ and $c$ is a scalar randomly generated from range $[-0.5, 0.5]$.
+%% Juho
+The values of $b = (b_1,\dots,b_n) \in \R^n$ and $c\in \R$ are also randomly generated so that $b_i \in [-0.5, 0.5]$ and $c \in [-0.5, 0.5]$.
+% The values of $b$ and $c$ are also randomized so that for each element of $b$ applies $b_i \in [-0.5, 0.5]$ and $c$ is a scalar randomly generated from range $[-0.5, 0.5]$.
 
-Some of the optimization methods require access to the function's gradient, Hessian matrix and the step size function with its first two derivatives, so let's calculate them in advance. While at it, we should also derive the formula for calculating the correct optima so we can use it to determine whether our algorithms produce the correct solution. Lets begin by expanding the function into more easily differentiable form:
+%% Juho
+Some of the optimization methods need to compute the function's gradient and Hessian matrix at every iteration. Also, some step size algorithms need the first and second derivatives of the step size function. In this case, we can compute the gradient and the Hessian of both function in advance. 
+% Some of the optimization methods require access to the function's gradient, Hessian matrix and the step size function with its first two derivatives, so let's calculate them in advance.
+% While at it, 
+We should also derive the formula for calculating the correct optima so we can use it to determine whether our algorithms produce the correct solutions. Let us begin by expanding the function into a more easily differentiable form:
 \begin{align*}
     f(\vect{x}) &= \norm{A \vect{x} + \vect{b}} ^ 2 + c \norm{\vect{x}} ^ 2 \\
                &= (A \vect{x} + \vect{b})^\top(A \vect{x} + \vect{b}) + c \trans{x} \vect{x} \\
@@ -254,25 +267,25 @@ Some of the optimization methods require access to the function's gradient, Hess
                &= \trans{x} A^\top A \vect{x} + 2 \trans{b} A \vect{x} + \trans{b} \vect{b} + c \trans{x} \vect{x}.
 \end{align*}
 
-Now let's calculate the gradient and then Hessian matrix:
+Now let us calculate the gradient $\nabla f(\vect{x})$ and the Hessian matrix \textbf{H}:
 \begin{align}
     \nabla f(\vect{x}) &= \nabla(\trans{x} A^\top A \vect{x}) + 2 \nabla(\trans{b} A \vect{x}) + \nabla(\trans{b} \vect{b}) + \nabla(c \trans{x} \vect{x}) \nonumber \\
     &= (\trans{x} A^\top A)^\top + A^\top A \vect{x} + 2 (\trans{b} A)^\top + c (\trans{x})^\top + c \vect{x} \nonumber \\
-    &= 2 A^\top A \vect{x} + 2 A^\top \vect{b} + 2 c \vect{x} \\
+    &= 2 A^\top A \vect{x} + 2 A^\top \vect{b} + 2 c \vect{x} \label{eq:grad1}\\
     &\nonumber \\
-    \textbf{H} &= \nabla^2 f(\vect{x}) = 2 A^\top A + 2 c I
+    \textbf{H} &= \nabla^2 f(\vect{x}) = 2 A^\top A + 2 c I\label{eq:hess1}
 \end{align}
 
-From the gradientz we get the necessary optimality condition
+From the gradient equation \eqref{eq:grad1} we get the necessary optimality condition
 \begin{equation}
     (A^\top A + c I) \vect{x} = - A^\top \vect{b}
 \end{equation}
-and because the function is convex (the Hessian is positive definite for all $\vect{x} \in \mathbb{R}^n$), we get the unique optimal solution
+and because the function is strictly convex (the Hessian is positive definite for all $\vect{x} \in \mathbb{R}^n$), we get the unique optimal solution
 \begin{equation}
     \vect{x} = - (A^\top A + c I)^{-1} A^\top \vect{b}
 \end{equation}
 
-Let's now form the step size function and its derivatives:
+Let us finally form the step size function and its derivatives:
 \begin{align}
     g(\lambda) =\ &f(\vect{x} + \lambda \vect{d}) = \norm{A (\vect{x} + \lambda \vect{d}) + \vect{b}} ^ 2 + c \norm{(\vect{x} + \lambda \vect{d})} ^ 2 \nonumber \\
     =\ &\lambda \trans{d} A^\top ( 2 A \vect{x} + \lambda A \vect{d} + 2 \vect{b}) + \trans{x} A^\top ( A \vect{x} + 2 \vect{b} ) + \trans{b} \vect{b} \\
@@ -285,21 +298,21 @@ Let's now form the step size function and its derivatives:
 \subsubsection{Negative Entropy}
 
 
-The second target function reviewed in this thesis is an inverted entropy maximization problem, which converts it into a minimization problem \cite{book:convex_optimization}. We will be calling this convex minimization problem a Negative Entropy problem and it can be formulated as follows:
-\begin{equation}
+The second target function examined in this thesis is an inverted entropy maximization problem, which converts it into a minimization problem \cite{book:convex_optimization}. We will call this convex minimization problem a Negative Entropy problem and its target function is of the form:
+\begin{equation}\label{eq:negent}
 	f(\vect{x}) = \sum_{i=1}^{n} x_i \log x_i,
 \end{equation}
-where $\vect{x} \in \mathbb{R}_{> 0}^n$. Since the domain is now limited we have to do some adjustments to our algorithms, which we will get into in a moment.
+where $\vect{x} \in \mathbb{R}_{> 0}^n$. Since the domain is now limited, we have to make some adjustments to our algorithms, which are described at the end of this section.
 
-The global minima of the function can be found by calculating the zero point of the gradient:
+As the function \eqref{eq:negent} is convex, its global minimum can be found by calculating the zero point of the gradient:
 \begin{align}
-    \nabla f(\vect{x}) &= \frac{\delta}{\delta x_i} \sum_{i=1}^{n} x_i \log x_i \\
-                      &= \sum_{i=1}^{n} (\log x_i + 1) = 0.
+    \nabla_{x_i} f(\vect{x}) &= \frac{\delta}{\delta x_i} \sum_{i=1}^{n} x_i \log x_i \\
+                      &= \log x_i + 1 = 0.
 \end{align}
 
 Because the $\log x_i + 1$ is truly positive, the answer is the same for every term $x_i$. Therefore we get the minima: $\log x_i = -1 \Leftrightarrow x_i = \frac{1}{e}$, for every $i = 1 \dots n$.
 
-In addition to the gradient, we need to calculate the Hessian matrix and the one dimensional step size function $g(\lambda) = f(\vect{x} + \lambda \vect{d})$ with its first and second derivatives in regard to $\lambda$.
+In addition to the gradient, we need to calculate the Hessian matrix and the one dimensional step size function $g(\lambda) = f(\vect{x} + \lambda \vect{d})$ with its first and second derivatives with regard to $\lambda$.
 
 As we already know the gradient of $f$, the Hessian can be derived with ease since $\frac{\delta^2}{\delta x_i \delta x_j} \sum_{i=1}^{n} x_i \log x_i = 0$ for every $i, j$ where $i \neq j$. For the diagonal cases, i.e. when $i = j$, we are left with the second derivative $\frac{1}{x_i}$. Therefore we get the following Hessian matrix:
 \begin{equation}
@@ -319,33 +332,35 @@ Finally, the step size function for $\lambda$ with its first two derivatives are
     g''(\lambda) &= \sum_{i=1}^{n} \frac{d_i^2}{x_i + \lambda d_i}.
 \end{align}
 
-Because the domain of this function is only positive numbers, we are going to have make some changes to our starting points, parameters and algorithms. Therefore the starting point must only have positive coordinates and the following domain limiter was added to the line search algorithms which update the starting point so that it could otherwise go negative:
+Because the domain of the function \eqref{eq:negent}  has only positive numbers, we have to make some changes to our starting points, parameters and algorithms. Therefore, the iteration points must have only positive coordinates. To enforce this, the following domain limiter described in Algorithm \ref{alg:domain_limiter} was added to the line search algorithms to prevent the iteration points becoming negative:
 
 \begin{algorithm}[H]
 \caption{Domain Limiter}
 \label{alg:domain_limiter}
 \begin{algorithmic}[1]
 \STATE \textbf{initialize} $\gamma \in [0, 1]$
-\WHILE{min $(\vect{x} + \lambda \vect{d}) <= 0$}
+\WHILE{min $(\vect{x} + \lambda \vect{d}) \leq 0$}
     \STATE $\lambda = \lambda \gamma$
 \ENDWHILE
 \RETURN $\lambda$
 \end{algorithmic}
 \end{algorithm}
 
-The domain limiter will be called from all of the line search methods before any evaluation of $f(\lambda)$ to reduce the step size to such value that it prevents evaluation of negative logarithms. In the context of this thesis we are going to set $d = 0.99$, but it could also be added as a parameter for each of the line search functions as some methods will require more iterations on the while-loop than others.
+The domain limiter will be called from all the line search methods before evaluating $f(\vect{x} + \lambda\vect{d})$ to reduce the step size to such value that it prevents evaluation of negative logarithms. In the context of this thesis, we are going to set $d = 0.99$, but it could also be added as a parameter for each of the line search functions, as some methods will require more iterations in the while-loop
+than others.
 
 
-\subsection{Main Methods}
+% \subsection{Main Methods}
+\subsection{Optimization Methods}
 
 
-In this thesis we are going to call all nonlinear unconstrained optimization methods as main methods. The main methods usually follow the same formula: start from some point $x_0$, select a step direction $d_k$ and a step size $\lambda_k$, then update the next point $x_{k + 1} = x_k + \lambda_k d_k$ and repeat until a method specific termination condition is reached. Choosing the step direction $\lambda$ is an optimization problem of its own and its solved by the line search methods introduced in the section \ref{sect:line_search_methods}. \cite{book:nonlinear_programming}
+In this thesis, all nonlinear unconstrained optimization methods are called \emph{main methods}. The main methods usually follow the same formula: start from some point $x_0$, select a step direction $d_k$ and a step size $\lambda_k$, then update the next point $x_{k + 1} = x_k + \lambda_k d_k$ and repeat until a method specific termination condition is reached. Choosing the step direction $\lambda$ is an optimization problem of its own and is solved by the line search methods introduced in the section \ref{sect:line_search_methods}. \cite{book:nonlinear_programming}
 
 
 \subsubsection{Newton's Method}
 
 
-Newton's method is \todo{source?} commonly used for finding global minimums for differentiable and convex functions. The algorithm is a more general version of its line search version, utilizing the gradient and hessian matrix of the function instead of its first and second single derivatives.
+Newton's method (see Algorithm \ref{alg_newtons}) is \todo{source?} commonly used for finding global minimums for differentiable and convex functions. The algorithm is a more general version of its line search (or univariate) version, utilizing the gradient and hessian matrix of the function instead of its first and second single derivatives. Algorithm \ref{alg_newtons} terminates if (i) the euclidean norm of the gradient $||\nabla f(x)||$ is less than some small tolerance $l > 0$, or (ii) the max iteration count $k_{\text{max}}$ is exceeded.  
 
 \begin{algorithm}[H]
 \caption{Newton's Method}
@@ -366,7 +381,7 @@ Newton's method is \todo{source?} commonly used for finding global minimums for 
 \subsubsection{Gradient Descent Method}
 
 
-Gradient descent method can be interpret as a first order of the Newton's method as it only uses the first gradient to determine step direction. The algorithm itself is exactly the same as in Newton's method except for the line 3 where the descent direction $d$ is calculated.
+Gradient descent method (Algorithm \ref{alg_gradient_descent}) can be interpreted as a first order Newton's method, as it uses only the gradient to determine the step direction. The algorithm is otherwise exactly the same as Newton's method except for the computation of the descent direction $d$ in line 3.
 
 \begin{algorithm}[H]
 \caption{Gradient Descent Method}
@@ -386,10 +401,10 @@ Gradient descent method can be interpret as a first order of the Newton's method
 
 \subsubsection{Conjugate Gradient Method}
 
-
-Conjugate gradient method uses the information from the previous and current iterations to calculate ratio of gradients to calculate optimal next point. The method should theoretically \todo{source?} require less steps than gradient descent method.
-
-The algorithm involves a second loop which runs for $n$ times per every iteration on the main loop. The $n$ is equal to the dimensions of the problem (i.e. $\mathrm{dim}(\vect{x})$) and also the inner iterations are calculated towards the total iterations.
+%% Juho
+Conjugate gradient method (Algorithm \ref{alg_conjugate_gradient}) uses information from the previous and current iterations to compute the next iteration point. To compute a good direction, it tries to obtain an approximation of the inverse Hessian using a number of successive gradient ratio calculations. The method should theoretically \todo{source?} require less steps than gradient descent method.
+% Conjugate gradient method uses the information from the previous and current iterations to calculate ratio of gradients to calculate optimal next point. The method should theoretically \todo{source?} require less steps than gradient descent method.
+The algorithm involves a second loop which runs for $n$ times per every iteration inside the main loop, where $n$ is equal to the dimension of the problem (i.e., $n = \mathrm{dim}(\vect{x})$). These inner iterations are included in the total iteration count in all computational tests of this thesis.
 
 \begin{algorithm}[H]
 \caption{Conjugate Gradient Method}
@@ -415,8 +430,9 @@ The algorithm involves a second loop which runs for $n$ times per every iteratio
 
 \subsubsection{Heavy Ball Method}
 
-
-Heavy ball method is basically an extension of gradient descent as only adds one term for the direction vector calculation step. The name of the method comes from the \todo{source?} physical representation of momentum of a ball rolling downhill. The algorithm for the method is basically the same as Gradient descent with a single additional term with multiplier $\beta$ in descent direction $d$.
+%% Juho
+Heavy ball method (Algorithm \ref{alg_heavy_ball}) is basically an extension of the Gradient descent with an extra term in the direction vector calculation step. The name of the method comes from the \todo{source?} physical representation of the momentum of a ball rolling downhill. The Heavy Ball method is similar to the Gradient descent but it has an additional term with a multiplier $\beta \in [0, 1)$ in the descent direction $d$ in line 3.
+% Heavy ball method is basically an extension of gradient descent as only adds one term for the direction vector calculation step. The name of the method comes from the \todo{source?} physical representation of momentum of a ball rolling downhill. The algorithm for the method is basically the same as Gradient descent with a single additional term with multiplier $\beta$ in descent direction $d$.
 
 \begin{algorithm}[H]
 \caption{Heavy Ball Method}
@@ -439,8 +455,9 @@ Heavy ball method is basically an extension of gradient descent as only adds one
 \subsection{Line Search Methods}
 \label{sect:line_search_methods}
 
-
-Most line search methods are based on similar ideas: pick a section and begin reducing it until some stopping condition is satisfied. There are also other approaches like backtracking search and different methods exploiting the derivatives of the target function.
+%% Juho
+Most line search methods are based on a similar idea: choose a range of values and reduce it based on function evaluations until some stopping condition is satisfied. There are also approximate approaches like backtracking search, while some line search methods exploit the derivatives of the target function.
+% Most line search methods are based on similar ideas: pick a section and begin reducing it until some stopping condition is satisfied. There are also other approaches like backtracking search and different methods exploiting the derivatives of the target function.
 
 There are also multiple small variations of the same methods available on different sources in the internet and print. Different sources also often tend to suggest different recommended values for the line search parameters. Because of limited resources available for optimizing the parameter selection, we decided to go with self evaluated options for the parameters with little to no inspiration from the external sources. \cite{book:convex_optimization} \cite{book:nonlinear_programming} 
 
@@ -448,7 +465,7 @@ There are also multiple small variations of the same methods available on differ
 \subsubsection{Constant Step Size}
 
 
-While not actually a search, the use of single step size value $\lambda$ is sometimes enough to provide correct and high performance solutions for the main methods. In this thesis I will be considering constant $\lambda$ as one of the search methods to provide comprehensive comparison.
+While not actually a search, the use of single step size value $\lambda$ is sometimes enough to provide correct and high performance solutions for the main methods. In this thesis the constant step size $\lambda$ is considered as one of the search methods to provide a more comprehensive comparison.
 
 \begin{table}[H]
 \captionof{table}{Parameters tested for ConstantSearch}
@@ -465,12 +482,12 @@ $\lambda$ & 0.0001, 0.1, 0.25, 0.5, 0.9 & 0.1, 0.25, 0.5 \\
 \end{tabular}
 \end{table}
 
-Because Constant Search has some convergence issues with some of the configurations with the test values listed in table \ref{tab:params_ConstantSearch}, a different set of values must be used for some main methods. For Matrix Square Sum and Newton's Method the test values for parameter $\lambda$ are $\{0.5, 0.9, 1.0, 1.1, 1.5\}$. For Negative Entropy different values are used for Newton's Method and Conjugate Gradient Methods, respectively $\{0.1, 0.25, 0.5, 0.9\}$ and $\{0.0001, 0.1, 0.15, 0.2\}$.
+Because Constant Search has some convergence issues with some of the configurations with the test values listed in table \ref{tab:params_ConstantSearch}, a different set of values must be used for some main methods. For Matrix Square Sum and Newton's Method the test values for parameter $\lambda$ are $\{0.5, 0.9, 1.0, 1.1, 1.5\}$. For Negative Entropy different values are used for Newton's Method and Conjugate Gradient Methods: $\{0.1, 0.25, 0.5, 0.9\}$ and $\{0.0001, 0.1, 0.15, 0.2\}$, respectively.
 
 
 \subsubsection{Golden Section Search}
 
-Golden Section Search is a sequentical line search meaning that it utilizes the previous iterations when calculating the next value for the step size. The Golden Section method's name comes from it's unique reduction factor of $\phi = 0.618$. \cite{book:nonlinear_programming}
+Golden Section Search is a sequentical line search meaning that it utilizes the previous iterations when calculating the next value for the step size. The name of this method comes from its unique reduction factor of $\phi = 0.618$. \cite{book:nonlinear_programming}
 
 The parameters tested for Golden Section Search are displayed in table \ref{tab:params_GoldenSectionSearch}.
 
@@ -513,7 +530,7 @@ $l$ & 1e-04, 1e-07 & 1e-04, 1e-07 \\
 \subsubsection{Bisection Search}
 
 
-Bisection search is a line search that uses derivatives to progress. This requires the problems to be pseudoconvex and therefore differentiable within some closed bounds. \cite{book:nonlinear_programming}.
+Bisection search is a line search that uses derivatives to progress. This requires the target functions to be pseudoconvex and therefore differentiable within some closed bounds. \cite{book:nonlinear_programming}.
 
 The parameters tested for Bisection Search are displayed in table \ref{tab:params_BisectionSearch}.
 
@@ -596,7 +613,7 @@ $l$ & 1e-05, 1e-09 & 1e-04, 1e-05 \\
 \end{tabular}
 \end{table}
 
-Initial tests show that Dichotomous Search has problems converging with some of the test values displayed in table \ref{tab:params_DichotomousSearch} when using Newton's Method with Negative Entropy problem. Because of this, a slight adjustment to test parameters is done by giving $a$ a set value of $-10$ for NE + NM combination.
+Initial tests show that Dichotomous Search has problems converging with some of the test values displayed in table \ref{tab:params_DichotomousSearch} when using Newton's Method in the Negative Entropy problem. Because of this, a slight adjustment to test parameters is done by giving $a$ a set value of $-10$ for NE + NM combination.
 
 
 \subsubsection{Fibonacci Search}
@@ -629,7 +646,7 @@ The parameters tested for Fibonacci Search are displayed in table \ref{tab:param
 \end{algorithmic}
 \end{algorithm}
 
-The $F_n$ represents $n$:th Fibonacci number. To optimize algorithm's performance, the values of $F_n$ should be pre-evaluated. After running some quick tests, it seems that the pre-evaluation doesn't effect performance significantly and so for our implementation we decided to generate the Fibonacci numbers run-time using a single loop algorithm of time complexity $O(n)$. 
+The $F_n$ represents $n$:th Fibonacci number. To optimize algorithm's performance, the values of $F_n$ should be pre-evaluated. After running some quick tests, it seems that the pre-evaluation does not effect performance significantly and so for our implementation we decided to generate the Fibonacci numbers in run-time using a single loop algorithm of time complexity $O(n)$. 
 
 \begin{table}[H]
 \captionof{table}{Parameters tested for FibonacciSearch}
@@ -652,7 +669,7 @@ $l$ & 1e-06, 1e-10 & 1e-06, 1e-12 \\
 
 \subsubsection{Uniform Search}
 
-Uniform search divides a bounded section of a function into intervals, then chooses the interval with the lowest value and repeats the process again for it. To increase the precision of the method we may also increase the number of intervals to divide the new interval into. \cite{book:nonlinear_programming}
+Uniform search divides a bounded section of a function into intervals, then chooses the interval with the lowest value and repeats the process. To increase the precision of the method we may also increase the number of intervals to divide the new interval into. \cite{book:nonlinear_programming}
 
 More specfically, choose a range $[a, b]$ and split it into $n$ sections, with one section's size being $\delta = \frac{b - a}{n}$. We end up with $n + 1$ subsections, from which we pick a $a_0 + k \delta$ with lowest value, where $k = 0 \dots n$. We then increase the section count by multiplying $n$ with $m \geq 1$ and repeat the process with the new section. \cite{course_material_nonlinear_optimisation}
 
@@ -739,7 +756,7 @@ In addition to the parameters listed in table \ref{tab:params_NewtonsSearch}, th
 
 \subsubsection{Armijo's Search}
 
-Armijo's search is an example of an inexact line search meaning that the step size is chosen to approximately minimize the target function. Armijo's search is also the only backtracking method of the ones included in this thesis. Backtracking means that the initial step size is reduced on every iteration until we satisfy the stopping condition. \cite{book:convex_optimization}
+Armijo's search is an example of an inexact line search meaning that the step size is chosen to approximately minimize the target function. Armijo's search is also the only backtracking method of the ones included in this thesis. Backtracking means that the initial step size is reduced on every iteration until it satisfies the stopping condition. \cite{book:convex_optimization}
 
 The parameters tested for Armijo's Search are displayed in table \ref{tab:params_ArmijoSearch}.
 
@@ -776,25 +793,30 @@ $l$ & 1e-07 & 1e-07 \\
 \end{table}
 
 
-\section{Methods}
+% \section{Methods}
+\section{Parameter Settings}
 
 
-Our goal is to determine how does the selection of line search method effect the overall performance of an optimization method. To answer this question with the resources introduced in the theory section, we first need to tackle the problem of choosing parameters.
-
+Our goal is to determine how does the selection of a line search method affect the overall performance of an optimization method. To answer this question, we need first to consider the role of the different parameters.
 
 \subsection{Parameter Selection}
+\label{sect:parameter_selection}
 
-Optimization method parameter selection is a whole large topic of its own, and it is not our main focus on this thesis. Therefore a very straightforward method for picking the parameters is going to be appropriate.
+Optimization method's parameter selection is a whole another research topic and not our primary focus in this thesis. Therefore a straightforward approach for picking the parameters is justified.
 
-Using the same setup as when we are comparing the performances of different method combinations, we can also compare the effects of different parameters. Using the manually picked parameter values shown in the theory section, we can programmatically generate all the permutations for each parameter and optimization method combination.
+Using a similar setup as when comparing the performances of the methods, we can also compare the outcomes with different parameters. Using the manually chosen parameter values presented in the theory section, we can programmatically generate all the permutations for each combination of a parameter, a line search method, the main method, and a target function.
+
+Displaying all the results for each parameter combination would require too much space, and therefore just a concise overview of the best parameters for each setup is found from the appendix \ref{sect:appendix}.
 
 \subsection{Starting Point Selection}
 
-So we are going to compare the performances of each line search method and main method combination with their related parameter options. We are running the tests with 100 starting points of dimension $n = 50$. For practical reasons we are also going to use a limited space for the points to be randomized from.
+To get reliable results with the different parameter and method combinations, we need to also take into account the starting points used.
 
-Let a single starting point be $x = \{x_1, x_2, \dots x_{50}\}$. For MatrixSquareSum the points are generated so that for each point applies $x_i \in  [-10, 10]\ \forall\ i$. Because NegativeEntropy's domain is $\R_{>0}$, the same rule applies but with the bounds being $]0, 10]$ instead.
+For parameter selection, we are going to use just ten starting points since the number of parameter options already increases the required iteration count by a lot. For the actual performance tests, we are going to use 1000 starting points generated similarily.
 
-Since we are interested in overall performance, we prefer starting points that are random but evenly distributed so that no two point are the same, or too close to each other. To generate a point distribution which is random but evenly filled with points, we use the following algorithm.
+We also need to decide some range from which the points are generated. Thus, let a single starting point be $x = \{x_1, x_2, \dots x_{50}\}$. For matrix square sum problem the points are generated so that for each point $x$ applies $x_i \in  [-10, 10]\ \forall\ i = 1 \dots 50$. Because negative entropy problem's domain is $\R_{>0}$, the same rule applies but with the bounds being $]0, 10]$ instead.
+
+Since we are interested in overall performance, we want the starting points to be random but evenly distributed so that no two points are the same, or too close to each other. To generate a point distribution which is random but evenly packed with points, we use the following algorithm.
 
 \begin{algorithm}[H]
 \caption{Generating Even Distribution of Random Starting Points}
@@ -819,9 +841,9 @@ Since we are interested in overall performance, we prefer starting points that a
 \end{algorithmic}
 \end{algorithm}
 
-The algorithm generates $p$ points of dimension $n$. The generated points are stored in variables $x_i$. The function $\mathbf{random}_n(x_{min}, x_{max})$ generates a single point of dimension $n$ filled with random values from the range $[x_{min}, x_{max}]$. On every iteration, we test to see if the newly generated point is closer than $d_{min}$ to some existing point and if so, we discard the new point and try again.
+The algorithm generates $p$ points of dimension $n$. The generated points are stored in variables $x_q, q = 1 \dots p$. The function $\mathbf{random}_n(x_{min}, x_{max})$ generates a single point of dimension $n$ filled with random values from the range $[x_{min}, x_{max}]$. On every iteration, we test to see if the newly generated point is closer than $d_{min}$ to some existing point and if it is, we discard the point and try again.
 
-This is by means not a perfect algorithm since its performance heavily depends on the $d_{min}$ value used. The minimum distance selection depends on the point count and the available point space: too high values cause the algorithm to end up on infinite loop and too low values do not provide the even distribution we are looking for. Via trial and error the values presented in table \ref{tab:dmin_values} are picked.
+The algorithm used is not perfect since its performance heavily depends on the $d_{min}$ value used. The minimum distance selection depends on the point count and the available point space: too high values cause the algorithm to end up on an infinite loop, and too low values do not provide the even distribution we are expecting. By trial and error the $d_{min}$ values presented in table \ref{tab:dmin_values} are found.
 
 \begin{table}[H]
 \centering
@@ -836,29 +858,25 @@ Point count                       & MSS $d_{min}$ & NE $d_{min}$ \\ \hline
 \end{tabular}
 \end{table}
 
-After successfully generating the starting points once with the minimum distances shown in table \ref{tab:dmin_values}, we are going to save them into a file from which they are loaded during future runs. This way we maintain the same level of randomness for each run.
+After generating the points successfully, they are saved into a file and used for every run with the specific points count, maintaining an equal level of randomness between measurements.
 
 \subsection{Randomizing Target Function}
 
-In addition to randomizing the starting points, we are going to use randomized parameters for Matrix Square Sum target function. The values of parameters $A$, $b$ and $c$ are going to be randomized as described in section \ref{sect:matrix_square_sum} but for each starting point separately. To control the randomness between runs, we give the function a random seed of the index of the current point. This way we end up with number of random functions equal to the number of starting points used. Combined with the saving of points, we can guarantee to get the same setup for each run.
+In addition to randomizing the starting points, we are going to use randomized parameters for Matrix Square Sum target function. The values of parameters $A$, $b$ and $c$ are going to be randomized as described in section \ref{sect:matrix_square_sum} but for each starting point separately. To control the randomness between runs, we give the function a random seed of the index of the current point. This way, we end up with a number of random functions equal to the number of starting points used. Combined with the saving of points, we can guarantee to get the same setup for each run.
 
-\subsection{Comparing Performance}
+% \subsection{Comparing Performance}
 
+% When comparing performance, there are multiple metrics we could analyze. These include the algorithm success rate, main method and line search durations, iteration count, and function calls. The metric we are going to focus on is the success rate, which shows the percentage of starting points from which the algorithm reaches the correct minimum. The solution is interpreted as correct if the first eight decimals of the found solution match the correct precalculated solution.
 
-There are multiple metrics that we could analyze, like algorithm success rate, main method or line search duration, iterations or function calls. The most important metric we are going to focus on is the success rate i.e. from how many of the 1000 starting points did the algorithm reach correct optimum. The solution is interpret as correct if the first 8 decimals of the found solution and correct one match.
-Since it is excepted that most of the algorithms find the solution correctly every time, we also need a secondary comparison metric. Here we choose to use the total duration of the algorithm, since it is often the most interesting value for real life use cases and it is comparable within different methods unlike for example total iteration count. The other metrics will also be recorded and listed in the results section, but they will not be taken into consideration when scoring the methods.
-
-% Performance comparison is going to be based mostly on total iterations meaning iterations of main method plus total iterations of the line search methods that the main method ran. The iterations of main method and line search methods are treated as equally valuable. Execution times are also recorded but not used as primary tool for performance tracking since with such little repetitions and the value of $n$ certain randomness plays too big of a part in the duration parameter. In addition, duration is heavily dependant on the programming language and style used so while the results could be comparable within the same language, they might behave differently under another setup. In comparison iterations are somewhat universal and thus make a better measure for performance. Another aspect that is recorded is the total number of function calls $n_f$ performed by both the main method and line search together. All the calls of $\theta$, its gradient and Hessian matrix, as well as the function calls of the step size function $f(\vect{x} + \lambda \vect{d})$ and its derivatives made by the line search method are calculated towards the same total count. This number is used as a secondary tool for comparison of the algorithms' performance.
-
-
-\subsubsection{Parameter Selection}
+% Since we expect most of the algorithms to find the solution correctly most of the time, we also need a secondary comparison metric. We choose to use the total duration of the algorithm since it is often the most interesting value for real-life use cases, and it is comparable within different methods unlike, for example, total iteration count. We will also list the other recorded metrics in the results section, but they will not be taken into consideration when scoring the methods.
 
 
 \section{Results}
 
-The results are going to be represented in a table with average performances of each line search method for each permutation of main methods and target functions. The performances are calculated using the best parameters found for each setup as described in the previous section. The algorithms are run with a similar setup as when calculating the best parameters, but this time with 1000 evenly randomized starting points instead of 100. Again for each starting point a unique target function configuration is generated in the case of MatrixSquareSum using the same randomizing rules as described in the previous section. The random seeds were again starting point indices i.e. integers from 0 to 1000.
 
-After running the performance tests, we are left with the results introduced in the following tables \ref{tab:performance_results_MSS_NM} to \ref{tab:performance_results_NE_HBM}. The row's of the table show the line search method used, the success rate of the algorithm, average duration, average main method iteration count and function calls of the algorithm. The function call count includes all calls to the function and to its gradients or step size functions. In addition to these, the last two columns show average duration and iterations used by the line search algorithm alone. A table including all eight line search methods with their representative performances is generated for each main method and target function combination.
+We are going to represent the results in a table with the average overall performances of each line search method for each permutation of the main methods and target functions. The performances are calculated using the best parameters found for each setup as described in section \ref{sect:parameter_selection}. Again for each starting point, a unique target function configuration is generated in the case of matrix square sum problem using the same rules described in section \ref{sect:matrix_square_sum}. The random seeds used are integers from 0 to 999 matching the starting point indices.
+
+After running the performance tests, we are left with the results introduced in the following tables \ref{tab:performance_results_MSS_NM} to \ref{tab:performance_results_NE_HBM}. The row's of the table show the line search method used, the success rate of the algorithm, average total duration, average main method iteration count, and function calls of the algorithm. The function call count includes all calls to the function, its gradients and step size functions. In addition to these, the last two columns show average duration and iterations used by the line search algorithm alone. We generate a table with all line search methods and their representative performances for each main method and target function combination.
 
 
 \begin{center}
@@ -1026,7 +1044,9 @@ ArmijoSearch & 100.0 & 15.5 & 14.4 & 113.2 & 6.9 & 23.6 \\
 \subsection{Analysis}
 
 
-There are multiple metrics we could look into when analyzing the results. Since our goal is to compare the performances of the main methods in relation to the choice of line search method, we always want to analyze the data per line search method. We therefore group our data by line search method and either main method or target problem. The most important metric for performance is the actual success rate of the algorithm. However, since successrates seem to have lots of ties, we need a secondary metric, which we choose to be the average duration of the main method. While not universal within different implementations or problems, this provides us a decent comparison method of the line search methods within a specific main method or target problem. This means that all the values are mainly comparable within the same column in the following tables \ref{tab:colors_mss_durations} to \ref{tab:colors_avg_overall}. To visualize the column-wise differences, we apply a per column color scale so that darker red imply worse performance and darker greens imply better performance.
+There are multiple metrics we could look into when analyzing the results. Since our goal is to compare the performances of the main methods concerning the choice of line search method, we want to display the data primarily per line search method and secondarily by main method or target function.
+
+The primary metric for measuring algorithm's performance is the success rate of the algorithm. Since the success rates seem to have lots of ties, we also need a secondary metric, which we choose to be the average overall duration of the main method. While it is not universally comparable within different implementations or problems, it provides us a decent comparison of the line search methods within a specific scope of the main method and a target problem. This means that all the values are essentially comparable within the same column in the tables \ref{tab:colors_mss_durations} to \ref{tab:colors_avg_overall}. To visualize the column-wise differences, we apply a per-column color scale in which darker red implies worse performance and darker green implies better performance.
 
 \begin{table}[H]
     \centering
@@ -1069,7 +1089,7 @@ There are multiple metrics we could look into when analyzing the results. Since 
 
 \begin{table}[H]
     \centering
-    \captionof{table}{The average of the durations for finding the minimum for both Matrix Square Sum and Negative Entropy Functions combined and listed separately for each main method. Colored per column so that darker red is worse (slower) and darker green is better (faster).}
+    \captionof{table}{The average of the durations for finding the minimum for both Matrix Square Sum and Negative Entropy Functions. Results are listed separately for each main method and colored per column so that darker red is worse (slower) and darker green is better (faster).}
     \label{tab:colors_avg_overall_mm}
     \begin{tabular}{|l|r|r|r|r|}
     \hline
@@ -1107,7 +1127,7 @@ There are multiple metrics we could look into when analyzing the results. Since 
 \end{table}
 
 
-While the primary metric for comparison is the success rate, it does not offer as interesting differences as the durations above. However, it is an important piece of information to be read along with the duration comparison to understand the relations of different line search methods better. The succcessrates are listed in the following tables \ref{tab:colors_success_mss} and \ref{tab:colors_success_ne} in a similar manner colored column-wise but this time coloring only the unoptimal results with red.
+While the success rate is the primary metric for comparison, it does not offer as interesting differences as the average overall duration. However, it is an essential piece of information to be addressed along with the duration comparison to understand the relations of different line search methods better. The following tables \ref{tab:colors_success_mss} and \ref{tab:colors_success_ne} display the success rates with a similar column-wise coloring but this time with only the below-average cells colored as red.
 
 
 \begin{table}[H]
@@ -1150,7 +1170,7 @@ While the primary metric for comparison is the success rate, it does not offer a
 \end{table}
 
 
-In addition to comparing the average performance, an important factor to consider is the consistency of the results. The boxplots in figures \ref{fig:boxplot_mss} and \ref{fig:boxplot_ne} give us valuable insight of the variance of the algorithm's performance. The box plot is generated so that half of the test points are included in the box area and the best and worse 25 \% are shown as whiskers above and below the box. The orange line within the box shows the actual average duration.
+In addition to comparing the average performance, an important factor to consider is the consistency of the results. The boxplots in figures \ref{fig:boxplot_mss} and \ref{fig:boxplot_ne} give us valuable insight of the variance of the algorithms' performance. The box plot displays half of the test points within the main box area. The figure shows the best and worse 25 \% as whiskers above and below the box. The orange line inside the boxes shows the average duration.
 
 
 \begin{figure}[H]
@@ -1174,88 +1194,67 @@ In addition to comparing the average performance, an important factor to conside
 %https://towardsdatascience.com/understanding-boxplots-5e2df7bcbd51
 
 
-
-% From the tables \ref{tab:scores_rank_target_function} to \ref{tab:scores_duration_main_method} we can clearly see that there are indeed some differences between the performances of the methods. Analysing the per target function ranking table (table \ref{tab:scores_rank_target_function}), which takes into account both the success rate and average duration, we can see that Armijo's Search has the best total results in both target function scenarios. Not that far behind is Dichotomous Search and also Golden Section Search with really solid performances. The worst performer was Bisection Search followed by Uniform and Newton's Searches. While Uniform Search was expected to score bad due to its straight forward nature, it is a bit suprising to see both methods using derivatives score so low on the comparison. This is however a fact that may well be heavily effected by the selection of target functions alone.
-
-% While the table \ref{tab:scores_rank_main_method} tells us mostly the same story as the previous one, there are still some interesting new aspects to note from here. First and foremost it seems that while Armijo's Search is still superior in overall performance, it severely lacks behind in performance in case of Newton's Method. Looking back at the raw results in tables \ref{tab:performance_results_MSS_NM} and \ref{tab:performance_results_NE_NM}, we can see that this is indeed the case but only for combination of Newton's Method with Matrix Square Sum target function. Overall the results seem to have taken a surprising turn in case of Newton's Method since the overall worst performers Uniform Search, Newton's Search and even Constant Search have scored the highest ranks for this setup. And while Golden Section Search seems to have scored pretty average score, a closer look into the table \ref{tab:performance_results_MSS_NM} reveals that the differences in performance were minimal, which can be clearly seen if we..
-
 \subsubsection*{Constant Search}
 
-Since Constant Search simply provides constant step sizes it should provide a good baseline for comparing other line search methods. The exeuction of Constant Search does basically cost zero time, so the main stress remains on the main method. This way we may be able to conclude something about the baseline performance of the main methods as well.
+Constant Search always gives a constant step size and therefore provides an excellent baseline to compare the other line search methods with. The execution of Constant Search costs zero time, so the burden of optimization remains on the main method.
 
-Looking at the overall durations of Constant Search in table \ref{tab:colors_avg_overall} and the success rates at tables \ref{tab:colors_success_mss} and \ref{tab:colors_success_ne} we can quickly see that the Constant Search is the worse performing method as expected. The only scenario where constant step sizes prove themselves as rather effective are when optimizing the Negative Entropy function using Gradient Descent or Heavy Ball methods. In those cases, Constant Search was actually the best or second to best performer. This is due to the overall effectivity of gradient descent based methods for the said problem in general, and since the Constant Search is the fastest to execute, it provides a slightly better performance. This can be proven to be the case when looking at the overall duration and line search duration columns in tables \ref{tab:performance_results_NE_GDM} and \ref{tab:performance_results_NE_HBM}: most of the overall duration is from the line searches.
+Looking at the overall durations of Constant Search in table \ref{tab:colors_avg_overall} and the success rates in tables \ref{tab:colors_success_mss} and \ref{tab:colors_success_ne}, we can see that the Constant Search is generally the worst-performing method as expected. The only scenarios where constant step size proves to be rather effective are when optimizing the Negative Entropy function using Gradient Descent or Heavy Ball methods. In those two cases, the Constant Search was the best or second-best performer. With NE problem gradient descent based methods seem to perform well in general, and since the Constant Search does not require any time to execute, it gives high overall performances as well. We can confirm this conclusion by looking at the overall and line search duration columns in tables \ref{tab:performance_results_NE_GDM} and \ref{tab:performance_results_NE_HBM}, where most of the overall duration consists of the line search duration alone.
 
-Looking at the box plots in \ref{fig:boxplot_mss} and \ref{fig:boxplot_ne} Constant Search is clearly the worst performer by not just absolute durations but also due to the high variance of results. The only expection to this are the two previously mentioned cases when optimizing Negative Entropy with Gradient Descent based methods, where Constant Search scores one of the lowest variances.
+Looking at the box plots in figures \ref{fig:boxplot_mss} and \ref{fig:boxplot_ne} Constant Search is again the worst performer by not just absolute durations but also by the high variance of results. The only two exceptions to this are the previously mentioned cases of NE+GD and NE+HBM, where Constant Search scores one of the lowest variances.
 
 \subsubsection*{Golden Section Search}
 
-Comparing the overall results in tables \ref{tab:colors_avg_overall_mm} and \ref{tab:colors_avg_overall}, we immediately notice from the solid green colored rows that Golden Section Search is one of the best performers. The success rates of this methods are also great as it does, like most methods tested, find the correct solution in almost all of the test cases.
-
-The Golden Section Search has average variances as can be seen from box plots, which combined with one of the lowest average durations make this method one of the best of the tested line searches.
+Comparing the overall results in tables \ref{tab:colors_avg_overall_mm} and \ref{tab:colors_avg_overall}, we immediately notice from the green-colored cells that Golden Section Search is one of the best performing line searches. The success rates of this method are great, and it does, like most methods tested, find the correct solution in almost all of the test cases. The variances of Golden Section Search's durations are approximately on the same level as the other line searches as can be seen from box plots.
 
 \subsubsection*{Bisection Search}
 
-Bisection Search does perform rather poorly in our test setup. It scores the second lowest total success rate, though only losing by 0.4 percentile units to others in the case of Matrix Square Sum optimized with Newton's Method. The performance is especially poor when optimizing Matrix Square Sum function and barely average with other setups, causing the overall score to be the average of the tested methods.
-
-Judging by the box plots, the Bisection Method does also show a bit higher variances in performance than other methods especially in the case of Matrix Square Sum.
+Bisection Search does perform rather poorly in our test setup. It scores the second-lowest total success rate, though only losing by 0.4 percentile points to others in the single case of MSS+NM. The overall performance is especially weak with MSS problem and barely average with other setups, causing it to land around the middle of the scale of line search methods in the overall score table. The box plots also show that the Bisection Method does have higher variances in performance than other methods, especially with the MSS problem.
 
 \subsubsection*{Dichotomous Search}
 
-In our first tests Dichotomous Search was one of the slower methods due to not reaching the correct minimums within the set max iterations. However, lowering the precision slightly proved to be especially helpful for this method, which ultimately turned out as one of the stronger methods, by even outperforming Golden Section Search in Matrix Square Sum optimization and scoring very similar overall scores. The success rates are also identical and reviewing variance from box plots shows no significant differences between the two methods, which share the second best place in our comparison.
+In our first tests, Dichotomous Search was one of the slower methods due to not reaching the correct solutions within the given max iteration limit. However, lowering the main method tolerance proved to be especially helpful for this method, which ultimately turned out as one of the stronger methods. It even outperforms Golden Section Search in MSS optimization and scores almost equally in overall scores. The success rates are also identical and reviewing variance from box plots shows no significant differences between the two methods sharing the second-best place in our comparison.
 
 \subsubsection*{Fibonacci Search}
 
-Fibonacci Search scores a slightly above average results in our performance tests, and performs much better in Negative Entropy optimization when compared to other line searche's performances. The success rates are average and variances are at the same level with Dichotomous and Golden Section Searches.
+Fibonacci Search scores above-average in overall results and much higher with the NE problem when compared to other line searches. The success rates are in order and variances are at the same level as Dichotomous and Golden Section Searches'.
 
-Our implementation of Fibonacci Search does compute each Fibonacci number live without storing them. This proved to not be an issue since the largest Fibonacci reached was around $F_{50}$. A non-official test was also performed with precomputed Fibonacci numbers, and it only improved the overall performance by approximately 10\%. For real life applications precomputation should definitely be added if possible.
+Our implementation of Fibonacci Search computes each Fibonacci number during runtime without memorizing them. The solution proved not to be an issue since the highest Fibonacci number reached was around $F_{50}$. A quick test with precomputed Fibonacci numbers showed at most 10\% improvement in performance when using memorization. For real-life applications, precomputation should probably be added if possible.
 
 \subsubsection*{Uniform Search}
 
-Uniform Search is known to be slow and not very sophisticated method. This also shows in the performance as it scores averagely on Matrix Square Sum and below average for Negative Entropy. Uniform Search also struggles especially with Negative Entropy when using Conjugate Gradient Method, where it often reaches max iteration limits. This is likely due to the way we limit the domain using the Domain Limiter (algorithm \ref{alg:domain_limiter}). Overall, Uniform Search scored second lowest performances with average success rates and above average variances.
+Uniform Search is expected to be slow since it is pretty straight forward and inefficient algorithm. The inefficiency can also be seen in the results as the algorithm scores averagely on MSS problem and below average in NE. Uniform Search also struggles to stay within the 10000 max iteration limit with NE problem when using Conjugate Gradient Method. This is possibly due to the way we implemented the positive domain using the Domain Limiter (algorithm \ref{alg:domain_limiter}). Uniform Search scores second-lowest in overall performance with average success rates and above-average variances.
 
 \subsubsection*{Newton's Search}
 
-Similarily to Uniform Search, Newton's Search has average performance when optimizing Matrix Square Sum but quickly falls behind in the case of Negative Entropy. Newton's Search also causes multiple warnings of max iterations reached regardless of the max iteration limit used. However, the method does eventually end up providing good enough step sizes so that success rates stayed average. It seems that the method does not converge properly when combined with the Domain Limiter which alters the step size given by the derivatives. Because of this, a way smaller max iteration limit of just 100 or 1000 iterations proved much more effective in the case of Negative Entropy. Due to this and the use of domain limiter, the results of Newton's Search for Negative Entropy are more unreliable than in case of Matrix Square Sum. This is confirmed by the box plots as well: Newton's Search has some of the largest variances in performance of optimizing the Negative Entropy function.
+Similarily to Uniform Search, Newton's Search has average performance when optimizing MSS problem but quickly falls behind in the case of NE. Newton's Search also seems to hit the max iterations limit with NE, but the method ends up still providing good enough step sizes so that success rates stay high. It seems that the method does not fully converge when combined with the domain limiter, which alters the step size given by the derivatives. Because of this, even though it does not make sense in real life implementation, a way smaller max iteration limit of just 100 or 1000 iterations proved to be much more effective for the NE problem. Because of this, the results of Newton's Search for NE are more unreliable than in the case of the MSS problem. The same effect is visible in the box plots as well: Newton's Search's durations have an extremely high variance when optimizing the Negative Entropy function.
 
 \subsubsection*{Armijo's Search}
 
-Armijo's Search proves to be the overall best performing method of the tested line searches. It has the best performance in five categories out of eight, and is right on par with the top performers in the rest of the categories as well. It also has a slightly better success rate than any other method on Matrix Square Sum optimization when using Gradient Descent or Heavy Ball Method. The overall performance is also approximately 10\% better than the next best overall performance of Golden Section Search. There are some differences in the variances: Armijo's Search has a slightly higher variance in Matrix Square Sum using Newton's Method but it outperforms most other method's variances when using other methods for the same function. For Negative Entropy the Armijo's Search has clearly lower variances than other methods.
+Armijo's Search proves to be the best overall performing method of the tested line searches. It has the best performance in five categories out of eight and is right on par with the top performers in the rest of the categories as well. It also has a slightly better success rate than any other method on MSS+GD and MSS+HBM test cases. Armijo's Search has a slightly higher variance in some scenarios than other line searches, but still easily outperforms other methods most of the time. Especially for NE problem, the Armijo's Search has lower variances than any other method.
 
-\subsection{Assumptions}
+\subsection{Assumptions and further performance improvements}
 
-The results introduced in this thesis contain a number of assumptions as all research usually does. The assumptions made in this paper are discussed here briefly.
+The assumptions and choices made during the research are discussed here briefly. One major factor affecting the results is that there are only two types of different optimization problems considered. Even though the randomization of parameters adds some variety in Matrix Square Sum problem, both of the target functions remain relatively simple. Both of the problems are also convex and have a single global maximum, making the solving easier than if there were multiple local maxima present. The way MSS's parameters are randomized is also a factor to consider. The methods for randomization of the parameters and building a positive-definite matrix $A$ described in section \ref{sect:matrix_square_sum} only yield a limited variety of functions. In the case of Negative Entropy, a domain limiter is used to ensure that values stay within the correct domain, which potentially causes issues with the line searches. Few line searches even struggled to converge at all in some scenarios.
 
-One major factor to take into account when considering the results shown in this thesis is that there are only two types of different target functions that the methods are used for. Even though some variety is added by the randomization of parameters in Matrix Square Sum, both of the target functions remain relatively simple. The randomization of MSS parameters is also one factor to take into account. Randomized values are generated using different random seeds of 0 to 999 matching the index of starting points. The randomized values are selected from the range $[-0.5, 0.5]$ and the way multiplier matrix $A$ is confirmed to be positive-definite only yields certain type of matrices. Therefore this can not be held as a totally comprehensive study of a signle type of target function either.
+Another factor to consider is the starting points used. While, in theory, we could raise the point count indefinitely, the solution for evenly distributing the points should provide decent results even with lower point counts. However, the range from which we generate the points could have been set higher than ten.
 
-Another major factor to discuss is the method we use for picking values for the optimization methods. Since the problem of picking the absolute best parameters is really complex in itself, the method of picking a set of options and then comparing the performance of each permutation separately for each setup, is justified. However, by implementing a better parameter selection, such as increasing the number of options and test cases, we can likely reach better results for each optimization methods. The tradeoff would be a higher computation time to find the optimal parameters, and while the results would highly likely improve, we can not know by how much.
+Choosing the optimal parameter values is also a significant factor in performance comparison. Since the problem of choosing the absolute best parameters is complex in itself, it is justified to pick a set of options and then compare the performance of each permutation. However, by implementing a better parameter selection, such as increasing the number of options, test cases, and iterations used, we can likely reach better results for each optimization method. The tradeoff would naturally be a higher computation time required to find the optimal parameters.
 
-Some factors in performance are also extremly difficult to review accurately. These include the actual implementation of the methods which varies in different sources. Most notably one difference seems to be the positioning of the stopping condition within the main methods: some sources suggest that it is better to check the condition before updating the point but in our implementation the check is always done just after the update. Another optimization that could be done is the pre-calculation of line search values. This means that we pre-evaluate and save the values for each different input for each line search so that instead of running the algorithm during runtime we simply get the pre-evaluated value from our dictionary. \cite{book:convex_optimization} \cite{book:nonlinear_programming}
+Some factors in performance are difficult to review accurately. These include the actual implementation of the methods which varies in different sources. One difference, in particular, seems to be the position of the stopping condition within the main methods. Some sources suggest that it is better to check the condition before updating the point. However, in our implementation, the check is done just after the update. \cite{book:convex_optimization} \cite{book:nonlinear_programming}
 
-In addition, factors like choice programming language and CPU or GPU performance may effect the optimal results. The tests within this thesis are performed with Python 3.7.3 using a multiprocessing library and an Intel i5-8500K CPU. Different implementations and programming languages, such as moving the heavy calculations to GPU's, may for example optimize matrix calculations differently causing potentially unexpected differences within otherwise same test setups. For this reason, if the goal is to fully optimize the process, one is suggested to always run the performance testing separately for each test setup in use.
+Another possible optimization is the pre-calculation of line search values. This means that we pre-evaluate and save the values for each different input for each line search so that instead of running the algorithm, we get the pre-evaluated value from our dictionary. \cite{book:convex_optimization}
 
-% While it is relatively clear that different parameters produce different results and performance, it is a really complex problem to choose the absolute best values for each parameter. Often picking a value for one parameter also effects the optimal values for other parameters and therefore we consider 
-
-
-% To make the results completely comprehensive we should consider all existing functions as possible target functions. However as this is practically impossible, one substantial way to improve the coverage would be increasing the number of target functions: other similar research has used up to 80 different problems to calculate the performance for \cite{monotone_line_search_performance},
-
-% Another major factor in increasing the reliability of the results are the starting points. In this research we limited the area of where the points were generated to $[-10, 10]$ or $]0, 10]$ depending on the domain of the target function. In a perfect world we could test the algorithms for every single starting point. Even though that is practically impossible, a wider range of points could be utilized. Anyways the selection of starting point is very target function related and should always be considered per function. In addition the number of starting points tested could be raised within the computing power available.
-
-
-% - parameter selection
-%   - manually set options
-%   - low iteration count on comparison
-% - domain limiter
-%   - parameter
-
+Factors like the choice of programming language and CPU or GPU performance may affect the optimal results. We performed the tests in this thesis with Python 3.7.3 using a multiprocessing library and an Intel i5-8500K CPU. Different implementations and programming languages may, for example, optimize matrix calculations differently causing potentially unexpected differences within otherwise identical scenarios. For this reason, if the goal is to optimize the optimization process completely, it is suggested to run the performance testing separately for each test setup used.
 
 
 \section{Conclusion and Future Research}
 
-To conclude with a strict ranking for different line search methods, we should consider many more scenarios making the computation exponentially more complex. However, what we can conclude is the answer to the question introduced in the very beginning of this thesis: the choice of line search method seems to have a varying size of impact on the performance of an optimization method. Comparing the known to be worst line search methods with the best ones, there are differences of up to a single magnitude of ten. The difference in performance for the best and second best method is around 11 \% and the fourth is around 23 \% slower than the fastest one.
 
-Continuing from here with a goal of generalizing the results further, I would definitely focus on increasing the number of target functions first. The only issue in this would be that the optimal parameters are likely to change with the target functions, forcing us to re-run the comparisons and find new values for all the parameters. Since this requires very high computation times, a better method for parameter selection should be implemented prior to adding new target functions. This could be something simple such as deciding a strict set of few options for each parameter but then the final results could be highely intefered by the limited parameter values.
+The choice of line search method seems to have a varying size of an impact on the performance of an optimization method. Comparing just the overall average duration caused by different line searches, it seems that the worst line search is several times slower than the best one. The difference in performance for the best and second-best method is around 11 \%, and the third one is around 16 \% slower than the fastest one.
 
-To conclude, I would say it could be worth it to perform further research using the methods we introduce in this thesis but only if the targeted problem is something worth spending a while just to reach a potentially very slight optimization. In turn, if we would like to compare for example another set of line search methods, main methods or target functions, we should probably focus on finding better solutions to the choice of optimal parameters problems first.
+For future research, we would suggest increasing the number of target functions and increasing the starting point value range. However, there is even more constraining issue we would need to tackle first: the optimal parameters are likely to change with the setups, forcing us to re-run the parameter comparisons and find new values for all the parameters. Since this requires high computation times, we should implement a better method for parameter selection before adding new target test scenarios. A simple solution could even be to decide a strict but well-reasoned set of few options for each parameter. We could base the value options, for example, on other previous research of the line search methods.
+
+So, is it worth it to optimize the choice of line search method as an additional parameter of an unconstrained nonlinear optimization method? Judging by the results of this paper, we would say yes - sometimes. In particular, we believe the subject could use further research to make the results more comprehensive, but with the current results, we can show that there are indeed performance differences between the line searches. However, the results are not surprising, and the methods that we generally consider to be efficient are, in fact, the best choices in most use cases. There might exist problems for which some algorithms fit better than others, and therefore if the goal is to optimize a single problem as thoroughly as possible, the choice of line search method might be worth considering as an additional parameter. As long as a decent line search method is used in the first place, optimizing its parameters might be a better idea than looking for an alternative line search algorithm.
 
 % %
 % % LÄHDELUETTELO
@@ -1279,6 +1278,7 @@ To conclude, I would say it could be worth it to perform further research using 
 \newpage
 \appendix
 \section{Appendix}
+\label{sect:appendix}
 % TODO: enable
 \input{parameters.tex}
 
