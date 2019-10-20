@@ -129,47 +129,30 @@
 
 \section{Introduction}
 
-%% Juho
 Unconstrained nonlinear optimization has numerous real-life applications in different fields of science and technology such as in computational biology, machine learning, and finance.
-% There are a number of sources for real-life unconstrained nonlinear optimization problems from different fields of sciences and technologies. 
 In general, an unconstrained optimization problem can be formulated as
 \begin{equation}\label{eq:minfx}
     \mathrm{min}_{\vect{x} \in \R^n} f(\vect{x}),
 \end{equation}
 
-%% Juho
-where $f : \R^n \rightarrow \R$ is called an \emph{objective function} (or a \emph{target function}), and we are looking for a \emph{solution} vector $\vect{x}^* \in \R^n$ that minimizes the value of $f$ such that $f(\vect{x}^*) \leq f(\vect{x})$ for all $\vect{x}\in \R^n$. There are several different optimization algorithms (or methods) that can be used to solve the problem \eqref{eq:minfx}, e.g., Newton's method and ... However, the performances of different optimization methods typically vary significantly for different objective functions $f$, and it can be difficult to find the best solution method for a given problem instance. For example, we may use a different method when $f$ is convex compared to when $f$ is non-convex and has multiple local optima. Moreover, some methods are feasible only when $f$ satisfies certain properties, such as being continuously differentiable up to $n$ times.
-% Depending on the methods used, there may also be additional requirements for $f$, such as being continuously differentiable up to $n$ times or being convex i.e. having one unique global minimum.
-%% Juho
-While there are countless real-life problems that satisfy these conditions, they are often extremely complex and finding a global minimizing solution can be difficult. 
-% While there are a number of real-life problems that do satisfy these conditions they are often extremely complex. 
-Therefore, artificial problems are often used instead in developing and testing optimization algorithms. \cite{test_function_collection_artifical}
+where $f : \R^n \rightarrow \R$ is called an \emph{objective function} (or a \emph{target function}), and we are looking for a \emph{solution} vector $\vect{x}^* \in \R^n$ that minimizes the value of $f$ such that $f(\vect{x}^*) \leq f(\vect{x})$ for all $\vect{x}\in \R^n$. There are several different optimization algorithms (or methods) that can be used to solve the problem \eqref{eq:minfx}, e.g., Newton's and Conjugate Gradient methods \cite{book:nonlinear_programming}. However, the performances of different optimization methods typically vary significantly for different objective functions $f$, and it can be difficult to find the best solution method for a given problem instance. For example, we may use a different method when $f$ is convex compared to when $f$ is non-convex and has multiple local optima. Moreover, some methods are feasible only when $f$ satisfies certain properties, such as being continuously differentiable up to $n$ times.
 
-%% Juho
-In general, optimization algorithms are iterative processes that harness the raw processing power of computers efficiently by exploiting the properties of the target function $f$ in order for it to converge to an optimal solution.
-% The optimization algorithms are iterative processes that abuse the properties of the target function combined with the raw processing powers of computers.
-%% Juho
+While there are countless real-life problems that satisfy these conditions, they are often extremely complex and finding a global minimizing solution can be difficult.
+Therefore, artificial problems are often used instead in developing and benchmarking optimization algorithms. \cite{test_function_collection_artifical}
+
+In general, optimization algorithms are iterative processes that harness the processing power of computers efficiently by exploiting the properties of the target function $f$ in order for it to converge to an optimal solution.
+
 The commonly used optimization methods typically start from a given point, choose a direction and a step size, and move to a new point. Then, different stopping criteria can be used to check if a minimizing solution has been found, and if not, the process is repeated until a minimum solution is reached or some other condition, such as maximum time limit or iteration count, is exceeded.
-% The commonly used methods are based on the same principle of having some termination condition checking if the minimum was found, and if not, continuing by choosing a direction and a step size and moving to the next point and repeating. 
-%% Juho
+
 The step size is often computed by a separate \emph{line search} algorithm. After computing the target function value $f(\vect{x}')$ at a given point $\vect{x}'\in \R$, and a new direction $\vect{d}\in \R^n$, the line search function takes the form $f(\vect{x}' + \lambda \vect{d})$ which is a one-dimensional function of the step size $\lambda\in \R$. Line search algorithms try to find the value of $\lambda$ that minimizes this function, i.e., they try to solve the problem
 \begin{equation}\label{eq:ls}
 \mathop{\text{argmin}}_{\lambda\in \R} f(\vect{x}' + \lambda \vect{d})
 \end{equation}
 either approximately or exactly. Thus, line search algorithms are basically univariate optimization methods. Similarly to the multidimensional optimization methods, there are a number of different algorithms for finding the optimal step size, the simplest being just using a constant step size $\lambda$ for every iteration. 
-% The step size is often chosen by a separate algorithm called a line search, which transforms the target function into one-dimensional function of step size $\lambda$ and using the new function to calculate the optimal step size for each iteration of the main method. Similarly to the main methods, there are a number of different algorithms for finding the optimal step size, the simplest being just using a constant $\lambda$ for every iteration.
 
-In this thesis, we will investigate the effects of different line search algorithms on the overall performance of different optimization methods.
-%% Juho
-We focus primarily on the use cases presented in the Nonlinear Optimization course that was lectured in Fall 2018 in Aalto University.
-% The thesis focuses primarily on the use cases introduced in the Nonlinear Optimization (2018-2019) course in the Aalto University.
-% Since this bachelor's thesis will not be completely comprehensive,
-%% Juho
-The main goal of this thesis is to investigate  how different line search algorithms affect the performance of optimization methods for unconstrained nonlinear optimization problems.
-% The main goal will be answering the question, will the selection of line searches effect the main method's performance and if so, by how much?
-%% Juho
-In addition, we will carefully analyze the performance differences caused by the different line search methods with the goal of providing a suggestions on how the line search methods could be ranked.
-% In addition, we will be making a comparison of performance differences caused by the line searches in a very specific testing setup with goal of providing a suggestion of how the line search methods could be ranked.
+In this thesis, we will investigate the effects of different line search algorithms on the overall performance of different optimization methods. The optimization methods investigated are mostly based on the algorithms represented in the Nonlinear Optimization course that was lectured in Fall 2018 and 2019 in Aalto University.
+
+The main goal of this thesis is to investigate how different line search algorithms affect the performance of optimization methods for unconstrained nonlinear optimization problems on a general level. In addition, we will analyze the performance differences caused by the different line search methods with the goal of finding metrics that give us the best overall view of the algorithm's performance.
 
 \subsection{Organization of this thesis}
 
@@ -216,21 +199,14 @@ In addition, we will carefully analyze the performance differences caused by the
 
 
 One of the biggest factors affecting the performance of an optimization algorithm is the target function of the problem we are solving. 
-%% Juho
 In this thesis we are going to examine two different problems with convex and differentiable target functions $f : \R^n \rightarrow \R$ of dimension $n = 50$. 
-% In this thesis we are going to focus on two different problems or target functions. Both of the functions are convex and differentiable since some of the methods tested require these two properties. To increase the complexity of the problems a bit, we are going solve both problems in 50-dimensions i.e. setting $n = 50$ for the functions when they're defined in $\R^n$ or similar domain.
-
 
 \subsubsection{Step size function}
 
-%% Juho
 Each optimization method involves computing a step at each iteration which is an optimization problem of the form \eqref{eq:ls}. In practice, at iteration $k$ we are at a point $\vect{x}^k$ and have computed the new direction vector $\vect{d}^k$. To simplify notation, we can define a step size function $g_{\vect{x}^k, \vect{d}^k}(\lambda) = f(\vect{x}^k + \lambda \vect{d}^k)$ for each of the target functions. Then at each iteration $k$ of the main optimization method, a new step size function is generated with the updated point $\vect{x}^k$ and direction vector $\vect{d}^k$.
-% Each optimization method involves a step in form of $\mathrm{argmin}_{\lambda \in \mathbb{R}} {f(\vect{x} + \lambda \vect{d}})$. In practice we are going to define a step size function $g_{\vect{x}, \vect{d}}(\lambda) = f(\vect{x} + \lambda \vect{d})$ related to each of the target functions. Then on each iteration of the main optimization method, a new step size function is generated with the updated point $\vect{x}$ and direction vector $\vect{d}$.
-
 
 \subsubsection{Matrix Square Sum}
 \label{sect:matrix_square_sum}
-
 
 The Matrix Square Sum is an extension to the Sum of Squares Function, which is defined as
 \begin{equation}
@@ -248,16 +224,10 @@ While $A$ could in theory be any $m \times n$ matrix, we are limiting it to be a
 \begin{equation}
     A = A + (\abs{\lambda_{min}} + d) I,
 \end{equation}
-where $\lambda_{min}$ is the minimal eigenvalue of $A$ and $d$ is a constant. The value of $d$ also determines $A$'s condition number defined as $\frac{\lambda_{max}}{\lambda_{min}}$ [REF] Smaller values of $d$ make the function more elliptic and harder for gradient methods to solve, while larger values produce more circular gradient curves, which makes the problem easier for certain methods like Gradient Descent [REF]. The value of $d$ used in the thesis is 5, resulting in condition numbers of around 6.5.
-
-%% Juho
+where $\lambda_{min}$ is the minimum eigenvalue of $A$ and $d$ is a constant. The value of $d$ also determines $A$'s condition number defined as $\frac{\lambda_{max}}{\lambda_{min}}$ \cite{book:numberical_linear_algebra}. Smaller values of $d$ make the function more elliptic and harder for gradient methods to solve, while larger values produce higher condition numbers and more circular gradient curves, which makes the problem easier for certain methods like Gradient Descent \cite{book:introduction_continuous_optimization}. The value of $d$ used in the thesis is 5, resulting in condition numbers of around 6.5.
 The values of $b = (b_1,\dots,b_n) \in \R^n$ and $c\in \R$ are also randomly generated so that $b_i \in [-0.5, 0.5]$ and $c \in [-0.5, 0.5]$.
-% The values of $b$ and $c$ are also randomized so that for each element of $b$ applies $b_i \in [-0.5, 0.5]$ and $c$ is a scalar randomly generated from range $[-0.5, 0.5]$.
 
-%% Juho
 Some of the optimization methods need to compute the function's gradient and Hessian matrix at every iteration. Also, some step size algorithms need the first and second derivatives of the step size function. In this case, we can compute the gradient and the Hessian of both function in advance. 
-% Some of the optimization methods require access to the function's gradient, Hessian matrix and the step size function with its first two derivatives, so let's calculate them in advance.
-% While at it, 
 We should also derive the formula for calculating the correct optima so we can use it to determine whether our algorithms produce the correct solutions. Let us begin by expanding the function into a more easily differentiable form:
 \begin{align*}
     f(\vect{x}) &= \norm{A \vect{x} + \vect{b}} ^ 2 + c \norm{\vect{x}} ^ 2 \\
@@ -332,7 +302,7 @@ Finally, the step size function for $\lambda$ with its first two derivatives are
     g''(\lambda) &= \sum_{i=1}^{n} \frac{d_i^2}{x_i + \lambda d_i}.
 \end{align}
 
-Because the domain of the function \eqref{eq:negent}  has only positive numbers, we have to make some changes to our starting points, parameters and algorithms. Therefore, the iteration points must have only positive coordinates. To enforce this, the following domain limiter described in Algorithm \ref{alg:domain_limiter} was added to the line search algorithms to prevent the iteration points becoming negative:
+Because the domain of the function \eqref{eq:negent} has only positive numbers, we have to make some changes to our starting points, parameters and algorithms. Therefore, the iteration points must have only positive coordinates. To enforce this, the following domain limiter described in Algorithm \ref{alg:domain_limiter} was added to the line search algorithms to prevent the iteration points becoming negative:
 
 \begin{algorithm}[H]
 \caption{Domain Limiter}
@@ -354,21 +324,21 @@ than others.
 \subsection{Optimization Methods}
 
 
-In this thesis, all nonlinear unconstrained optimization methods are called \emph{main methods}. The main methods usually follow the same formula: start from some point $x_0$, select a step direction $d_k$ and a step size $\lambda_k$, then update the next point $x_{k + 1} = x_k + \lambda_k d_k$ and repeat until a method specific termination condition is reached. Choosing the step direction $\lambda$ is an optimization problem of its own and is solved by the line search methods introduced in the section \ref{sect:line_search_methods}. \cite{book:nonlinear_programming}
+In this thesis, all nonlinear unconstrained optimization methods are called \emph{main methods}. The main methods usually follow the same formula: start from some point $x^0$, select a step direction $d^k$ and a step size $\lambda^k$, then update the next point $x^{k + 1} = x^k + \lambda^k d^k$ and repeat until a method specific termination condition is reached. Choosing the step direction $\lambda$ is an optimization problem of its own and is solved by the line search methods introduced in the section \ref{sect:line_search_methods}. \cite{book:nonlinear_programming}
 
 
 \subsubsection{Newton's Method}
 
 
-Newton's method (see Algorithm \ref{alg_newtons}) is \todo{source?} commonly used for finding global minimums for differentiable and convex functions. The algorithm is a more general version of its line search (or univariate) version, utilizing the gradient and hessian matrix of the function instead of its first and second single derivatives. Algorithm \ref{alg_newtons} terminates if (i) the euclidean norm of the gradient $||\nabla f(x)||$ is less than some small tolerance $l > 0$, or (ii) the max iteration count $k_{\text{max}}$ is exceeded.  
+Newton's method (see Algorithm \ref{alg_newtons}) is a more general version of its line search (or univariate) version (see \ref{sect:newtonssearch}), utilizing the gradient and hessian matrix of the function instead of its first and second single derivatives. Algorithm \ref{alg_newtons} terminates if (i) the euclidean norm of the gradient $||\nabla f(x)||$ is less than some small tolerance $l > 0$, or (ii) the max iteration count $k_{\text{max}}$ is exceeded.  
 
 \begin{algorithm}[H]
 \caption{Newton's Method}
 \label{alg_newtons}
 \begin{algorithmic}[1]
 \STATE \textbf{initialize} $l > 0, k = 0$, $k_{max} \in \N$, $\vect{x} = \vect{x_0} \in \R^n$, step size function $g_{\vect{x}, \vect{d}}(\lambda)$ and line search method $L$.
-\WHILE{$\norm{\nabla \theta(\vect{x})} > l$ \AND $k < k_{max}$}
-    \STATE $\vect{d} = -H(\vect{x})^{-1} \nabla \theta(\vect{x})$
+\WHILE{$\norm{\nabla f(\vect{x})} > l$ \AND $k < k_{max}$}
+    \STATE $\vect{d} = -H(\vect{x})^{-1} \nabla f(\vect{x})$
     \STATE $\lambda = L(g_{\vect{x}, \vect{d}})$
     \STATE $\vect{x} = \vect{x} + \lambda \vect{d}$
     \STATE $k = k + 1$
@@ -388,8 +358,8 @@ Gradient descent method (Algorithm \ref{alg_gradient_descent}) can be interprete
 \label{alg_gradient_descent}
 \begin{algorithmic}[1]
 \STATE \textbf{initialize} $l > 0, k = 0$, $k_{max} \in \N$, $\vect{x} = \vect{x_0} \in \R^n$, step size function $g_{\vect{x}, \vect{d}}(\lambda)$ and line search method $L$.
-\WHILE{$\norm{\nabla \theta(\vect{x})} > l$ \AND $k < k_{max}$}
-    \STATE $\vect{d} = -\nabla \theta(\vect{x})$
+\WHILE{$\norm{\nabla f(\vect{x})} > l$ \AND $k < k_{max}$}
+    \STATE $\vect{d} = -\nabla f(\vect{x})$
     \STATE $\lambda = L(g_{\vect{x}, \vect{d}})$
     \STATE $\vect{x} = \vect{x} + \lambda \vect{d}$
     \STATE $k = k + 1$
@@ -401,27 +371,27 @@ Gradient descent method (Algorithm \ref{alg_gradient_descent}) can be interprete
 
 \subsubsection{Conjugate Gradient Method}
 
-%% Juho
-Conjugate gradient method (Algorithm \ref{alg_conjugate_gradient}) uses information from the previous and current iterations to compute the next iteration point. To compute a good direction, it tries to obtain an approximation of the inverse Hessian using a number of successive gradient ratio calculations. The method should theoretically \todo{source?} require less steps than gradient descent method.
-% Conjugate gradient method uses the information from the previous and current iterations to calculate ratio of gradients to calculate optimal next point. The method should theoretically \todo{source?} require less steps than gradient descent method.
-The algorithm involves a second loop which runs for $n$ times per every iteration inside the main loop, where $n$ is equal to the dimension of the problem (i.e., $n = \mathrm{dim}(\vect{x})$). These inner iterations are included in the total iteration count in all computational tests of this thesis.
+
+Conjugate gradient method (Algorithm \ref{alg_conjugate_gradient}) uses information from the previous and current iterations to compute the next iteration point. To compute a good direction, it tries to obtain an approximation of the inverse Hessian using a number of successive gradient ratio calculations. The method should theoretically require less steps than gradient descent method. \cite{book:introduction_continuous_optimization}
+
+The algorithm involves a second loop which runs for $n$ times per every iteration inside the main loop, where $n$ is equal to the dimension of the problem (i.e., $n = \mathrm{dim}(\vect{x})$). Each of these inner iterations is counted as an iteration of the algorithm within the performance tests in this thesis.
 
 \begin{algorithm}[H]
 \caption{Conjugate Gradient Method}
 \label{alg_conjugate_gradient}
 \begin{algorithmic}[1]
 \STATE \textbf{initialize} $l > 0, k = 0$, $k_{max} \in \N$, $\alpha \in \R$, $\vect{x} = \vect{x_0} \in \R^n$, step size function $g_{\vect{x}, \vect{d}}(\lambda)$ and line search method $L$.
-\STATE $\vect{d} = -\nabla \theta(\vect{x})$
-\WHILE{$\norm{\nabla \theta(\vect{x})} > l$ \AND $k < k_{max}$}
+\STATE $\vect{d} = -\nabla f(\vect{x})$
+\WHILE{$\norm{\nabla f(\vect{x})} > l$ \AND $k < k_{max}$}
     \STATE $\vect{y} = \vect{x}$
     \FOR{$i = 1 \dots n$}
         \STATE $\lambda = L(g_{\vect{y}, \vect{d}})$
         \STATE $\vect{y_{prev}} = \vect{y}$, \ $\vect{y} = \vect{y} + \lambda \vect{d}$
-        \STATE $\alpha = \frac{\nabla \theta(\vect{y})^2}{\nabla \theta(\vect{y_{prev}})^2}$
-        \STATE $\vect{d} = -\nabla \theta(\vect{y}) + \alpha \vect{d}$
+        \STATE $\alpha = \frac{\nabla f(\vect{y})^2}{\nabla f(\vect{y_{prev}})^2}$
+        \STATE $\vect{d} = -\nabla f(\vect{y}) + \alpha \vect{d}$
         \STATE $k = k + 1$
     \ENDFOR
-    \STATE $\vect{x} = \vect{y}$, \ $\vect{d} = \nabla \theta(\vect{x})$
+    \STATE $\vect{x} = \vect{y}$, \ $\vect{d} = \nabla f(\vect{x})$
 \ENDWHILE
 \RETURN $\lambda$
 \end{algorithmic}
@@ -430,17 +400,15 @@ The algorithm involves a second loop which runs for $n$ times per every iteratio
 
 \subsubsection{Heavy Ball Method}
 
-%% Juho
-Heavy ball method (Algorithm \ref{alg_heavy_ball}) is basically an extension of the Gradient descent with an extra term in the direction vector calculation step. The name of the method comes from the \todo{source?} physical representation of the momentum of a ball rolling downhill. The Heavy Ball method is similar to the Gradient descent but it has an additional term with a multiplier $\beta \in [0, 1)$ in the descent direction $d$ in line 3.
-% Heavy ball method is basically an extension of gradient descent as only adds one term for the direction vector calculation step. The name of the method comes from the \todo{source?} physical representation of momentum of a ball rolling downhill. The algorithm for the method is basically the same as Gradient descent with a single additional term with multiplier $\beta$ in descent direction $d$.
+Heavy ball method (Algorithm \ref{alg_heavy_ball}) is basically an extension of the Gradient descent with an extra term in the direction vector calculation step. The name of the method comes from an analogue to the physical representation of a heavy sphere in a potential field \cite{book:heavy_ball_origin}. The Heavy Ball method is similar to the Gradient descent but it has an additional term with a multiplier $\beta \in [0, 1)$ in the descent direction $d$ in line 3.
 
 \begin{algorithm}[H]
 \caption{Heavy Ball Method}
 \label{alg_heavy_ball}
 \begin{algorithmic}[1]
 \STATE \textbf{initialize} $l > 0, k = 0$, $k_{max} \in \N$, $\beta \in \R$, $\vect{x} = \vect{x_{prev}} = \vect{x_0} \in \R^n$, step size function $g_{\vect{x}, \vect{d}}(\lambda)$ and line search method $L$.
-\WHILE{$\norm{\nabla \theta(\vect{x})} > l$ \AND $k < k_{max}$}
-    \STATE $\vect{d} = -\nabla \theta(\vect{x}) + \beta (\vect{x} - \vect{x_{prev}})$
+\WHILE{$\norm{\nabla f(\vect{x})} > l$ \AND $k < k_{max}$}
+    \STATE $\vect{d} = -\nabla f(\vect{x}) + \beta (\vect{x} - \vect{x_{prev}})$
     \STATE $\lambda = L(g_{\vect{x}, \vect{d}})$
     \STATE $\vect{x_{prev}} = \vect{x}$, \ $\vect{x} = \vect{x} + \lambda \vect{d}$
     \STATE $k = k + 1$
@@ -455,11 +423,9 @@ Heavy ball method (Algorithm \ref{alg_heavy_ball}) is basically an extension of 
 \subsection{Line Search Methods}
 \label{sect:line_search_methods}
 
-%% Juho
 Most line search methods are based on a similar idea: choose a range of values and reduce it based on function evaluations until some stopping condition is satisfied. There are also approximate approaches like backtracking search, while some line search methods exploit the derivatives of the target function.
-% Most line search methods are based on similar ideas: pick a section and begin reducing it until some stopping condition is satisfied. There are also other approaches like backtracking search and different methods exploiting the derivatives of the target function.
 
-There are also multiple small variations of the same methods available on different sources in the internet and print. Different sources also often tend to suggest different recommended values for the line search parameters. Because of limited resources available for optimizing the parameter selection, we decided to go with self evaluated options for the parameters with little to no inspiration from the external sources. \cite{book:convex_optimization} \cite{book:nonlinear_programming} 
+There are also multiple small variations of the same methods available on different sources in the internet and print. Different sources also often tend to suggest different recommended values for the line search parameters. Because of limited resources available for optimizing the parameter selection, we decided to go with self evaluated options for the parameters with little to no comparison with external sources. \cite{book:convex_optimization} \cite{book:nonlinear_programming} 
 
 
 \subsubsection{Constant Step Size}
@@ -482,7 +448,7 @@ $\lambda$ & 0.0001, 0.1, 0.25, 0.5, 0.9 & 0.1, 0.25, 0.5 \\
 \end{tabular}
 \end{table}
 
-Because Constant Search has some convergence issues with some of the configurations with the test values listed in table \ref{tab:params_ConstantSearch}, a different set of values must be used for some main methods. For Matrix Square Sum and Newton's Method the test values for parameter $\lambda$ are $\{0.5, 0.9, 1.0, 1.1, 1.5\}$. For Negative Entropy different values are used for Newton's Method and Conjugate Gradient Methods: $\{0.1, 0.25, 0.5, 0.9\}$ and $\{0.0001, 0.1, 0.15, 0.2\}$, respectively.
+Because Constant Search has some convergence issues with some of the configurations with the test values listed in table \ref{tab:params_ConstantSearch}, a different set of values must be used for some main methods. For Matrix Square Sum and Newton's Method the test values for parameter $\lambda$ are $(0.5, 0.9, 1.0, 1.1, 1.5)$. For Negative Entropy different values are used for Newton's Method and Conjugate Gradient Methods: $(0.1, 0.25, 0.5, 0.9)$ and $(0.0001, 0.1, 0.15, 0.2)$, respectively.
 
 
 \subsubsection{Golden Section Search}
@@ -718,6 +684,7 @@ $l$ & 1e-06, 1e-08 & 1e-05, 1e-06 \\
 
 
 \subsubsection{Newton's Search}
+\label{sect:newtonssearch}
 
 
 Newton's search is another line search that uses the derivatives of the target function. It exploits the function's quadratic approximations which yields an equation of second order differential. This means that the target function must be differentiable twice. \cite{book:nonlinear_programming}
@@ -814,7 +781,7 @@ To get reliable results with the different parameter and method combinations, we
 
 For parameter selection, we are going to use just ten starting points since the number of parameter options already increases the required iteration count by a lot. For the actual performance tests, we are going to use 1000 starting points generated similarily.
 
-We also need to decide some range from which the points are generated. Thus, let a single starting point be $x = \{x_1, x_2, \dots x_{50}\}$. For matrix square sum problem the points are generated so that for each point $x$ applies $x_i \in  [-10, 10]\ \forall\ i = 1 \dots 50$. Because negative entropy problem's domain is $\R_{>0}$, the same rule applies but with the bounds being $]0, 10]$ instead.
+We also need to decide some range from which the points are generated. Thus, let a single starting point be $x = (x_1, x_2, \dots x_{50})$. For matrix square sum problem the points are generated so that for each point $x$ applies $x_i \in  [-10, 10]\ \forall\ i = 1 \dots 50$. Because negative entropy problem's domain is $\R_{>0}$, the same rule applies but with the bounds being $]0, 10]$ instead.
 
 Since we are interested in overall performance, we want the starting points to be random but evenly distributed so that no two points are the same, or too close to each other. To generate a point distribution which is random but evenly packed with points, we use the following algorithm.
 
@@ -837,7 +804,7 @@ Since we are interested in overall performance, we want the starting points to b
         \STATE $\vect{x}_q = \vect{y}$
     \ENDIF
 \ENDWHILE
-\RETURN $\{ x_1, x_2, ..., x_p\}$
+\RETURN $(x_1, x_2, ..., x_p)$
 \end{algorithmic}
 \end{algorithm}
 
