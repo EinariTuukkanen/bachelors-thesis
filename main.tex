@@ -135,7 +135,7 @@ In general, an unconstrained optimization problem can be formulated as
     \mathrm{min}_{\vect{x} \in \R^n} f(\vect{x}),
 \end{equation}
 
-where $f : \R^n \rightarrow \R$ is called an \emph{objective function} (or a \emph{target function}), and we are looking for a \emph{solution} vector $\vect{x}^* \in \R^n$ that minimizes the value of $f$ such that $f(\vect{x}^*) \leq f(\vect{x})$ for all $\vect{x}\in \R^n$. There are several different optimization algorithms (or methods) that can be used to solve the problem \eqref{eq:minfx}, e.g., Newton's and Conjugate Gradient methods \cite{book:nonlinear_programming}. However, the performances of different optimization methods typically vary significantly for different objective functions $f$, and it can be difficult to find the best solution method for a given problem instance. For example, we may use a different method when $f$ is convex compared to when $f$ is non-convex and has multiple local optima. Moreover, some methods are feasible only when $f$ satisfies certain properties, such as being continuously differentiable up to $n$ times.
+where $f : \R^n \rightarrow \R$ is called an \emph{objective function} (or a \emph{target function}), and we are looking for a \emph{solution} vector $\vect{x}^* \in \R^n$ that minimizes the value of $f$ such that $f(\vect{x}^*) \leq f(\vect{x})$ for all $\vect{x}\in \R^n$. There are several different optimization algorithms (or methods) that can be used to solve the problem \eqref{eq:minfx}, e.g., Newton's and conjugate gradient methods \cite{book:nonlinear_programming}. However, the performances of different optimization methods typically vary significantly for different objective functions $f$, and it can be difficult to find the best solution method for a given problem instance. For example, we may use a different method when $f$ is convex compared to when $f$ is non-convex and has multiple local optima. Moreover, some methods are feasible only when $f$ satisfies certain properties, such as being continuously differentiable up to $n$ times.
 
 While there are countless real-life problems that satisfy these conditions, they are often extremely complex and finding a global minimizing solution can be difficult.
 Therefore, artificial problems are often used instead in developing and benchmarking optimization algorithms. \cite{test_function_collection_artifical}
@@ -302,7 +302,7 @@ Finally, the step size function for $\lambda$ with its first two derivatives are
     g''(\lambda) &= \sum_{i=1}^{n} \frac{d_i^2}{x_i + \lambda d_i}.
 \end{align}
 
-Because the domain of the function \eqref{eq:negent} has only positive numbers, we have to make some changes to our starting points, parameters and algorithms. Therefore, the iteration points must have only positive coordinates. To enforce this, the following domain limiter described in Algorithm \ref{alg:domain_limiter} was added to the line search algorithms to prevent the iteration points becoming negative:
+Because the domain of the function \eqref{eq:negent} has only positive numbers, we have to make some changes to our starting points, parameters and algorithms. Therefore, the iteration points must have only positive coordinates. To enforce this, a domain limiter (see algorithm \ref{alg:domain_limiter}) was added to the line search algorithms to prevent the iteration points becoming negative.
 
 \begin{algorithm}[H]
 \caption{Domain Limiter}
@@ -330,7 +330,7 @@ In this thesis, all nonlinear unconstrained optimization methods are called \emp
 \subsubsection{Newton's Method}
 
 
-Newton's method (see Algorithm \ref{alg_newtons}) is a more general version of its line search (or univariate) version (see \ref{sect:newtonssearch}), utilizing the gradient and hessian matrix of the function instead of its first and second single derivatives. Algorithm \ref{alg_newtons} terminates if (i) the euclidean norm of the gradient $||\nabla f(x)||$ is less than some small tolerance $l > 0$, or (ii) the max iteration count $k_{\text{max}}$ is exceeded.  
+Newton's method (see algorithm \ref{alg_newtons}) is a more general version of its line search (or univariate) version (see \ref{sect:newtonssearch}), utilizing the gradient and hessian matrix of the function instead of its first and second single derivatives. Algorithm \ref{alg_newtons} terminates if (i) the euclidean norm of the gradient $||\nabla f(x)||$ is less than some small tolerance $l > 0$, or (ii) the max iteration count $k_{\text{max}}$ is exceeded.  
 
 \begin{algorithm}[H]
 \caption{Newton's Method}
@@ -351,7 +351,7 @@ Newton's method (see Algorithm \ref{alg_newtons}) is a more general version of i
 \subsubsection{Gradient Descent Method}
 
 
-Gradient descent method (Algorithm \ref{alg_gradient_descent}) can be interpreted as a first order Newton's method, as it uses only the gradient to determine the step direction. The algorithm is otherwise exactly the same as Newton's method except for the computation of the descent direction $d$ in line 3.
+Gradient descent method (algorithm \ref{alg_gradient_descent}) can be interpreted as a first order Newton's method, as it uses only the gradient to determine the step direction. The algorithm is otherwise exactly the same as Newton's method except for the computation of the descent direction $d$ in line 3.
 
 \begin{algorithm}[H]
 \caption{Gradient Descent Method}
@@ -372,7 +372,7 @@ Gradient descent method (Algorithm \ref{alg_gradient_descent}) can be interprete
 \subsubsection{Conjugate Gradient Method}
 
 
-Conjugate gradient method (Algorithm \ref{alg_conjugate_gradient}) uses information from the previous and current iterations to compute the next iteration point. To compute a good direction, it tries to obtain an approximation of the inverse Hessian using a number of successive gradient ratio calculations. The method should theoretically require less steps than gradient descent method. \cite{book:introduction_continuous_optimization}
+Conjugate gradient method (algorithm \ref{alg_conjugate_gradient}) uses information from the previous and current iterations to compute the next iteration point. To compute a good direction, it tries to obtain an approximation of the inverse Hessian using a number of successive gradient ratio calculations. The method should theoretically require less steps than gradient descent method. \cite{book:introduction_continuous_optimization}
 
 The algorithm involves a second loop which runs for $n$ times per every iteration inside the main loop, where $n$ is equal to the dimension of the problem (i.e., $n = \mathrm{dim}(\vect{x})$). Each of these inner iterations is counted as an iteration of the algorithm within the performance tests in this thesis.
 
@@ -400,7 +400,8 @@ The algorithm involves a second loop which runs for $n$ times per every iteratio
 
 \subsubsection{Heavy Ball Method}
 
-Heavy ball method (Algorithm \ref{alg_heavy_ball}) is basically an extension of the Gradient descent with an extra term in the direction vector calculation step. The name of the method comes from an analogue to the physical representation of a heavy sphere in a potential field \cite{book:heavy_ball_origin}. The Heavy Ball method is similar to the Gradient descent but it has an additional term with a multiplier $\beta \in [0, 1)$ in the descent direction $d$ in line 3.
+
+Heavy ball method (algorithm \ref{alg_heavy_ball}) is basically an extension of the Gradient descent with an extra term in the direction vector calculation step. The name of the method comes from an analogue to the physical representation of a heavy sphere in a potential field \cite{book:heavy_ball_origin}. The Heavy Ball method is similar to the Gradient descent but it has an additional term with a multiplier $\beta \in [0, 1)$ in the descent direction $d$ in line 3 \cite{ghadimi2014global}.
 
 \begin{algorithm}[H]
 \caption{Heavy Ball Method}
@@ -417,6 +418,22 @@ Heavy ball method (Algorithm \ref{alg_heavy_ball}) is basically an extension of 
 \end{algorithmic}
 \end{algorithm}
 
+\begin{table}[H]
+\captionof{table}{Parameters tested for heavy ball method.}
+\label{tab:params_HeavyBallMethod}
+\centering
+\rowcolors{2}{white}{gray!5}
+\begin{tabular}{|c|c|c|}
+\hline
+\rowcolor{gray!25}
+Parameter & MatrixSquareSum & NegativeEntropy \\
+\hline
+$\beta_{HBM}$ & 0.1, 0.5, 1.0, 5.0, 10.0 & 0.1, 0.5, 1.0 \\
+\hline
+\end{tabular}
+\end{table}
+
+As seen in the parameters table (table \ref{tab:params_HeavyBallMethod}), also values outside of the regular range of $\beta \in [0, 1)$ were tested as some of them performed better in our performance tests than the more common values.
 
 
 \subsection{Line Search Methods}
@@ -433,7 +450,7 @@ There are also multiple small variations of the same methods available on differ
 While not actually a search, the use of single step size value $\lambda$ is sometimes enough to provide correct and high performance solutions for the main methods. In this thesis the constant step size $\lambda$ is considered as one of the search methods to provide a more comprehensive comparison.
 
 \begin{table}[H]
-\captionof{table}{Parameters tested for ConstantSearch}
+\captionof{table}{Parameters tested for constant step size.}
 \label{tab:params_ConstantSearch}
 \centering
 \rowcolors{2}{white}{gray!5}
@@ -447,14 +464,15 @@ $\lambda$ & 0.0001, 0.1, 0.25, 0.5, 0.9 & 0.1, 0.25, 0.5 \\
 \end{tabular}
 \end{table}
 
-Because Constant Search has some convergence issues with some of the configurations with the test values listed in table \ref{tab:params_ConstantSearch}, a different set of values must be used for some main methods. For Matrix Square Sum and Newton's Method the test values for parameter $\lambda$ are $(0.5, 0.9, 1.0, 1.1, 1.5)$. For Negative Entropy different values are used for Newton's Method and Conjugate Gradient Methods: $(0.1, 0.25, 0.5, 0.9)$ and $(0.0001, 0.1, 0.15, 0.2)$, respectively.
+Because constant step size causes some convergence issues with some of the configurations with the test values listed in table \ref{tab:params_ConstantSearch}, a different set of values must be used for some main methods. For Matrix Square Sum and Newton's Method the test values for parameter $\lambda$ are $(0.5, 0.9, 1.0, 1.1, 1.5)$. For Negative Entropy different values are used for Newton's Method and Conjugate Gradient Methods: $(0.1, 0.25, 0.5, 0.9)$ and $(0.0001, 0.1, 0.15, 0.2)$, respectively.
 
 
 \subsubsection{Golden Section Search}
+\label{sect:golden_section_search}
 
-Golden Section Search is a sequentical line search meaning that it utilizes the previous iterations when calculating the next value for the step size. The name of this method comes from its unique reduction factor of $\phi = 0.618$. \cite{book:nonlinear_programming}
+Golden section search (algorithm \ref{alg_golden_section}) is a sequentical line search meaning that it utilizes the previous iterations when calculating the next value for the step size. The name of this method comes from its unique reduction factor of $\phi = 0.618$. \cite{book:nonlinear_programming}
 
-The parameters tested for Golden Section Search are displayed in table \ref{tab:params_GoldenSectionSearch}.
+The parameters tested for golden section search are displayed in table \ref{tab:params_GoldenSectionSearch}.
 
 \begin{algorithm}[H]
 \caption{Golden Section Search}
@@ -475,7 +493,7 @@ The parameters tested for Golden Section Search are displayed in table \ref{tab:
 \end{algorithm}
 
 \begin{table}[H]
-\captionof{table}{Parameters tested for GoldenSectionSearch}
+\captionof{table}{Parameters tested for golden section search.}
 \label{tab:params_GoldenSectionSearch}
 \centering
 \rowcolors{2}{white}{gray!5}
@@ -492,12 +510,15 @@ $l$ & 1e-04, 1e-07 & 1e-04, 1e-07 \\
 \end{table}
 
 
+Note that the version of the algorithm that was used for the performance testing performed two function calls per iteration even though only one is really necessary. This caused the function call number to be almost twice larger than the actual optimum for golden section search. However, this had little to no impact on the performance metrics we used i.e. the overall duration of the optimization method.
+
+
 \subsubsection{Bisection Search}
 
 
-Bisection search is a line search that uses derivatives to progress. This requires the target functions to be pseudoconvex and therefore differentiable within some closed bounds. \cite{book:nonlinear_programming}.
+Bisection search (algorithm \ref{alg_bisection}) is a line search that uses derivatives to progress. This requires the target functions to be pseudoconvex and therefore differentiable within some closed bounds. \cite{book:nonlinear_programming}.
 
-The parameters tested for Bisection Search are displayed in table \ref{tab:params_BisectionSearch}.
+The parameters tested for bisection search are displayed in table \ref{tab:params_BisectionSearch}.
 
 \begin{algorithm}[H]
 \caption{Bisection Search}
@@ -520,7 +541,7 @@ The parameters tested for Bisection Search are displayed in table \ref{tab:param
 \end{algorithm}
 
 \begin{table}[H]
-\captionof{table}{Parameters tested for BisectionSearch}
+\captionof{table}{Parameters tested for bisection search.}
 \label{tab:params_BisectionSearch}
 \centering
 \rowcolors{2}{white}{gray!5}
@@ -540,7 +561,7 @@ $l$ & 1e-04, 1e-07 & 1e-04, 1e-07 \\
 \subsubsection{Dichotomous Search}
 
 
-Similarily to Golden Section search, Dichotomous search is a sequentical search meaning it uses the past iterations to proceed. Dichotomous search progresses by selecting some closed bounds $[a, b]$ and selecting its mid-point, then selecting new bounds $\epsilon$ away from the midpoint. \cite{book:nonlinear_programming}
+Similarily to golden section search, dichotomous search (algorithm \ref{alg_dichotomous}) is a sequentical search meaning it uses the past iterations to proceed. Dichotomous search progresses by selecting some closed bounds $[a, b]$ and selecting its mid-point, then selecting new bounds $\epsilon$ away from the midpoint. \cite{book:nonlinear_programming}
 
 \begin{algorithm}[H]
 \caption{Dichotomous Search}
@@ -561,7 +582,7 @@ Similarily to Golden Section search, Dichotomous search is a sequentical search 
 \end{algorithm}
 
 \begin{table}[H]
-\captionof{table}{Parameters tested for DichotomousSearch}
+\captionof{table}{Parameters tested for dichotomous search}
 \label{tab:params_DichotomousSearch}
 \centering
 \rowcolors{2}{white}{gray!5}
@@ -578,14 +599,12 @@ $l$ & 1e-05, 1e-09 & 1e-04, 1e-05 \\
 \end{tabular}
 \end{table}
 
-Initial tests show that Dichotomous Search has problems converging with some of the test values displayed in table \ref{tab:params_DichotomousSearch} when using Newton's Method in the Negative Entropy problem. Because of this, a slight adjustment to test parameters is done by giving $a$ a set value of $-10$ for NE + NM combination.
+Initial tests show that dichotomous search has problems converging with some of the test values displayed in table \ref{tab:params_DichotomousSearch} when using Newton's method for the negative entropy problem. Because of this, a slight adjustment to test parameters is done by giving $a$ a set value of $-10$ for NE+NM combination.
 
 
 \subsubsection{Fibonacci Search}
 
-In many ways, Fibonacci Search is similar to previous sequentical searches such as Golden Section search. It also functions over a closed bounds reduces the interval with reduction factors. Instead of a constant reduction factor, Fibonacci seach instead calculates a new factor for each iteration using Fibonacci numbers. \cite{book:nonlinear_programming}
-
-The parameters tested for Fibonacci Search are displayed in table \ref{tab:params_FibonacciSearch}.
+In many ways, Fibonacci search (algorithm \ref{alg_fibonacci}) is similar to previous sequentical searches such as golden section search. It also functions over a closed bounds reduces the interval with reduction factors. Instead of a constant reduction factor, Fibonacci seach instead calculates a new factor for each iteration using Fibonacci numbers. \cite{book:nonlinear_programming}
 
 \begin{algorithm}[H]
 \caption{Fibonacci Search}
@@ -611,10 +630,12 @@ The parameters tested for Fibonacci Search are displayed in table \ref{tab:param
 \end{algorithmic}
 \end{algorithm}
 
-The $F_n$ represents $n$:th Fibonacci number. To optimize algorithm's performance, the values of $F_n$ should be pre-evaluated. After running some quick tests, it seems that the pre-evaluation does not effect performance significantly and so for our implementation we decided to generate the Fibonacci numbers in run-time using a single loop algorithm of time complexity $O(n)$. 
+The $F_n$ represents $n$:th Fibonacci number. To optimize algorithm's performance, the values of $F_n$ should be pre-evaluated. After running some quick tests, it seems that the pre-evaluation does not effect performance significantly and so for our implementation we decided to generate the Fibonacci numbers during run-time using a single loop algorithm of time complexity $O(n)$.
+
+The parameters tested for Fibonacci search are displayed in table \ref{tab:params_FibonacciSearch}.
 
 \begin{table}[H]
-\captionof{table}{Parameters tested for FibonacciSearch}
+\captionof{table}{Parameters tested for Fibonacci search.}
 \label{tab:params_FibonacciSearch}
 \centering
 \rowcolors{2}{white}{gray!5}
@@ -634,12 +655,9 @@ $l$ & 1e-06, 1e-10 & 1e-06, 1e-12 \\
 
 \subsubsection{Uniform Search}
 
-Uniform search divides a bounded section of a function into intervals, then chooses the interval with the lowest value and repeats the process. To increase the precision of the method we may also increase the number of intervals to divide the new interval into. \cite{book:nonlinear_programming}
+Uniform search (algorithm \ref{alg_uniform}) divides a bounded section of a function into intervals, then chooses the interval with the lowest value and repeats the process. To increase the precision of the method we may also increase the number of intervals to divide the new interval into. \cite{book:nonlinear_programming}
 
-More specfically, choose a range $[a, b]$ and split it into $n$ sections, with one section's size being $\delta = \frac{b - a}{n}$. We end up with $n + 1$ subsections, from which we pick a $a_0 + k \delta$ with lowest value, where $k = 0 \dots n$. We then increase the section count by multiplying $n$ with $m \geq 1$ and repeat the process with the new section. \cite{course_material_nonlinear_optimisation}
-
-The parameters tested for Uniform Search are displayed in table \ref{tab:params_UniformSearch}.
-
+More specfically, choose a range $[a, b]$ and split it into $n$ sections, with one section's size being $\delta = \frac{b - a}{n}$. We end up with $n + 1$ subsections, from which we pick a $a_0 + k \delta$ with lowest value, where $k = 0 \dots n$. We then increase the section count by multiplying $n$ with $m \geq 1$ and repeat the process with the new section.
 
 \begin{algorithm}[H]
 \caption{Uniform Search}
@@ -663,7 +681,7 @@ The parameters tested for Uniform Search are displayed in table \ref{tab:params_
 \end{algorithm}
 
 \begin{table}[H]
-\captionof{table}{Parameters tested for UniformSearch}
+\captionof{table}{Parameters tested for uniform search}
 \label{tab:params_UniformSearch}
 \centering
 \rowcolors{2}{white}{gray!5}
@@ -681,12 +699,14 @@ $l$ & 1e-06, 1e-08 & 1e-05, 1e-06 \\
 \end{tabular}
 \end{table}
 
+The parameters tested for uniform search are displayed in table \ref{tab:params_UniformSearch}.
+
 
 \subsubsection{Newton's Search}
 \label{sect:newtonssearch}
 
 
-Newton's search is another line search that uses the derivatives of the target function. It exploits the function's quadratic approximations which yields an equation of second order differential. This means that the target function must be differentiable twice. \cite{book:nonlinear_programming}
+Newton's search (algorithm \ref{alg_newtons}) is another line search that uses the derivatives of the target function. It exploits the function's quadratic approximations which yields an equation of second order differential. This means that the target function must be differentiable twice. \cite{book:nonlinear_programming}
 
 \begin{algorithm}[H]
 \caption{Newton's Search}
@@ -702,7 +722,7 @@ Newton's search is another line search that uses the derivatives of the target f
 \end{algorithm}
 
 \begin{table}[H]
-\captionof{table}{Parameters tested for NewtonsSearch}
+\captionof{table}{Parameters tested for Newton's search}
 \label{tab:params_NewtonsSearch}
 \centering
 \rowcolors{2}{white}{gray!5}
@@ -722,9 +742,9 @@ In addition to the parameters listed in table \ref{tab:params_NewtonsSearch}, th
 
 \subsubsection{Armijo's Search}
 
-Armijo's search is an example of an inexact line search meaning that the step size is chosen to approximately minimize the target function. Armijo's search is also the only backtracking method of the ones included in this thesis. Backtracking means that the initial step size is reduced on every iteration until it satisfies the stopping condition. \cite{book:convex_optimization}
+Armijo's search (algorithm \ref{alg_armijo}) is the only backtracking method of the algorithms included in this thesis. In this context, backtracking is performed by reducing the initial step size on every iteration until it satisfies the stopping condition. \cite{book:convex_optimization}
 
-The parameters tested for Armijo's Search are displayed in table \ref{tab:params_ArmijoSearch}.
+The parameters tested for Armijo's search are displayed in table \ref{tab:params_ArmijoSearch}.
 
 \begin{algorithm}[H]
 \caption{Armijo's Search}
@@ -741,7 +761,7 @@ The parameters tested for Armijo's Search are displayed in table \ref{tab:params
 \end{algorithm}
 
 \begin{table}[H]
-\captionof{table}{Parameters tested for ArmijoSearch}
+\captionof{table}{Parameters tested for Armijo's search}
 \label{tab:params_ArmijoSearch}
 \centering
 \rowcolors{2}{white}{gray!5}
@@ -759,16 +779,16 @@ $l$ & 1e-07 & 1e-07 \\
 \end{table}
 
 
+
 % \section{Methods}
-\section{Parameter Settings}
+\section{Problem Parameter Settings}
 
-
-Our goal is to determine how does the selection of a line search method affect the overall performance of an optimization method. To answer this question, we need first to consider the role of the different parameters.
+In this section we are discussing the choice and effect of different parameters such as the starting points and the actual algorithm's parameters.
 
 \subsection{Parameter Selection}
 \label{sect:parameter_selection}
 
-Optimization method's parameter selection is a whole another research topic and not our primary focus in this thesis. Therefore a straightforward approach for picking the parameters is justified.
+Optimization method's parameter selection is a whole topic of its own and not our primary focus in this thesis. Therefore a straightforward approach for picking the parameters is justified.
 
 Using a similar setup as when comparing the performances of the methods, we can also compare the outcomes with different parameters. Using the manually chosen parameter values presented in the theory section, we can programmatically generate all the permutations for each combination of a parameter, a line search method, the main method, and a target function.
 
@@ -782,10 +802,10 @@ For parameter selection, we are going to use just ten starting points since the 
 
 We also need to decide some range from which the points are generated. Thus, let a single starting point be $x = (x_1, x_2, \dots x_{50})$. For matrix square sum problem the points are generated so that for each point $x$ applies $x_i \in  [-10, 10]\ \forall\ i = 1 \dots 50$. Because negative entropy problem's domain is $\R_{>0}$, the same rule applies but with the bounds being $]0, 10]$ instead.
 
-Since we are interested in overall performance, we want the starting points to be random but evenly distributed so that no two points are the same, or too close to each other. To generate a point distribution which is random but evenly packed with points, we use the following algorithm.
+Since we are interested in overall performance, we want the starting points to be random but evenly distributed so that no two points are the same, or too close to each other. To generate a point distribution which is random but evenly packed with points, we use a method shown in algorithm \ref{alg_x0_distribution}.
 
 \begin{algorithm}[H]
-\caption{Generating Even Distribution of Random Starting Points}
+\caption{Generating Even Distribution of Random Starting Points.}
 \label{alg_x0_distribution}
 \begin{algorithmic}[1]
 \STATE \textbf{initialize} $(d_{min}, x_{min}, x_{max}) \in \R, (n, p) \in \N, \vect{x}_1 = \mathbf{random}_{n}(x_{min}, x_{max})$, $q = 1$
@@ -828,7 +848,7 @@ After generating the points successfully, they are saved into a file and used fo
 
 \subsection{Randomizing Target Function}
 
-In addition to randomizing the starting points, we are going to use randomized parameters for Matrix Square Sum target function. The values of parameters $A$, $b$ and $c$ are going to be randomized as described in section \ref{sect:matrix_square_sum} but for each starting point separately. To control the randomness between runs, we give the function a random seed of the index of the current point. This way, we end up with a number of random functions equal to the number of starting points used. Combined with the saving of points, we can guarantee to get the same setup for each run.
+In addition to randomizing the starting points, we are going to use randomized parameters for matrix square sum target function. The values of parameters $A$, $b$ and $c$ are going to be randomized as described in section \ref{sect:matrix_square_sum} but for each starting point separately. To control the randomness between runs, we give the function a random seed of the index of the current point. This way, we end up with a number of random functions equal to the number of starting points used. Combined with the saving of points, we can guarantee to get the same setup for each run.
 
 % \subsection{Comparing Performance}
 
@@ -847,80 +867,80 @@ After running the performance tests, we are left with the results introduced in 
 
 \begin{center}
 \rowcolors{2}{white}{gray!5}
-\captionof{table}{Average performances of NewtonsMethod when minimizing MatrixSquareSum using different line search methods and 1000 randomly generated starting points}
+\captionof{table}{Average performances of Newton's method when minimizing matrix square sum using different line search methods and 1000 randomly generated starting points.}
 \label{tab:performance_results_MSS_NM}
 \begin{tabular}{|l|r|r|r|r|r|r|}
 \hline
 \rowcolor{gray!25}
 \multicolumn{1}{|c|}{Line Search Name} & \multicolumn{1}{c|}{$s$ (\%)} & \multicolumn{1}{c|}{$t$ (ms)} & \multicolumn{1}{c|}{$k$} & \multicolumn{1}{c|}{$f_n$} & \multicolumn{1}{c|}{$t_{LS}$ (ms)} & \multicolumn{1}{c|}{$k_{LS}$} \\
-ConstantSearch & 100.0 & 445.8 & 1.0 & 7.0 & 0.0 & 0.0 \\
-GoldenSectionSearch & 100.0 & 445.0 & 1.0 & 101.0 & 2.6 & 47.0 \\
-BisectionSearch & 99.6 & 535.9 & 1.0 & 35.0 & 89.0 & 28.0 \\
-DichotomousSearch & 100.0 & 429.1 & 1.0 & 77.0 & 3.3 & 35.0 \\
-FibonacciSearch & 100.0 & 453.2 & 1.0 & 119.0 & 4.5 & 55.0 \\
-UniformSearch & 100.0 & 455.0 & 1.0 & 156.0 & 7.2 & 148.0 \\
-NewtonsSearch & 100.0 & 443.5 & 1.0 & 8.0 & 0.5 & 0.0 \\
-ArmijoSearch & 100.0 & 424.2 & 1.0 & 10.0 & 0.9 & 0.0 \\
+Constant search & 100.0 & 445.8 & 1.0 & 7.0 & 0.0 & 0.0 \\
+Golden section search & 100.0 & 445.0 & 1.0 & 101.0 & 2.6 & 47.0 \\
+Bisection search & 99.6 & 535.9 & 1.0 & 35.0 & 89.0 & 28.0 \\
+Dichotomous search & 100.0 & 429.1 & 1.0 & 77.0 & 3.3 & 35.0 \\
+Fibonacci search & 100.0 & 453.2 & 1.0 & 119.0 & 4.5 & 55.0 \\
+Uniform search & 100.0 & 455.0 & 1.0 & 156.0 & 7.2 & 148.0 \\
+Newton's search & 100.0 & 443.5 & 1.0 & 8.0 & 0.5 & 0.0 \\
+Armijo's search & 100.0 & 424.2 & 1.0 & 10.0 & 0.9 & 0.0 \\
 \hline
 \end{tabular}
 \end{center}
 
 \begin{center}
 \rowcolors{2}{white}{gray!5}
-\captionof{table}{Average performances of GradientDescentMethod when minimizing MatrixSquareSum using different line search methods and 1000 randomly generated starting points}
+\captionof{table}{Average performances of gradient descent method when minimizing matrix square sum using different line search methods and 1000 randomly generated starting points.}
 \label{tab:performance_results_MSS_GDM}
 \begin{tabular}{|l|r|r|r|r|r|r|}
 \hline
 \rowcolor{gray!25}
 \multicolumn{1}{|c|}{Line Search Name} & \multicolumn{1}{c|}{$s$ (\%)} & \multicolumn{1}{c|}{$t$ (ms)} & \multicolumn{1}{c|}{$k$} & \multicolumn{1}{c|}{$f_n$} & \multicolumn{1}{c|}{$t_{LS}$ (ms)} & \multicolumn{1}{c|}{$k_{LS}$} \\
-ConstantSearch & 98.9 & 4681.2 & 2942.0 & 8828.9 & 141.2 & 0.0 \\
-GoldenSectionSearch & 99.4 & 283.7 & 33.1 & 1784.1 & 155.4 & 841.0 \\
-BisectionSearch & 99.4 & 823.5 & 33.0 & 696.6 & 749.8 & 594.5 \\
-DichotomousSearch & 99.4 & 270.1 & 33.1 & 1491.1 & 142.6 & 694.4 \\
-FibonacciSearch & 99.4 & 354.3 & 33.1 & 2615.3 & 238.6 & 1223.5 \\
-UniformSearch & 99.4 & 389.2 & 33.1 & 3508.2 & 282.3 & 3372.9 \\
-NewtonsSearch & 99.4 & 453.3 & 33.1 & 241.2 & 355.7 & 35.3 \\
-ArmijoSearch & 99.6 & 209.3 & 25.8 & 343.2 & 97.9 & 185.5 \\
+Constant search & 98.9 & 4681.2 & 2942.0 & 8828.9 & 141.2 & 0.0 \\
+Golden section search & 99.4 & 283.7 & 33.1 & 1784.1 & 155.4 & 841.0 \\
+Bisection search & 99.4 & 823.5 & 33.0 & 696.6 & 749.8 & 594.5 \\
+Dichotomous search & 99.4 & 270.1 & 33.1 & 1491.1 & 142.6 & 694.4 \\
+Fibonacci search & 99.4 & 354.3 & 33.1 & 2615.3 & 238.6 & 1223.5 \\
+Uniform search & 99.4 & 389.2 & 33.1 & 3508.2 & 282.3 & 3372.9 \\
+Newton's search & 99.4 & 453.3 & 33.1 & 241.2 & 355.7 & 35.3 \\
+Armijo's search & 99.6 & 209.3 & 25.8 & 343.2 & 97.9 & 185.5 \\
 \hline
 \end{tabular}
 \end{center}
 
 \begin{center}
 \rowcolors{2}{white}{gray!5}
-\captionof{table}{Average performances of ConjugateGradientMethod when minimizing MatrixSquareSum using different line search methods and 1000 randomly generated starting points}
+\captionof{table}{Average performances of conjugate gradient method when minimizing matrix square sum using different line search methods and 1000 randomly generated starting points.}
 \label{tab:performance_results_MSS_CGM}
 \begin{tabular}{|l|r|r|r|r|r|r|}
 \hline
 \rowcolor{gray!25}
 \multicolumn{1}{|c|}{Line Search Name} & \multicolumn{1}{c|}{$s$ (\%)} & \multicolumn{1}{c|}{$t$ (ms)} & \multicolumn{1}{c|}{$k$} & \multicolumn{1}{c|}{$f_n$} & \multicolumn{1}{c|}{$t_{LS}$ (ms)} & \multicolumn{1}{c|}{$k_{LS}$} \\
-ConstantSearch & 99.6 & 989.3 & 300.1 & 1216.2 & 23.9 & 0.0 \\
-GoldenSectionSearch & 100.0 & 429.5 & 50.0 & 2722.9 & 198.9 & 1258.5 \\
-BisectionSearch & 100.0 & 1154.9 & 50.0 & 1106.0 & 1003.4 & 900.0 \\
-DichotomousSearch & 100.0 & 426.3 & 50.0 & 2306.0 & 177.1 & 1050.0 \\
-FibonacciSearch & 100.0 & 517.8 & 50.0 & 4006.0 & 298.5 & 1850.0 \\
-UniformSearch & 100.0 & 558.2 & 50.0 & 5356.0 & 348.9 & 5100.0 \\
-NewtonsSearch & 100.0 & 552.8 & 50.6 & 364.0 & 347.5 & 35.0 \\
-ArmijoSearch & 100.0 & 405.3 & 50.0 & 914.8 & 157.6 & 558.8 \\
+Constant search & 99.6 & 989.3 & 300.1 & 1216.2 & 23.9 & 0.0 \\
+Golden section search & 100.0 & 429.5 & 50.0 & 2722.9 & 198.9 & 1258.5 \\
+Bisection search & 100.0 & 1154.9 & 50.0 & 1106.0 & 1003.4 & 900.0 \\
+Dichotomous search & 100.0 & 426.3 & 50.0 & 2306.0 & 177.1 & 1050.0 \\
+Fibonacci search & 100.0 & 517.8 & 50.0 & 4006.0 & 298.5 & 1850.0 \\
+Uniform search & 100.0 & 558.2 & 50.0 & 5356.0 & 348.9 & 5100.0 \\
+Newton's search & 100.0 & 552.8 & 50.6 & 364.0 & 347.5 & 35.0 \\
+Armijo's search & 100.0 & 405.3 & 50.0 & 914.8 & 157.6 & 558.8 \\
 \hline
 \end{tabular}
 \end{center}
 
 \begin{center}
 \rowcolors{2}{white}{gray!5}
-\captionof{table}{Average performances of HeavyBallMethod when minimizing MatrixSquareSum using different line search methods and 1000 randomly generated starting points}
+\captionof{table}{Average performances of heavy ball method when minimizing matrix square sum using different line search methods and 1000 randomly generated starting points.}
 \label{tab:performance_results_MSS_HBM}
 \begin{tabular}{|l|r|r|r|r|r|r|}
 \hline
 \rowcolor{gray!25}
 \multicolumn{1}{|c|}{Line Search Name} & \multicolumn{1}{c|}{$s$ (\%)} & \multicolumn{1}{c|}{$t$ (ms)} & \multicolumn{1}{c|}{$k$} & \multicolumn{1}{c|}{$f_n$} & \multicolumn{1}{c|}{$t_{LS}$ (ms)} & \multicolumn{1}{c|}{$k_{LS}$} \\
-ConstantSearch & 98.9 & 4711.5 & 2941.9 & 8828.8 & 134.5 & 0.0 \\
-GoldenSectionSearch & 99.4 & 227.7 & 24.3 & 1303.4 & 127.1 & 613.8 \\
-BisectionSearch & 99.4 & 666.6 & 24.4 & 514.9 & 607.0 & 438.8 \\
-DichotomousSearch & 99.4 & 209.4 & 24.4 & 904.9 & 99.3 & 414.4 \\
-FibonacciSearch & 99.4 & 353.2 & 32.7 & 2585.0 & 239.5 & 1209.3 \\
-UniformSearch & 99.4 & 322.4 & 24.4 & 2587.4 & 232.0 & 2486.9 \\
-NewtonsSearch & 99.4 & 375.1 & 24.4 & 179.6 & 295.0 & 26.4 \\
-ArmijoSearch & 99.6 & 217.3 & 25.8 & 343.1 & 99.6 & 185.4 \\
+Constant search & 98.9 & 4711.5 & 2941.9 & 8828.8 & 134.5 & 0.0 \\
+Golden section search & 99.4 & 227.7 & 24.3 & 1303.4 & 127.1 & 613.8 \\
+Bisection search & 99.4 & 666.6 & 24.4 & 514.9 & 607.0 & 438.8 \\
+Dichotomous search & 99.4 & 209.4 & 24.4 & 904.9 & 99.3 & 414.4 \\
+Fibonacci search & 99.4 & 353.2 & 32.7 & 2585.0 & 239.5 & 1209.3 \\
+Uniform search & 99.4 & 322.4 & 24.4 & 2587.4 & 232.0 & 2486.9 \\
+Newton's search & 99.4 & 375.1 & 24.4 & 179.6 & 295.0 & 26.4 \\
+Armijo's search & 99.6 & 217.3 & 25.8 & 343.1 & 99.6 & 185.4 \\
 \hline
 \end{tabular}
 \end{center}
@@ -928,80 +948,80 @@ ArmijoSearch & 99.6 & 217.3 & 25.8 & 343.1 & 99.6 & 185.4 \\
 
 \begin{center}
 \rowcolors{2}{white}{gray!5}
-\captionof{table}{Average performances of NewtonsMethod when minimizing NegativeEntropy using different line search methods and 1000 randomly generated starting points}
+\captionof{table}{Average performances of Newton's method when minimizing negative entropy using different line search methods and 1000 randomly generated starting points.}
 \label{tab:performance_results_NE_NM}
 \begin{tabular}{|l|r|r|r|r|r|r|}
 \hline
 \rowcolor{gray!25}
 \multicolumn{1}{|c|}{Line Search Name} & \multicolumn{1}{c|}{$s$ (\%)} & \multicolumn{1}{c|}{$t$ (ms)} & \multicolumn{1}{c|}{$k$} & \multicolumn{1}{c|}{$f_n$} & \multicolumn{1}{c|}{$t_{LS}$ (ms)} & \multicolumn{1}{c|}{$k_{LS}$} \\
-ConstantSearch & 100.0 & 3718.1 & 10.7 & 45.7 & 1.0 & 0.0 \\
-GoldenSectionSearch & 100.0 & 2038.3 & 5.6 & 426.9 & 29.4 & 200.7 \\
-BisectionSearch & 100.0 & 2191.6 & 5.6 & 116.9 & 161.4 & 91.5 \\
-DichotomousSearch & 100.0 & 2231.2 & 6.0 & 265.5 & 52.0 & 119.2 \\
-FibonacciSearch & 100.0 & 2100.7 & 5.6 & 738.5 & 59.0 & 350.9 \\
-UniformSearch & 100.0 & 2316.0 & 6.1 & 510.3 & 132.5 & 476.7 \\
-NewtonsSearch & 100.0 & 2266.0 & 5.7 & 192.6 & 348.6 & 53.7 \\
-ArmijoSearch & 100.0 & 2206.9 & 6.3 & 52.6 & 3.1 & 5.5 \\
+Constant search & 100.0 & 3718.1 & 10.7 & 45.7 & 1.0 & 0.0 \\
+Golden section search & 100.0 & 2038.3 & 5.6 & 426.9 & 29.4 & 200.7 \\
+Bisection search & 100.0 & 2191.6 & 5.6 & 116.9 & 161.4 & 91.5 \\
+Dichotomous search & 100.0 & 2231.2 & 6.0 & 265.5 & 52.0 & 119.2 \\
+Fibonacci search & 100.0 & 2100.7 & 5.6 & 738.5 & 59.0 & 350.9 \\
+Uniform search & 100.0 & 2316.0 & 6.1 & 510.3 & 132.5 & 476.7 \\
+Newton's search & 100.0 & 2266.0 & 5.7 & 192.6 & 348.6 & 53.7 \\
+Armijo's search & 100.0 & 2206.9 & 6.3 & 52.6 & 3.1 & 5.5 \\
 \hline
 \end{tabular}
 \end{center}
 
 \begin{center}
 \rowcolors{2}{white}{gray!5}
-\captionof{table}{Average performances of GradientDescentMethod when minimizing NegativeEntropy using different line search methods and 1000 randomly generated starting points}
+\captionof{table}{Average performances of gradient descent method when minimizing negative entropy using different line search methods and 1000 randomly generated starting points.}
 \label{tab:performance_results_NE_GDM}
 \begin{tabular}{|l|r|r|r|r|r|r|}
 \hline
 \rowcolor{gray!25}
 \multicolumn{1}{|c|}{Line Search Name} & \multicolumn{1}{c|}{$s$ (\%)} & \multicolumn{1}{c|}{$t$ (ms)} & \multicolumn{1}{c|}{$k$} & \multicolumn{1}{c|}{$f_n$} & \multicolumn{1}{c|}{$t_{LS}$ (ms)} & \multicolumn{1}{c|}{$k_{LS}$} \\
-ConstantSearch & 100.0 & 13.1 & 16.3 & 51.8 & 0.8 & 0.0 \\
-GoldenSectionSearch & 100.0 & 53.4 & 8.6 & 400.1 & 47.9 & 185.7 \\
-BisectionSearch & 100.0 & 92.2 & 8.6 & 158.4 & 87.0 & 129.7 \\
-DichotomousSearch & 100.0 & 54.7 & 8.6 & 289.3 & 48.9 & 130.2 \\
-FibonacciSearch & 100.0 & 58.4 & 8.6 & 610.8 & 52.6 & 282.4 \\
-UniformSearch & 100.0 & 121.8 & 10.9 & 889.6 & 114.6 & 842.8 \\
-NewtonsSearch & 100.0 & 458.8 & 8.8 & 687.6 & 453.8 & 216.5 \\
-ArmijoSearch & 100.0 & 11.6 & 10.2 & 96.5 & 5.6 & 32.0 \\
+Constant search & 100.0 & 13.1 & 16.3 & 51.8 & 0.8 & 0.0 \\
+Golden section search & 100.0 & 53.4 & 8.6 & 400.1 & 47.9 & 185.7 \\
+Bisection search & 100.0 & 92.2 & 8.6 & 158.4 & 87.0 & 129.7 \\
+Dichotomous search & 100.0 & 54.7 & 8.6 & 289.3 & 48.9 & 130.2 \\
+Fibonacci search & 100.0 & 58.4 & 8.6 & 610.8 & 52.6 & 282.4 \\
+Uniform search & 100.0 & 121.8 & 10.9 & 889.6 & 114.6 & 842.8 \\
+Newton's search & 100.0 & 458.8 & 8.8 & 687.6 & 453.8 & 216.5 \\
+Armijo's search & 100.0 & 11.6 & 10.2 & 96.5 & 5.6 & 32.0 \\
 \hline
 \end{tabular}
 \end{center}
 
 \begin{center}
 \rowcolors{2}{white}{gray!5}
-\captionof{table}{Average performances of ConjugateGradientMethod when minimizing NegativeEntropy using different line search methods and 1000 randomly generated starting points}
+\captionof{table}{Average performances of conjugate gradient method when minimizing negative entropy using different line search methods and 1000 randomly generated starting points.}
 \label{tab:performance_results_NE_CGM}
 \begin{tabular}{|l|r|r|r|r|r|r|}
 \hline
 \rowcolor{gray!25}
 \multicolumn{1}{|c|}{Line Search Name} & \multicolumn{1}{c|}{$s$ (\%)} & \multicolumn{1}{c|}{$t$ (ms)} & \multicolumn{1}{c|}{$k$} & \multicolumn{1}{c|}{$f_n$} & \multicolumn{1}{c|}{$t_{LS}$ (ms)} & \multicolumn{1}{c|}{$k_{LS}$} \\
-ConstantSearch & 99.9 & 4393.4 & 163.2 & 663.3 & 4248.0 & 0.0 \\
-GoldenSectionSearch & 100.0 & 539.7 & 100.0 & 4681.2 & 451.2 & 2136.6 \\
-BisectionSearch & 100.0 & 759.5 & 100.0 & 1228.3 & 672.9 & 777.8 \\
-DichotomousSearch & 100.0 & 576.4 & 102.7 & 3496.1 & 485.5 & 1538.6 \\
-FibonacciSearch & 100.0 & 623.7 & 100.0 & 7155.1 & 534.0 & 3273.5 \\
-UniformSearch & 100.0 & 6371.1 & 100.0 & 8208.0 & 6277.0 & 7700.0 \\
-NewtonsSearch & 100.0 & 2801.7 & 100.0 & 4147.0 & 2716.9 & 1213.0 \\
-ArmijoSearch & 100.0 & 198.4 & 99.8 & 1119.4 & 112.0 & 412.8 \\
+Constant search & 99.9 & 4393.4 & 163.2 & 663.3 & 4248.0 & 0.0 \\
+Golden section search & 100.0 & 539.7 & 100.0 & 4681.2 & 451.2 & 2136.6 \\
+Bisection search & 100.0 & 759.5 & 100.0 & 1228.3 & 672.9 & 777.8 \\
+Dichotomous search & 100.0 & 576.4 & 102.7 & 3496.1 & 485.5 & 1538.6 \\
+Fibonacci search & 100.0 & 623.7 & 100.0 & 7155.1 & 534.0 & 3273.5 \\
+Uniform search & 100.0 & 6371.1 & 100.0 & 8208.0 & 6277.0 & 7700.0 \\
+Newton's search & 100.0 & 2801.7 & 100.0 & 4147.0 & 2716.9 & 1213.0 \\
+Armijo's search & 100.0 & 198.4 & 99.8 & 1119.4 & 112.0 & 412.8 \\
 \hline
 \end{tabular}
 \end{center}
 
 \begin{center}
 \rowcolors{2}{white}{gray!5}
-\captionof{table}{Average performances of HeavyBallMethod when minimizing NegativeEntropy using different line search methods and 1000 randomly generated starting points}
+\captionof{table}{Average performances of heavy ball method when minimizing negative entropy using different line search methods and 1000 randomly generated starting points.}
 \label{tab:performance_results_NE_HBM}
 \begin{tabular}{|l|r|r|r|r|r|r|}
 \hline
 \rowcolor{gray!25}
 \multicolumn{1}{|c|}{Line Search Name} & \multicolumn{1}{c|}{$s$ (\%)} & \multicolumn{1}{c|}{$t$ (ms)} & \multicolumn{1}{c|}{$k$} & \multicolumn{1}{c|}{$f_n$} & \multicolumn{1}{c|}{$t_{LS}$ (ms)} & \multicolumn{1}{c|}{$k_{LS}$} \\
-ConstantSearch & 100.0 & 8.3 & 14.0 & 45.0 & 0.3 & 0.0 \\
-GoldenSectionSearch & 100.0 & 92.4 & 17.3 & 808.4 & 80.5 & 376.8 \\
-BisectionSearch & 100.0 & 131.7 & 11.8 & 223.7 & 124.6 & 185.4 \\
-DichotomousSearch & 100.0 & 68.8 & 11.8 & 486.5 & 60.9 & 224.1 \\
-FibonacciSearch & 100.0 & 72.1 & 11.8 & 843.4 & 64.3 & 390.8 \\
-UniformSearch & 100.0 & 134.9 & 12.9 & 1051.1 & 126.6 & 996.3 \\
-NewtonsSearch & 100.0 & 541.0 & 12.8 & 806.1 & 533.7 & 250.6 \\
-ArmijoSearch & 100.0 & 15.5 & 14.4 & 113.2 & 6.9 & 23.6 \\
+Constant search & 100.0 & 8.3 & 14.0 & 45.0 & 0.3 & 0.0 \\
+Golden section search & 100.0 & 92.4 & 17.3 & 808.4 & 80.5 & 376.8 \\
+Bisection search & 100.0 & 131.7 & 11.8 & 223.7 & 124.6 & 185.4 \\
+Dichotomous search & 100.0 & 68.8 & 11.8 & 486.5 & 60.9 & 224.1 \\
+Fibonacci search & 100.0 & 72.1 & 11.8 & 843.4 & 64.3 & 390.8 \\
+Uniform search & 100.0 & 134.9 & 12.9 & 1051.1 & 126.6 & 996.3 \\
+Newton's search & 100.0 & 541.0 & 12.8 & 806.1 & 533.7 & 250.6 \\
+Armijo's search & 100.0 & 15.5 & 14.4 & 113.2 & 6.9 & 23.6 \\
 \hline
 \end{tabular}
 \end{center}
@@ -1022,14 +1042,14 @@ The primary metric for measuring algorithm's performance is the success rate of 
     \hline
     \rowcolor[HTML]{C0C0C0} 
     \multicolumn{1}{|c|}{\cellcolor[HTML]{C0C0C0}\textbf{Line Search Method}} & \multicolumn{1}{c|}{\cellcolor[HTML]{C0C0C0}\textbf{NM}} & \multicolumn{1}{c|}{\cellcolor[HTML]{C0C0C0}\textbf{GDM}} & \multicolumn{1}{c|}{\cellcolor[HTML]{C0C0C0}\textbf{CGM}} & \multicolumn{1}{c|}{\cellcolor[HTML]{C0C0C0}\textbf{HBM}} \\ \hline
-    ConstantSearch                                                            & 445,80                                                   & \cellcolor[HTML]{E67B73}4 681,20                          & 989,30                                                    & \cellcolor[HTML]{E67B73}4 711,50                          \\ \hline
-    GoldenSectionSearch                                                       & 445,00                                                   & \cellcolor[HTML]{A3DABF}283,70                            & \cellcolor[HTML]{6DC49A}429,50                            & \cellcolor[HTML]{6DC49A}227,70                            \\ \hline
-    BisectionSearch                                                           & \cellcolor[HTML]{E67B73}535,90                           & \cellcolor[HTML]{FCEDEC}823,50                            & \cellcolor[HTML]{E67B73}1 154,90                          & 666,60                                                    \\ \hline
-    DichotomousSearch                                                         & \cellcolor[HTML]{7BC9A3}429,10                           & \cellcolor[HTML]{A3DABF}270,10                            & \cellcolor[HTML]{6DC49A}426,30                            & \cellcolor[HTML]{7BC9A3}209,40                            \\ \hline
-    FibonacciSearch                                                           & \cellcolor[HTML]{FCEDEC}453,20                           & \cellcolor[HTML]{F0F9F5}354,30                            & \cellcolor[HTML]{F0F9F5}517,80                            & 353,20                                                    \\ \hline
-    UniformSearch                                                             & \cellcolor[HTML]{FCEDEC}455,00                           & 389,20                                                    & 558,20                                                    & \cellcolor[HTML]{F0F9F5}322,40                            \\ \hline
-    NewtonsSearch                                                             & \cellcolor[HTML]{F0F9F5}443,50                           & 453,30                                                    & 552,80                                                    & 375,10                                                    \\ \hline
-    ArmijoSearch                                                              & \cellcolor[HTML]{7BC9A3}424,20                           & \cellcolor[HTML]{7BC9A3}209,30                            & \cellcolor[HTML]{7BC9A3}405,30                            & \cellcolor[HTML]{7BC9A3}217,30                            \\ \hline
+    Constant search                                                            & 445,80                                                   & \cellcolor[HTML]{E67B73}4 681,20                          & 989,30                                                    & \cellcolor[HTML]{E67B73}4 711,50                          \\ \hline
+    Golden section search                                                       & 445,00                                                   & \cellcolor[HTML]{A3DABF}283,70                            & \cellcolor[HTML]{6DC49A}429,50                            & \cellcolor[HTML]{6DC49A}227,70                            \\ \hline
+    Bisection search                                                           & \cellcolor[HTML]{E67B73}535,90                           & \cellcolor[HTML]{FCEDEC}823,50                            & \cellcolor[HTML]{E67B73}1 154,90                          & 666,60                                                    \\ \hline
+    Dichotomous search                                                         & \cellcolor[HTML]{7BC9A3}429,10                           & \cellcolor[HTML]{A3DABF}270,10                            & \cellcolor[HTML]{6DC49A}426,30                            & \cellcolor[HTML]{7BC9A3}209,40                            \\ \hline
+    Fibonacci search                                                           & \cellcolor[HTML]{FCEDEC}453,20                           & \cellcolor[HTML]{F0F9F5}354,30                            & \cellcolor[HTML]{F0F9F5}517,80                            & 353,20                                                    \\ \hline
+    Uniform search                                                             & \cellcolor[HTML]{FCEDEC}455,00                           & 389,20                                                    & 558,20                                                    & \cellcolor[HTML]{F0F9F5}322,40                            \\ \hline
+    Newton's search                                                             & \cellcolor[HTML]{F0F9F5}443,50                           & 453,30                                                    & 552,80                                                    & 375,10                                                    \\ \hline
+    Armijo's search                                                              & \cellcolor[HTML]{7BC9A3}424,20                           & \cellcolor[HTML]{7BC9A3}209,30                            & \cellcolor[HTML]{7BC9A3}405,30                            & \cellcolor[HTML]{7BC9A3}217,30                            \\ \hline
     \end{tabular}
 \end{table}
 
@@ -1041,14 +1061,14 @@ The primary metric for measuring algorithm's performance is the success rate of 
     \hline
     \rowcolor[HTML]{C0C0C0} 
     \multicolumn{1}{|c|}{\cellcolor[HTML]{C0C0C0}\textbf{Line Search Method}} & \multicolumn{1}{c|}{\cellcolor[HTML]{C0C0C0}\textbf{NM}} & \multicolumn{1}{c|}{\cellcolor[HTML]{C0C0C0}\textbf{GDM}} & \multicolumn{1}{c|}{\cellcolor[HTML]{C0C0C0}\textbf{CGM}} & \multicolumn{1}{c|}{\cellcolor[HTML]{C0C0C0}\textbf{HBM}} \\ \hline
-    ConstantSearch                                                            & \cellcolor[HTML]{E67B73}3 718,10                         & \cellcolor[HTML]{57BB89}13,10                             & \cellcolor[HTML]{EFAAA4}4 393,40                          & \cellcolor[HTML]{57BB89}8,30                              \\ \hline
-    GoldenSectionSearch                                                       & \cellcolor[HTML]{57BB89}2 038,30                         & 53,40                                                     & \cellcolor[HTML]{D7EFE3}539,70                            & 92,40                                                     \\ \hline
-    BisectionSearch                                                           & \cellcolor[HTML]{E5F4ED}2 191,60                         & \cellcolor[HTML]{FDF0EF}92,20                             & 759,50                                                    & \cellcolor[HTML]{FDF0EF}131,70                            \\ \hline
-    DichotomousSearch                                                         & 2 231,20                                                 & 54,70                                                     & \cellcolor[HTML]{D7EFE3}576,40                            & \cellcolor[HTML]{E5F4ED}68,80                             \\ \hline
-    FibonacciSearch                                                           & \cellcolor[HTML]{90D2B2}2 100,70                         & 58,40                                                     & \cellcolor[HTML]{E5F4ED}623,70                            & \cellcolor[HTML]{E5F4ED}72,10                             \\ \hline
-    UniformSearch                                                             & \cellcolor[HTML]{FDF0EF}2 316,00                         & \cellcolor[HTML]{FDF0EF}121,80                            & \cellcolor[HTML]{E67B73}6 371,10                          & \cellcolor[HTML]{FDF0EF}134,90                            \\ \hline
-    NewtonsSearch                                                             & 2 266,00                                                 & \cellcolor[HTML]{E67B73}458,80                            & \cellcolor[HTML]{F6CFCB}2 801,70                          & \cellcolor[HTML]{E67B73}541,00                            \\ \hline
-    ArmijoSearch                                                              & \cellcolor[HTML]{E5F4ED}2 206,90                         & \cellcolor[HTML]{57BB89}11,60                             & \cellcolor[HTML]{57BB89}198,40                            & \cellcolor[HTML]{57BB89}15,50                             \\ \hline
+    Constant search                                                            & \cellcolor[HTML]{E67B73}3 718,10                         & \cellcolor[HTML]{57BB89}13,10                             & \cellcolor[HTML]{EFAAA4}4 393,40                          & \cellcolor[HTML]{57BB89}8,30                              \\ \hline
+    Golden section search                                                       & \cellcolor[HTML]{57BB89}2 038,30                         & 53,40                                                     & \cellcolor[HTML]{D7EFE3}539,70                            & 92,40                                                     \\ \hline
+    Bisection search                                                           & \cellcolor[HTML]{E5F4ED}2 191,60                         & \cellcolor[HTML]{FDF0EF}92,20                             & 759,50                                                    & \cellcolor[HTML]{FDF0EF}131,70                            \\ \hline
+    Dichotomous search                                                         & 2 231,20                                                 & 54,70                                                     & \cellcolor[HTML]{D7EFE3}576,40                            & \cellcolor[HTML]{E5F4ED}68,80                             \\ \hline
+    Fibonacci search                                                           & \cellcolor[HTML]{90D2B2}2 100,70                         & 58,40                                                     & \cellcolor[HTML]{E5F4ED}623,70                            & \cellcolor[HTML]{E5F4ED}72,10                             \\ \hline
+    Uniform search                                                             & \cellcolor[HTML]{FDF0EF}2 316,00                         & \cellcolor[HTML]{FDF0EF}121,80                            & \cellcolor[HTML]{E67B73}6 371,10                          & \cellcolor[HTML]{FDF0EF}134,90                            \\ \hline
+    Newton's search                                                             & 2 266,00                                                 & \cellcolor[HTML]{E67B73}458,80                            & \cellcolor[HTML]{F6CFCB}2 801,70                          & \cellcolor[HTML]{E67B73}541,00                            \\ \hline
+    Armijo's search                                                              & \cellcolor[HTML]{E5F4ED}2 206,90                         & \cellcolor[HTML]{57BB89}11,60                             & \cellcolor[HTML]{57BB89}198,40                            & \cellcolor[HTML]{57BB89}15,50                             \\ \hline
     \end{tabular}
 \end{table}
 
@@ -1061,14 +1081,14 @@ The primary metric for measuring algorithm's performance is the success rate of 
     \hline
     \rowcolor[HTML]{C0C0C0} 
     \textbf{Line Search Method} & \multicolumn{1}{c|}{\cellcolor[HTML]{C0C0C0}\textbf{NM}} & \multicolumn{1}{c|}{\cellcolor[HTML]{C0C0C0}\textbf{GDM}} & \multicolumn{1}{c|}{\cellcolor[HTML]{C0C0C0}\textbf{CGM}} & \multicolumn{1}{c|}{\cellcolor[HTML]{C0C0C0}\textbf{HBM}} \\ \hline
-    ConstantSearch              & \cellcolor[HTML]{E67B73}2 081,95                         & \cellcolor[HTML]{E67B73}2 347,15                          & \cellcolor[HTML]{EDA19C}2 691,35                          & \cellcolor[HTML]{E67B73}2 359,90                          \\ \hline
-    GoldenSectionSearch         & \cellcolor[HTML]{57BB89}1 241,65                         & \cellcolor[HTML]{91D2B2}168,55                            & \cellcolor[HTML]{91D2B2}484,60                            & \cellcolor[HTML]{91D2B2}160,05                            \\ \hline
-    BisectionSearch             & 1 363,75                                                 & 457,85                                                    & 957,20                                                    & 399,15                                                    \\ \hline
-    DichotomousSearch           & \cellcolor[HTML]{D2ECDF}1 330,15                         & \cellcolor[HTML]{91D2B2}162,40                            & \cellcolor[HTML]{91D2B2}501,35                            & \cellcolor[HTML]{57BB89}139,10                            \\ \hline
-    FibonacciSearch             & \cellcolor[HTML]{91D2B2}1 276,95                         & \cellcolor[HTML]{D2ECDF}206,35                            & \cellcolor[HTML]{91D2B2}570,75                            & 212,65                                                    \\ \hline
-    UniformSearch               & 1 385,50                                                 & 255,50                                                    & \cellcolor[HTML]{E67B73}3 464,65                          & 228,65                                                    \\ \hline
-    NewtonsSearch               & 1 354,75                                                 & \cellcolor[HTML]{FDF2F1}456,05                            & \cellcolor[HTML]{F7D3D0}1 677,25                          & \cellcolor[HTML]{FDF2F1}458,05                            \\ \hline
-    ArmijoSearch                & \cellcolor[HTML]{D2ECDF}1 315,55                         & \cellcolor[HTML]{57BB89}110,45                            & \cellcolor[HTML]{57BB89}301,85                            & \cellcolor[HTML]{57BB89}116,40                            \\ \hline
+    Constant search              & \cellcolor[HTML]{E67B73}2 081,95                         & \cellcolor[HTML]{E67B73}2 347,15                          & \cellcolor[HTML]{EDA19C}2 691,35                          & \cellcolor[HTML]{E67B73}2 359,90                          \\ \hline
+    Golden section search         & \cellcolor[HTML]{57BB89}1 241,65                         & \cellcolor[HTML]{91D2B2}168,55                            & \cellcolor[HTML]{91D2B2}484,60                            & \cellcolor[HTML]{91D2B2}160,05                            \\ \hline
+    Bisection search             & 1 363,75                                                 & 457,85                                                    & 957,20                                                    & 399,15                                                    \\ \hline
+    Dichotomous search           & \cellcolor[HTML]{D2ECDF}1 330,15                         & \cellcolor[HTML]{91D2B2}162,40                            & \cellcolor[HTML]{91D2B2}501,35                            & \cellcolor[HTML]{57BB89}139,10                            \\ \hline
+    Fibonacci search             & \cellcolor[HTML]{91D2B2}1 276,95                         & \cellcolor[HTML]{D2ECDF}206,35                            & \cellcolor[HTML]{91D2B2}570,75                            & 212,65                                                    \\ \hline
+    Uniform search               & 1 385,50                                                 & 255,50                                                    & \cellcolor[HTML]{E67B73}3 464,65                          & 228,65                                                    \\ \hline
+    Newton's search               & 1 354,75                                                 & \cellcolor[HTML]{FDF2F1}456,05                            & \cellcolor[HTML]{F7D3D0}1 677,25                          & \cellcolor[HTML]{FDF2F1}458,05                            \\ \hline
+    Armijo's search                & \cellcolor[HTML]{D2ECDF}1 315,55                         & \cellcolor[HTML]{57BB89}110,45                            & \cellcolor[HTML]{57BB89}301,85                            & \cellcolor[HTML]{57BB89}116,40                            \\ \hline
     \end{tabular}
 \end{table}
 
@@ -1081,14 +1101,14 @@ The primary metric for measuring algorithm's performance is the success rate of 
     \hline
     \rowcolor[HTML]{C0C0C0} 
     \multicolumn{1}{|c|}{\cellcolor[HTML]{C0C0C0}\textbf{Line Search Method}} & \multicolumn{1}{c|}{\cellcolor[HTML]{C0C0C0}\textbf{MSS}} & \multicolumn{1}{c|}{\cellcolor[HTML]{C0C0C0}\textbf{NE}} & \multicolumn{1}{c|}{\cellcolor[HTML]{C0C0C0}\textbf{OVERALL}} \\ \hline
-    ConstantSearch                                                            & \cellcolor[HTML]{E67B73}2 706,95                          & \cellcolor[HTML]{EDA19C}2 033,23                         & \cellcolor[HTML]{E67B73}2 370,09                              \\ \hline
-    GoldenSectionSearch                                                       & \cellcolor[HTML]{74C79E}346,48                            & \cellcolor[HTML]{A5DABF}680,95                           & \cellcolor[HTML]{74C79E}513,71                                \\ \hline
-    BisectionSearch                                                           & \cellcolor[HTML]{F7D3D0}795,23                            & 793,75                                                   & 794,49                                                        \\ \hline
-    DichotomousSearch                                                         & \cellcolor[HTML]{74C79E}333,73                            & \cellcolor[HTML]{C9E9D9}732,78                           & \cellcolor[HTML]{74C79E}533,25                                \\ \hline
-    FibonacciSearch                                                           & 419,63                                                    & \cellcolor[HTML]{C9E9D9}713,73                           & \cellcolor[HTML]{A5DABF}566,68                                \\ \hline
-    UniformSearch                                                             & 431,20                                                    & \cellcolor[HTML]{E67B73}2 235,95                         & \cellcolor[HTML]{EDA19C}1 333,58                              \\ \hline
-    NewtonsSearch                                                             & 456,18                                                    & \cellcolor[HTML]{EDA19C}1 516,88                         & \cellcolor[HTML]{F7D3D0}986,53                                \\ \hline
-    ArmijoSearch                                                              & \cellcolor[HTML]{57BB89}314,03                            & \cellcolor[HTML]{57BB89}608,10                           & \cellcolor[HTML]{57BB89}461,06                                \\ \hline
+    Constant search                                                            & \cellcolor[HTML]{E67B73}2 706,95                          & \cellcolor[HTML]{EDA19C}2 033,23                         & \cellcolor[HTML]{E67B73}2 370,09                              \\ \hline
+    Golden section search                                                       & \cellcolor[HTML]{74C79E}346,48                            & \cellcolor[HTML]{A5DABF}680,95                           & \cellcolor[HTML]{74C79E}513,71                                \\ \hline
+    Bisection search                                                           & \cellcolor[HTML]{F7D3D0}795,23                            & 793,75                                                   & 794,49                                                        \\ \hline
+    Dichotomous search                                                         & \cellcolor[HTML]{74C79E}333,73                            & \cellcolor[HTML]{C9E9D9}732,78                           & \cellcolor[HTML]{74C79E}533,25                                \\ \hline
+    Fibonacci search                                                           & 419,63                                                    & \cellcolor[HTML]{C9E9D9}713,73                           & \cellcolor[HTML]{A5DABF}566,68                                \\ \hline
+    Uniform search                                                             & 431,20                                                    & \cellcolor[HTML]{E67B73}2 235,95                         & \cellcolor[HTML]{EDA19C}1 333,58                              \\ \hline
+    Newton's search                                                             & 456,18                                                    & \cellcolor[HTML]{EDA19C}1 516,88                         & \cellcolor[HTML]{F7D3D0}986,53                                \\ \hline
+    Armijo's search                                                              & \cellcolor[HTML]{57BB89}314,03                            & \cellcolor[HTML]{57BB89}608,10                           & \cellcolor[HTML]{57BB89}461,06                                \\ \hline
     \end{tabular}
 \end{table}
 
@@ -1104,14 +1124,14 @@ While the success rate is the primary metric for comparison, it does not offer a
     \hline
     \rowcolor[HTML]{C0C0C0} 
     \multicolumn{1}{|c|}{\cellcolor[HTML]{C0C0C0}\textbf{Line Search Method}} & \multicolumn{1}{c|}{\cellcolor[HTML]{C0C0C0}\textbf{NM}} & \multicolumn{1}{c|}{\cellcolor[HTML]{C0C0C0}\textbf{GDM}} & \multicolumn{1}{c|}{\cellcolor[HTML]{C0C0C0}\textbf{CGM}} & \multicolumn{1}{c|}{\cellcolor[HTML]{C0C0C0}\textbf{HBM}} \\ \hline
-    ConstantSearch                                                            & 100,00                                                   & \cellcolor[HTML]{E67B73}98,90                             & \cellcolor[HTML]{E67B73}99,60                             & \cellcolor[HTML]{E67B73}98,90                             \\ \hline
-    GoldenSectionSearch                                                       & 100,00                                                   & \cellcolor[HTML]{F7D9D7}99,40                             & 100,00                                                    & \cellcolor[HTML]{F7D9D7}99,40                             \\ \hline
-    BisectionSearch                                                           & \cellcolor[HTML]{E67B73}99,60                            & \cellcolor[HTML]{F7D9D7}99,40                             & 100,00                                                    & \cellcolor[HTML]{F7D9D7}99,40                             \\ \hline
-    DichotomousSearch                                                         & 100,00                                                   & \cellcolor[HTML]{F7D9D7}99,40                             & 100,00                                                    & \cellcolor[HTML]{F7D9D7}99,40                             \\ \hline
-    FibonacciSearch                                                           & 100,00                                                   & \cellcolor[HTML]{F7D9D7}99,40                             & 100,00                                                    & \cellcolor[HTML]{F7D9D7}99,40                             \\ \hline
-    UniformSearch                                                             & 100,00                                                   & \cellcolor[HTML]{F7D9D7}99,40                             & 100,00                                                    & \cellcolor[HTML]{F7D9D7}99,40                             \\ \hline
-    NewtonsSearch                                                             & 100,00                                                   & \cellcolor[HTML]{F7D9D7}99,40                             & 100,00                                                    & \cellcolor[HTML]{F7D9D7}99,40                             \\ \hline
-    ArmijoSearch                                                              & 100,00                                                   & 99,60                                                     & 100,00                                                    & 99,60                                                     \\ \hline
+    Constant search                                                            & 100,00                                                   & \cellcolor[HTML]{E67B73}98,90                             & \cellcolor[HTML]{E67B73}99,60                             & \cellcolor[HTML]{E67B73}98,90                             \\ \hline
+    Golden section search                                                       & 100,00                                                   & \cellcolor[HTML]{F7D9D7}99,40                             & 100,00                                                    & \cellcolor[HTML]{F7D9D7}99,40                             \\ \hline
+    Bisection search                                                           & \cellcolor[HTML]{E67B73}99,60                            & \cellcolor[HTML]{F7D9D7}99,40                             & 100,00                                                    & \cellcolor[HTML]{F7D9D7}99,40                             \\ \hline
+    Dichotomous search                                                         & 100,00                                                   & \cellcolor[HTML]{F7D9D7}99,40                             & 100,00                                                    & \cellcolor[HTML]{F7D9D7}99,40                             \\ \hline
+    Fibonacci search                                                           & 100,00                                                   & \cellcolor[HTML]{F7D9D7}99,40                             & 100,00                                                    & \cellcolor[HTML]{F7D9D7}99,40                             \\ \hline
+    Uniform search                                                             & 100,00                                                   & \cellcolor[HTML]{F7D9D7}99,40                             & 100,00                                                    & \cellcolor[HTML]{F7D9D7}99,40                             \\ \hline
+    Newton's search                                                             & 100,00                                                   & \cellcolor[HTML]{F7D9D7}99,40                             & 100,00                                                    & \cellcolor[HTML]{F7D9D7}99,40                             \\ \hline
+    Armijo's search                                                              & 100,00                                                   & 99,60                                                     & 100,00                                                    & 99,60                                                     \\ \hline
     \end{tabular}
 \end{table}
 
@@ -1124,19 +1144,21 @@ While the success rate is the primary metric for comparison, it does not offer a
     \hline
     \rowcolor[HTML]{C0C0C0} 
     \multicolumn{1}{|c|}{\cellcolor[HTML]{C0C0C0}\textbf{Line Search Method}} & \multicolumn{1}{c|}{\cellcolor[HTML]{C0C0C0}\textbf{NM}} & \multicolumn{1}{c|}{\cellcolor[HTML]{C0C0C0}\textbf{GDM}} & \multicolumn{1}{c|}{\cellcolor[HTML]{C0C0C0}\textbf{CGM}} & \multicolumn{1}{c|}{\cellcolor[HTML]{C0C0C0}\textbf{HBM}} \\ \hline
-    ConstantSearch                                                            & 100,00                                                   & 100,00                                                    & \cellcolor[HTML]{E67B73}99,90                             & 100,00                                                    \\ \hline
-    GoldenSectionSearch                                                       & 100,00                                                   & 100,00                                                    & 100,00                                                    & 100,00                                                    \\ \hline
-    BisectionSearch                                                           & 100,00                                                   & 100,00                                                    & 100,00                                                    & 100,00                                                    \\ \hline
-    DichotomousSearch                                                         & 100,00                                                   & 100,00                                                    & 100,00                                                    & 100,00                                                    \\ \hline
-    FibonacciSearch                                                           & 100,00                                                   & 100,00                                                    & 100,00                                                    & 100,00                                                    \\ \hline
-    UniformSearch                                                             & 100,00                                                   & 100,00                                                    & 100,00                                                    & 100,00                                                    \\ \hline
-    NewtonsSearch                                                             & 100,00                                                   & 100,00                                                    & 100,00                                                    & 100,00                                                    \\ \hline
-    ArmijoSearch                                                              & 100,00                                                   & 100,00                                                    & 100,00                                                    & 100,00                                                    \\ \hline
+    Constant search                                                            & 100,00                                                   & 100,00                                                    & \cellcolor[HTML]{E67B73}99,90                             & 100,00                                                    \\ \hline
+    Golden section search                                                       & 100,00                                                   & 100,00                                                    & 100,00                                                    & 100,00                                                    \\ \hline
+    Bisection search                                                           & 100,00                                                   & 100,00                                                    & 100,00                                                    & 100,00                                                    \\ \hline
+    Dichotomous search                                                         & 100,00                                                   & 100,00                                                    & 100,00                                                    & 100,00                                                    \\ \hline
+    Fibonacci search                                                           & 100,00                                                   & 100,00                                                    & 100,00                                                    & 100,00                                                    \\ \hline
+    Uniform search                                                             & 100,00                                                   & 100,00                                                    & 100,00                                                    & 100,00                                                    \\ \hline
+    Newton's search                                                             & 100,00                                                   & 100,00                                                    & 100,00                                                    & 100,00                                                    \\ \hline
+    Armijo's search                                                              & 100,00                                                   & 100,00                                                    & 100,00                                                    & 100,00                                                    \\ \hline
     \end{tabular}
 \end{table}
 
 
-In addition to comparing the average performance, an important factor to consider is the consistency of the results. The boxplots in figures \ref{fig:boxplot_mss} and \ref{fig:boxplot_ne} give us valuable insight of the variance of the algorithms' performance. The box plot displays half of the test points within the main box area. The figure shows the best and worse 25 \% as whiskers above and below the box. The orange line inside the boxes shows the average duration.
+In addition to comparing the average performance, an important factor to consider is the consistency of the results. The boxplots in figures \ref{fig:boxplot_mss} and \ref{fig:boxplot_ne} give us valuable insight of the variance of the algorithms' performance.
+
+The durations in the box plots are scaled logarithmically to improve the readability of the figures in scenarios where some methods perform a lot differently from others. The box plot displays half of the datapoints within the main box area. The whiskers above and below the box are configured so that together with the main box body they cover 95\% of the datapoints. The orange line inside the boxes shows the exact mean of the datapoints.
 
 
 \begin{figure}[H]
@@ -1154,51 +1176,52 @@ In addition to comparing the average performance, an important factor to conside
 	\label{fig:boxplot_ne}
 \end{figure}
 
-\todoinline{Explain the box plot method. Apparently the box contains 50\% of the dataset and the lines rest or smthing like that?}
-\todoinline{Should I make separate boxplots with the best searches or something to improve the scale for their comparison?}
 %https://matplotlib.org/3.1.1/gallery/statistics/boxplot_demo.html
 %https://towardsdatascience.com/understanding-boxplots-5e2df7bcbd51
 
 
 \subsubsection*{Constant Search}
 
-Constant Search always gives a constant step size and therefore provides an excellent baseline to compare the other line search methods with. The execution of Constant Search costs zero time, so the burden of optimization remains on the main method.
 
-Looking at the overall durations of Constant Search in table \ref{tab:colors_avg_overall} and the success rates in tables \ref{tab:colors_success_mss} and \ref{tab:colors_success_ne}, we can see that the Constant Search is generally the worst-performing method as expected. The only scenarios where constant step size proves to be rather effective are when optimizing the Negative Entropy function using Gradient Descent or Heavy Ball methods. In those two cases, the Constant Search was the best or second-best performer. With NE problem gradient descent based methods seem to perform well in general, and since the Constant Search does not require any time to execute, it gives high overall performances as well. We can confirm this conclusion by looking at the overall and line search duration columns in tables \ref{tab:performance_results_NE_GDM} and \ref{tab:performance_results_NE_HBM}, where most of the overall duration consists of the line search duration alone.
+Constant search always gives a constant step size and therefore provides an excellent baseline to compare the other line search methods with. The execution of constant search costs zero time, so the burden of optimization remains on the main method.
 
-Looking at the box plots in figures \ref{fig:boxplot_mss} and \ref{fig:boxplot_ne} Constant Search is again the worst performer by not just absolute durations but also by the high variance of results. The only two exceptions to this are the previously mentioned cases of NE+GD and NE+HBM, where Constant Search scores one of the lowest variances.
+Looking at the overall durations of constant search in table \ref{tab:colors_avg_overall} and the success rates in tables \ref{tab:colors_success_mss} and \ref{tab:colors_success_ne}, we can see that the constant search is generally the worst-performing method as expected. The only scenarios where constant step size proves to be rather effective are when optimizing the negative entropy function using gradient descent or heavy ball methods. In those two cases, the constant search was the best or second-best performer. With NE problem gradient descent based methods seem to perform well in general, and since the Constant Search does not require any time to execute, it gives high overall performances as well. We can confirm this conclusion by looking at the overall and line search duration columns in tables \ref{tab:performance_results_NE_GDM} and \ref{tab:performance_results_NE_HBM}, where most of the overall duration consists of the line search duration alone.
+
+Looking at the box plots in figures \ref{fig:boxplot_mss} and \ref{fig:boxplot_ne} constant step size is again the worst performer by not just absolute durations but also by the high variance of results. The only two exceptions to this are the previously mentioned cases of NE+GD and NE+HBM, where constant search scores one of the lowest variances.
 
 \subsubsection*{Golden Section Search}
 
-Comparing the overall results in tables \ref{tab:colors_avg_overall_mm} and \ref{tab:colors_avg_overall}, we immediately notice from the green-colored cells that Golden Section Search is one of the best performing line searches. The success rates of this method are great, and it does, like most methods tested, find the correct solution in almost all of the test cases. The variances of Golden Section Search's durations are approximately on the same level as the other line searches as can be seen from box plots.
+Comparing the overall results in tables \ref{tab:colors_avg_overall_mm} and \ref{tab:colors_avg_overall}, we immediately notice from the green-colored cells that golden section search is one of the best performing line searches. The success rates of this method are great, and it does, like most methods tested, find the correct solution in almost all of the test cases. The variances of golden section search's durations are approximately on the same level as the other line searches as can be seen from box plots.
+
+In addition, as stated in the section \ref{sect:golden_section_search}, an unoptimal implementation of golden section search was used, so the function call count could be improved by a lot and depending on the target problem, small improvements on the overall performance are also possible.
 
 \subsubsection*{Bisection Search}
 
-Bisection Search does perform rather poorly in our test setup. It scores the second-lowest total success rate, though only losing by 0.4 percentile points to others in the single case of MSS+NM. The overall performance is especially weak with MSS problem and barely average with other setups, causing it to land around the middle of the scale of line search methods in the overall score table. The box plots also show that the Bisection Method does have higher variances in performance than other methods, especially with the MSS problem.
+Bisection search does perform rather poorly in our test setup. It scores the second-lowest total success rate, though only losing by 0.4 percentile points to others in the single case of MSS+NM. The overall performance is especially weak with MSS problem and barely average with other setups, causing it to land around the middle of the scale of line search methods in the overall score table. The box plots also show that the Bisection Method does have higher variances in performance than other methods, especially with the MSS problem.
 
 \subsubsection*{Dichotomous Search}
 
-In our first tests, Dichotomous Search was one of the slower methods due to not reaching the correct solutions within the given max iteration limit. However, lowering the main method tolerance proved to be especially helpful for this method, which ultimately turned out as one of the stronger methods. It even outperforms Golden Section Search in MSS optimization and scores almost equally in overall scores. The success rates are also identical and reviewing variance from box plots shows no significant differences between the two methods sharing the second-best place in our comparison.
+In our first tests, dichotomous search was one of the slower methods due to not reaching the correct solutions within the given max iteration limit. However, lowering the main method tolerance proved to be especially helpful for this method, which ultimately turned out as one of the stronger methods. It even outperforms golden section search in MSS optimization and scores almost equally in overall scores. The success rates are also identical and reviewing variance from box plots shows no significant differences between the two methods sharing the second-best place in our comparison.
 
 \subsubsection*{Fibonacci Search}
 
-Fibonacci Search scores above-average in overall results and much higher with the NE problem when compared to other line searches. The success rates are in order and variances are at the same level as Dichotomous and Golden Section Searches'.
+Fibonacci search scores above-average in overall results and much higher with the NE problem when compared to other line searches. The success rates are in order and variances are at the same level as dichotomous and golden section searches'.
 
-Our implementation of Fibonacci Search computes each Fibonacci number during runtime without memorizing them. The solution proved not to be an issue since the highest Fibonacci number reached was around $F_{50}$. A quick test with precomputed Fibonacci numbers showed at most 10\% improvement in performance when using memorization. For real-life applications, precomputation should probably be added if possible.
+Our implementation of Fibonacci search computes each Fibonacci number during runtime without memorizing them. The solution proved not to be an issue since the highest Fibonacci number reached was around $F_{50}$. A quick test with precomputed Fibonacci numbers showed at most 10\% improvement in performance when using memorization. For real-life applications, precomputation should probably be added if possible.
 
 \subsubsection*{Uniform Search}
 
-Uniform Search is expected to be slow since it is pretty straight forward and inefficient algorithm. The inefficiency can also be seen in the results as the algorithm scores averagely on MSS problem and below average in NE. Uniform Search also struggles to stay within the 10000 max iteration limit with NE problem when using Conjugate Gradient Method. This is possibly due to the way we implemented the positive domain using the Domain Limiter (algorithm \ref{alg:domain_limiter}). Uniform Search scores second-lowest in overall performance with average success rates and above-average variances.
+Uniform search is expected to be slow since it is pretty straight forward and inefficient algorithm. The inefficiency can also be seen in the results as the algorithm scores averagely on MSS problem and below average in NE. Uniform search also struggles to stay within the 10000 max iteration limit with NE problem when using conjugate gradient method. This is possibly due to the way we implemented the positive domain using the domain limiter (algorithm \ref{alg:domain_limiter}). Uniform search scores second-lowest in overall performance with average success rates and above-average variances.
 
 \subsubsection*{Newton's Search}
 
-Similarily to Uniform Search, Newton's Search has average performance when optimizing MSS problem but quickly falls behind in the case of NE. Newton's Search also seems to hit the max iterations limit with NE, but the method ends up still providing good enough step sizes so that success rates stay high. It seems that the method does not fully converge when combined with the domain limiter, which alters the step size given by the derivatives. Because of this, even though it does not make sense in real life implementation, a way smaller max iteration limit of just 100 or 1000 iterations proved to be much more effective for the NE problem. Because of this, the results of Newton's Search for NE are more unreliable than in the case of the MSS problem. The same effect is visible in the box plots as well: Newton's Search's durations have an extremely high variance when optimizing the Negative Entropy function.
+Similarily to uniform search, Newton's search has average performance when optimizing MSS problem but quickly falls behind in the case of NE. Newton's search also seems to hit the max iterations limit with NE, but the method ends up still providing good enough step sizes so that success rates stay high. It seems that the method does not fully converge when combined with the domain limiter, which alters the step size given by the derivatives. Because of this, even though it does not make sense in real life implementation, a way smaller max iteration limit of just 100 or 1000 iterations proved to be much more effective for the NE problem. Because of this, the results of Newton's search for NE are more unreliable than in the case of the MSS problem. The same effect is visible in the box plots as well: Newton's search's durations have an extremely high variance when optimizing the Negative Entropy function.
 
 \subsubsection*{Armijo's Search}
 
-Armijo's Search proves to be the best overall performing method of the tested line searches. It has the best performance in five categories out of eight and is right on par with the top performers in the rest of the categories as well. It also has a slightly better success rate than any other method on MSS+GD and MSS+HBM test cases. Armijo's Search has a slightly higher variance in some scenarios than other line searches, but still easily outperforms other methods most of the time. Especially for NE problem, the Armijo's Search has lower variances than any other method.
+Armijo's search proves to be the best overall performing method of the tested line searches. It has the best performance in five categories out of eight and is right on par with the top performers in the rest of the categories as well. It also has a slightly better success rate than any other method on MSS+GD and MSS+HBM test cases. Armijo's search has a slightly higher variance in some scenarios than other line searches, but still easily outperforms other methods most of the time. Especially for NE problem, the Armijo's search has lower variances than any other method.
 
-\subsection{Assumptions and further performance improvements}
+\subsection{Assumptions and Further Performance Improvements}
 
 The assumptions and choices made during the research are discussed here briefly. One major factor affecting the results is that there are only two types of different optimization problems considered. Even though the randomization of parameters adds some variety in Matrix Square Sum problem, both of the target functions remain relatively simple. Both of the problems are also convex and have a single global maximum, making the solving easier than if there were multiple local maxima present. The way MSS's parameters are randomized is also a factor to consider. The methods for randomization of the parameters and building a positive-definite matrix $A$ described in section \ref{sect:matrix_square_sum} only yield a limited variety of functions. In the case of Negative Entropy, a domain limiter is used to ensure that values stay within the correct domain, which potentially causes issues with the line searches. Few line searches even struggled to converge at all in some scenarios.
 
@@ -1216,11 +1239,13 @@ Factors like the choice of programming language and CPU or GPU performance may a
 \section{Conclusion and Future Research}
 
 
-The choice of line search method seems to have a varying size of an impact on the performance of an optimization method. Comparing just the overall average duration caused by different line searches, it seems that the worst line search is several times slower than the best one. The difference in performance for the best and second-best method is around 11 \%, and the third one is around 16 \% slower than the fastest one.
+The choice of line search method seems to have a varying size of an impact on the performance of an optimization method. Comparing just the average overall durations for different line searches, it seems that the worst line search is several times slower than the best one. The difference in performance for the best and second-best method is around 11 \%, and the third one is around 16 \% slower than the fastest one. These numbers are not final by any means but instead, give an idea of the range of improvements we can look for when considering the choice of a line search algorithm.
 
-For future research, we would suggest increasing the number of target functions and increasing the starting point value range. However, there is even more constraining issue we would need to tackle first: the optimal parameters are likely to change with the setups, forcing us to re-run the parameter comparisons and find new values for all the parameters. Since this requires high computation times, we should implement a better method for parameter selection before adding new target test scenarios. A simple solution could even be to decide a strict but well-reasoned set of few options for each parameter. We could base the value options, for example, on other previous research of the line search methods.
+If we were to perform further testing with the same goals, we would select a higher number and variety of target functions and a wider range of starting points. However, there is even more constraining issue we would need to tackle first: the optimal parameters are likely to change with the setups, forcing us to re-run the parameter comparisons and find new values for all the parameters. Since this requires high computation times, we should implement a better method for parameter selection before considering any new test scenarios. A simple solution could be to decide a well-reasoned set of options for each parameter based more strictly on existing literature around the topics.
 
-So, is it worth it to optimize the choice of line search method as an additional parameter of an unconstrained nonlinear optimization method? Judging by the results of this paper, we would say yes - sometimes. In particular, we believe the subject could use further research to make the results more comprehensive, but with the current results, we can show that there are indeed performance differences between the line searches. However, the results are not surprising, and the methods that we generally consider to be efficient are, in fact, the best choices in most use cases. There might exist problems for which some algorithms fit better than others, and therefore if the goal is to optimize a single problem as thoroughly as possible, the choice of line search method might be worth considering as an additional parameter. As long as a decent line search method is used in the first place, optimizing its parameters might be a better idea than looking for an alternative line search algorithm.
+Is it worth it to optimize the choice of line search method as an additional parameter for an unconstrained nonlinear optimization method? If one is already using a high-performance line search method such as Armijo's search, there is at most a minimal chance of gaining any benefit by performing a line search comparison. However, we do believe that the subject could use further research to make the results more comprehensive and to build a framework for comparing and scoring line search methods in different scenarios.
+
+% , but with the current results, we can show that there are indeed performance differences between the line searches. However, the results are not surprising, and the methods that we generally consider to be efficient are, in fact, the best choices in most use cases. There might exist problems for which some algorithms fit better than others, and therefore if the goal is to optimize a single problem as thoroughly as possible, the choice of line search method might be worth considering as an additional parameter. As long as a decent line search method is used in the first place, optimizing its parameters might be a better idea than looking for an alternative line search algorithm.
 
 % %
 % % LÄHDELUETTELO
