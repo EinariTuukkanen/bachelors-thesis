@@ -1,7 +1,9 @@
 \begin{figure}[H]
 \captionof{figure}{Best parameter permutations for different main methods using FibonacciSearch for optimizing the MatrixSquareSum function with 10 sample points.}
 \label{fig:param_comp_MatrixSquareSum_FibonacciSearch}
-\begin{subfigure}[ht]{.5\textwidth}
+\makebox[\linewidth][c]{
+\begin{subfigure}[ht]{.6\textwidth}
+\centering
 \rowcolors{2}{white}{gray!5}
 \begin{tabular}{|c|c|c|}
 \hline
@@ -22,7 +24,8 @@ $(a,b,\epsilon,l)$ & $s$ (\%) & $t$ (ms) \\
 \label{subfig:param_comp_MatrixSquareSum_NewtonsMethod_FibonacciSearch}
 \end{subfigure}
 \hfill
-\begin{subfigure}[ht]{.5\textwidth}
+\begin{subfigure}[ht]{.6\textwidth}
+\centering
 \rowcolors{2}{white}{gray!5}
 \begin{tabular}{|c|c|c|}
 \hline
@@ -42,8 +45,10 @@ $(a,b,\epsilon,l)$ & $s$ (\%) & $t$ (ms) \\
 \caption{Top 5 permutations with GradientDescentMethod}
 \label{subfig:param_comp_MatrixSquareSum_GradientDescentMethod_FibonacciSearch}
 \end{subfigure}
-\hfill
-\begin{subfigure}[ht]{.5\textwidth}
+}
+\makebox[\linewidth][c]{
+\begin{subfigure}[ht]{.6\textwidth}
+\centering
 \rowcolors{2}{white}{gray!5}
 \begin{tabular}{|c|c|c|}
 \hline
@@ -64,7 +69,8 @@ $(a,b,\epsilon,l)$ & $s$ (\%) & $t$ (ms) \\
 \label{subfig:param_comp_MatrixSquareSum_ConjugateGradientMethod_FibonacciSearch}
 \end{subfigure}
 \hfill
-\begin{subfigure}[ht]{.5\textwidth}
+\begin{subfigure}[ht]{.6\textwidth}
+\centering
 \rowcolors{2}{white}{gray!5}
 \begin{tabular}{|c|c|c|}
 \hline
@@ -84,12 +90,15 @@ $(a,b,\epsilon,l,\beta_{HBM})$ & $s$ (\%) & $t$ (ms) \\
 \caption{Top 5 permutations with HeavyBallMethod}
 \label{subfig:param_comp_MatrixSquareSum_HeavyBallMethod_FibonacciSearch}
 \end{subfigure}
+}
 \end{figure}
 
 \begin{figure}[H]
 \captionof{figure}{Best parameter permutations for different main methods using FibonacciSearch for optimizing the NegativeEntropy function with 10 sample points.}
 \label{fig:param_comp_NegativeEntropy_FibonacciSearch}
-\begin{subfigure}[ht]{.5\textwidth}
+\makebox[\linewidth][c]{
+\begin{subfigure}[ht]{.6\textwidth}
+\centering
 \rowcolors{2}{white}{gray!5}
 \begin{tabular}{|c|c|c|}
 \hline
@@ -110,7 +119,8 @@ $(a,b,\epsilon,l)$ & $s$ (\%) & $t$ (ms) \\
 \label{subfig:param_comp_NegativeEntropy_NewtonsMethod_FibonacciSearch}
 \end{subfigure}
 \hfill
-\begin{subfigure}[ht]{.5\textwidth}
+\begin{subfigure}[ht]{.6\textwidth}
+\centering
 \rowcolors{2}{white}{gray!5}
 \begin{tabular}{|c|c|c|}
 \hline
@@ -130,8 +140,10 @@ $(a,b,\epsilon,l)$ & $s$ (\%) & $t$ (ms) \\
 \caption{Top 5 permutations with GradientDescentMethod}
 \label{subfig:param_comp_NegativeEntropy_GradientDescentMethod_FibonacciSearch}
 \end{subfigure}
-\hfill
-\begin{subfigure}[ht]{.5\textwidth}
+}
+\makebox[\linewidth][c]{
+\begin{subfigure}[ht]{.6\textwidth}
+\centering
 \rowcolors{2}{white}{gray!5}
 \begin{tabular}{|c|c|c|}
 \hline
@@ -152,7 +164,8 @@ $(a,b,\epsilon,l)$ & $s$ (\%) & $t$ (ms) \\
 \label{subfig:param_comp_NegativeEntropy_ConjugateGradientMethod_FibonacciSearch}
 \end{subfigure}
 \hfill
-\begin{subfigure}[ht]{.5\textwidth}
+\begin{subfigure}[ht]{.6\textwidth}
+\centering
 \rowcolors{2}{white}{gray!5}
 \begin{tabular}{|c|c|c|}
 \hline
@@ -172,4 +185,5 @@ $(a,b,\epsilon,l,\beta_{HBM})$ & $s$ (\%) & $t$ (ms) \\
 \caption{Top 5 permutations with HeavyBallMethod}
 \label{subfig:param_comp_NegativeEntropy_HeavyBallMethod_FibonacciSearch}
 \end{subfigure}
+}
 \end{figure}

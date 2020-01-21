@@ -163,15 +163,16 @@ text must be identical to the text on the abstract page.
 \keywords{viivahaku, optimointialgoritmi, epälineaarinen, rajoittamaton, tehokkuus, minimointi, askelkoko}
 %% Abstract text
 \begin{abstractpage}[finnish]
-  Työssä tarkastellaan kahdeksan viivahakualgoritmin tehokkuutta osana neljää tunnettua optimointialgoritmiä. Vertaillut viivahaut ovat vakioaskelkoko, Golden section, bisection, dichotomous, Fibonacci, uniform, Newton's ja Armijo's algoritmit. Optimiointialgoritmit, joissa viivahakuja käytetään askelkoon määrittämiseen, ovat Newton's, gradient descent, conjugate gradient ja heavy ball metodit. Kaikki algoritmit sekä niiden vertailu toteutetaan itse Pythonilla.
+Työssä tarkastellaan kahdeksan viivahakualgoritmin tehokkuutta osana neljää tunnettua optimointialgoritmiä. Viivahakuja käytetään osana optimointialgoritmejä määrittämään kullakin iteraatiolla askelkoko eli matka, joka liikutaan algoritmin osoittamaan suuntaan. Työssä vertailtavat menetelmät ovat vakioaskelkoko, golden section, bisection, dichotomous, Fibonacci, uniform, Newtonin ja Armijon viivahakualgoritmit. Optimointialgoritmit, joiden osana viivahakuja käytetään, ovat gradient descent, conjugate gradient, heavy ball ja Newtonin menetelmät. Kaikki algoritmit sekä niiden tehokkuusvertailu toteutetaan itse Pythonilla.
+
+Menetelmien vertailu suoritetaan erikseen kahdelle rajoittamattomalle epälineaariselle ja konveksille minimointiongelmalle, joista ensimmäinen on neliömäinen matriisimuotoinen ongelma ja toinen entropian minimointiongelma. Molempien ongelmien ulottuvuus on $\R^{50}$. Menetelmien tehokkuus mitataan tuhannen satunnaisista pisteistä aloitetun haun keskiarvona. Menetelmien tehokkuutta arvioidaan vertailemalla kuinka monesta satunnaisesta aloituspisteestä menetelmät löytävät oikean ratkaisun sekä kauanko sen löytäminen kestää.
   
-  Menetelmien vertailu suoritetaan erikseen kahdelle rajoittamattomalle epälineaariselle minimointiongelmalle, joista toinen on neliömäinen matriisimuotoinen ongelma ja toinen entropian minimointiongelma. Molempien ongelmien ulottuvuus on $\R^{50}$. Menetelmien tehokkuus mitataan tuhannen satunnaisista pisteistä aloitetun haun keskiarvona. Tehokkuusvertailu tapahtuu oikeiden ratkaisujen sekä ratkaisun löytymisen keston perusteella.
+Ennen varsinaista tehokkuusvertailua kullekin viivahaun ja optimointialgoritmin yhdistelmälle suoritetaan parametrien valinta kokeellisesti. Tämä tapahtuu suorittamalla tehokkuusvertailu jokaiselle algoritmille etukäteen valituilla parametriyhdistelmillä kymmenestä satunnaisesta aloituspisteestä. Parametreista valitaan varsinaiseen tehokkuusvertailuun ne, jotka yhdessä tuottavat keskiarvoltaan nopeimman suorituksen.
   
-  Ennen varsinaista tehokkuusvertailua kullekin viivahaku ja optimointialgoritmi yhdistelmälle suoritetaan parametrien valinta kokeellisesti. Tämä tapahtuu ajamalla algoritmit kymmenestä satunnaisesta alkupisteestä alkaen jokaiselle algoritmille etukäteen valituilla parametriyhdistelmillä. Yhdistelmistä valitaan se, joka tuottaa keskiarvoltaan nopeimman suorituksen.
+Tehokkuusvertailusta havaitaan, optimointialgoritmit päätyvät oikeisiin optimaalisiin ratkaisuihin lähes joka kerta kaikkien viivahakujen kohdalla. Tästä syystä tehokkuusvertailu suoritetaan pääasiassa ratkaisun keston perusteella. Tuloksista huomataan myös, että osa viivahauista on huomattavasti tehokkaampia kuin toiset. Erityisesti vakioaskelkoko, uniform haku sekä Newtonin viivahaku tuottavat lähes poikkeuksetta huonoimmat tulokset. Sen sijaan golden section, dichotomous ja Armijon viivahaut pärjäävät tehokkuusvertailussa tasaisen hyvin molemmissa tutkituissa ongelmissa kaikilla neljällä optimointialgoritmeillä. Loput viivahaut suoriutuvat keskimäärin vain vähän parhaita hitaammin. Optimointialgoritmit päätyvät oikeisiin optimaalisiin ratkaisuihin lähes joka kerta kaikkien viivahakujen kohdalla.
   
-  Tehokkuusvertailussa havaitaan, että osa viivahauista on huomattavasti tehokkaampia kuin toiset. Erityisesti vakioaskelkoko, Newton's sekä uniform viivahaku tuottavat lähes poikkeuksetta huonoimmat tulokset. Sen sijaan Armijo's, golden section ja dichotomous viivahaut pärjäävät tehokkuusvertailussa tasaisen hyvin molemmissa tutkituissa ongelmissa kaikilla optimointialgoritmeillä. Loput viivahaut suoriutuvat keskimäärin vain vähän parhaita hitaammin. Optimointialgoritmit päätyivät ratkaisuissaan oikeisiin minimeihin lähes joka kerta kaikkien viivahakujen kohdalla.
-  
-  Lopputuloksena todetaan, että viivahakujen tehokkuuksissa on eroavaisuuksia, mutta ne ovat pääasiassa odotusten mukaisia. Parhaiten menestyneet viivahaut ovat kirjallisuuslähteiden mukaan yleisesti käytettyjä ja tehokkaimpia viivahakumenetelmiä. Myös hitaimpien viivahakualgoritmien odotettiin olevan huonoimpia niiden yksinkertaisuuden ja suoraviivaisen rakenteen vuoksi. Yksittäisiä poikkeuksia viivahakujen paremmuusjärjestykseen kuitenkin löytyy, joten viivahaun valinta voisi olla potentiaalinen lisäparametri monimutkaista ongelmaa ratkaistaessa. Yleisemmässä tapauksessa ja yksinkertaisissa ongelmissa kannattaa kuitenkin pysytellä yleisesti hyväksi todetuissa algoritmeissä, kuten Armijo's tai golden section viivahauissa, sillä ne tuottavat yleisesti hyviä tuloksia ja poikkeustapauksissakin erot muihin viivahakumenetelmiin ovat suhteellisen pieniä.
+Tutkimuksen lopputuloksena todetaan, että viivahakujen tehokkuuksissa on eroavaisuuksia, mutta ne ovat pääasiassa odotusten mukaisia. Parhaiten menestyneet viivahaut ovat kirjallisuuslähteiden mukaan yleisesti käytettyjä ja tehokkaimpia viivahakumenetelmiä. Vastaavasti hitaimpien viivahakualgoritmien odotettiin olevan huonoimpia niiden raskaiden tai hitaasti suppenevien algoritmien vuoksi. Tutkimuksen perusteella viivahakujen vertailusta voi olla etua lähinnä erittäin monimutkaisissa ongelmissa, joissa sopiva räätälöity viivahakuvalinta voi tuottaa pienen edun useiden iteraatioiden myötä. Tutkimuksessa erot keskiverron ja parhaan menetelmän välillä ovat suhteellisen pieniä, joten tavallisesti viivahakujen valinta ongelmakohtaisesti ei kannata. Yleisesti on siis paras pysytellä tunnetuissa ja hyviksi todetuissa menetelmissä, kuten Armijon viivahaussa.
+
 \end{abstractpage}
 
 \newpage
@@ -180,7 +181,7 @@ text must be identical to the text on the abstract page.
 % \tableofcontents
 \thesistableofcontents
 
-\subsection*{Abbreviations and symbols used}
+\subsection*{Abbreviations used}
 
 \begin{table}[H]
   \captionof{table}{Abbreviations used in this thesis, and their explanations.}
@@ -192,22 +193,22 @@ text must be identical to the text on the abstract page.
   \rowcolor{gray!25}
   \textbf{Abbreviation} & \textbf{Explanation} \\
   \hline
-  MM                    & main method, an unconstrained optimization method                               \\
+  MM                    & main method, an unconstrained optimization methods                              \\
   LS                    & line search, provides step sizes for main methods                               \\
-  NM                    & Newton's Method                                                                 \\
-  GDM                   & Gradient Descent Method                                                         \\
-  CGM                   & Conjugate Gradient Method                                                       \\
-  HBM                   & Heavy Ball Method                                                               \\
+  NM                    & Newton's method                                                                 \\
+  GDM                   & Gradient descent Method                                                         \\
+  CGM                   & Conjugate gradient Method                                                       \\
+  HBM                   & Heavy ball method                                                               \\
   CS                    & Constant search i.e. constant step size                                         \\
-  GSS                   & Golden Section line search                                                      \\
+  GSS                   & Golden section line search                                                      \\
   BS                    & Bisection line search                                                           \\
   DS                    & Dichotomous line search                                                         \\
   FS                    & Fibonacci line search                                                           \\
   US                    & Uniform line search                                                             \\
   NS                    & Newton's line search                                                            \\
   AS                    & Armijo's line search                                                            \\
-  MSS                   & Matrix Square Sum objective function                                            \\
-  NE                    & Negative Entropy objective function                                             \\
+  MSS                   & Matrix square sum objective function                                            \\
+  NE                    & Negative entropy objective function                                             \\
   \hline
   \end{tabular}
 \end{table}
@@ -260,15 +261,15 @@ In this thesis, we will investigate the effects of different line search algorit
 
 The main goal of this thesis is to investigate how different line search algorithms affect the performance of optimization methods for unconstrained nonlinear optimization problems on a general level. Also, we will analyze the performance differences caused by the different line search methods to find metrics and methods that give us the best overall view of the algorithm's performance.
 
-\subsection{Organization of this thesis}
+\subsection{Organization of the thesis}
 
 In section \ref{sect:theory} Theory, we will be first introducing the problems we are using to grade the optimization methods. After that, we are going through the optimization methods used and their implementations in the form of pseudocodes. Finally, we will introduce the line search methods that we are comparing, with their respective pseudocode implementations and parameter choices.
 
 Section \ref{sect:problem_parameter_settings} describes the setup we are using to test the performances. The section includes introducing the method for choosing the values for different optimization method parameters, generating an even but random starting point distribution, and finally, randomization of parameters for one of the problems.
 
-Results are introduced and analyzed in section \ref{sect:results}. The section also discusses the possible shortcomings and improvements that can we could make to the approach used to compare the methods in this paper. The last section \ref{sect:conclusion} Conclusion provides a brief conclusion and suggests the next steps to take if one would be continuing the study from here.
+Results are introduced and analyzed in section \ref{sect:results}. The section also discusses the possible shortcomings and improvements that can we could make to the approach used to compare the methods in this paper. The section \ref{sect:conclusion} Conclusion provides a brief conclusion and suggests changes if one would repeat the experiments in this paper.
 
-We also include an appendix that contains tables describing the best five parameter combinations for each optimization method and line search combination, while the actual paper only showed the best ones.
+We also include an appendix that contains a link to the source code used, as well as tables describing the best five parameter combinations for each optimization method and line search combination.
 
 
 \section{Theory}
@@ -301,7 +302,7 @@ To make sum of squares problem more difficult to solve, we are going modify it b
     f(\vect{x}) = \norm{A \vect{x} + \vect{b}} ^ 2 + c \norm{\vect{x}} ^ 2,
 \end{equation}
 
-where $A$ is a positive definite (PD) $n \times n$ matrix, $\vect{x}$ and $\vect{b}$ are vectors of length $n$, and the scalar $c$ is a positive constant. The problem is convex, unconstrained and quadratic.
+where $A$ is a positive definite (PD) $n \times n$ matrix, $\vect{x}$ and $\vect{b}$ are vectors of length $n$, and the scalar $c$ is a positive constant. The problem is convex, nonlinear, unconstrained and quadratic.
 
 While $A$ could in theory be any $m \times n$ matrix, we are limiting it to be a PD square matrix to ensure that the function is strictly convex and has a unique global minimum. The matrix $A$ is formed in a few steps by first generating an initial $n \times n$ matrix $A'$ with random values $a_{ij} \in [-0.5, 0.5]\ \forall\ i,j = 1 \dots n$. Then we attempt to transform $A$ into a PD-matrix by $A = 0.5 (A' + A'^\top)$. Finally, if  $A$ is still not PD, it is modified by the formula 
 \begin{equation}
@@ -454,7 +455,7 @@ In the case of the matrix square sum problem, the performance of a gradient-base
 \end{algorithm}
 
 
-\subsubsection{Conjugate Gradient Method}
+\subsubsection{Conjugate gradient method}
 
 
 Conjugate gradient method (algorithm \ref{alg_conjugate_gradient}) uses information from the previous and current iterations to compute the next iteration point. To compute a good direction, it tries to obtain an approximation of the inverse Hessian using several successive gradient ratio calculations. The method should theoretically require fewer steps than a gradient descent method. \cite{book:introduction_continuous_optimization}
@@ -511,7 +512,7 @@ Heavy ball method (algorithm \ref{alg_heavy_ball}) is an extension of the gradie
 \begin{tabular}{|c|c|c|}
 \hline
 \rowcolor{gray!25}
-Parameter & MatrixSquareSum & NegativeEntropy \\
+Parameter & Matrix Square Sum & Negative Entropy \\
 \hline
 $\beta_{HBM}$ & 0.1, 0.5, 1.0, 5.0, 10.0 & 0.1, 0.5, 1.0 \\
 \hline
@@ -542,7 +543,7 @@ While not an actual algorithm, the use of a constant step size value $\lambda$ c
 \begin{tabular}{|c|c|c|}
 \hline
 \rowcolor{gray!25}
-Parameter & MatrixSquareSum & NegativeEntropy \\
+Parameter & Matrix Square Sum & Negative Entropy \\
 \hline
 $\lambda$ & 0.0001, 0.1, 0.25, 0.5, 0.9 & 0.1, 0.25, 0.5 \\
 \hline
@@ -583,7 +584,7 @@ Golden section search (algorithm \ref{alg_golden_section}) is a sequential line 
 \begin{tabular}{|c|c|c|}
 \hline
 \rowcolor{gray!25}
-Parameter & MatrixSquareSum & NegativeEntropy \\
+Parameter & Matrix Square Sum & Negative Entropy \\
 \hline
 $a$ & -10, -5 & -10, -5 \\
 $b$ & 5, 10 & 5, 10 \\
@@ -629,7 +630,7 @@ Bisection search (algorithm \ref{alg_bisection}) is a line search that uses deri
 \begin{tabular}{|c|c|c|}
 \hline
 \rowcolor{gray!25}
-Parameter & MatrixSquareSum & NegativeEntropy \\
+Parameter & Matrix Square Sum & Negative Entropy \\
 \hline
 $a$ & -10, -5 & -10, -5 \\
 $b$ & 5, 10 & 5, 10 \\
@@ -670,7 +671,7 @@ Dichotomous search (algorithm \ref{alg_dichotomous}) is a sequential line search
 \begin{tabular}{|c|c|c|}
 \hline
 \rowcolor{gray!25}
-Parameter & MatrixSquareSum & NegativeEntropy \\
+Parameter & Matrix Square Sum & Negative Entropy \\
 \hline
 $a$ & -10, -5 & -10, -5 \\
 $b$ & 5, 10 & 5, 10 \\
@@ -721,7 +722,7 @@ The $F_n$ represents $n$:th Fibonacci number. To optimize algorithm's performanc
 \begin{tabular}{|c|c|c|}
 \hline
 \rowcolor{gray!25}
-Parameter & MatrixSquareSum & NegativeEntropy \\
+Parameter & Matrix Square Sum & Negative Entropy \\
 \hline
 $a$ & -10, -5 & -10, -5 \\
 $b$ & 5, 10 & 5, 10 \\
@@ -768,7 +769,7 @@ In practice, we choose a range $[a, b]$ and split it into $n$ sections, with one
 \begin{tabular}{|c|c|c|}
 \hline
 \rowcolor{gray!25}
-Parameter & MatrixSquareSum & NegativeEntropy \\
+Parameter & Matrix Square Sum & Negative Entropy \\
 \hline
 $a$ & -10, -5 & -10, -5 \\
 $b$ & 5, 10 & 5, 10 \\
@@ -809,7 +810,7 @@ In addition to the parameters listed in table \ref{tab:params_NewtonsSearch}, th
 \begin{tabular}{|c|c|c|}
 \hline
 \rowcolor{gray!25}
-Parameter & MatrixSquareSum & NegativeEntropy \\
+Parameter & Matrix Square Sum & Negative Entropy \\
 \hline
 $\lambda$ & 0.5, 1, 5, 10 & 0.1, 0.5, 1, 5 \\
 $l$ & 1e-07, 1e-08 & 1e-07, 1e-08 \\
@@ -846,7 +847,7 @@ Armijo's search (algorithm \ref{alg_armijo}) is the only backtracking method of 
 \begin{tabular}{|c|c|c|}
 \hline
 \rowcolor{gray!25}
-Parameter & MatrixSquareSum & NegativeEntropy \\
+Parameter & Matrix Square Sum & Negative Entropy \\
 \hline
 $\lambda$ & 0.9, 1, 1.1 & 0.9, 1, 1.1 \\
 $\alpha$ & 0.1, 0.25, 0.5 & 0.1, 0.25, 0.5 \\
@@ -920,10 +921,10 @@ The algorithm used is not perfect since its performance heavily depends on the $
 \label{tab:dmin_values}
 \begin{tabular}{|r|r|r|}
 \hline
-\rowcolor[HTML]{C0C0C0} 
+\rowcolor{gray!25} 
 Point count                       & MSS $d_{min}$ & NE $d_{min}$ \\ \hline
-\cellcolor[HTML]{EFEFEF}10   & 64           & 32          \\ \hline
-\cellcolor[HTML]{EFEFEF}1000 & 48           & 24          \\ \hline
+\cellcolor{gray!5}10   & 64           & 32          \\ \hline
+\cellcolor{gray!5}1000 & 48           & 24          \\ \hline
 \end{tabular}
 \end{table}
 
@@ -942,9 +943,7 @@ In addition to randomizing the starting points, we are going to use randomized p
 \section{Results}
 \label{sect:results}
 
-We measure the performances using the best parameters found for each scenario, as described in section \ref{sect:parameter_selection}. After running the performance tests, we get the results introduced in the following tables \ref{tab:performance_results_MSS_NM} to \ref{tab:performance_results_NE_HBM}. Each table contains eight rows, one for each line search method, and there is a separate table for each permutation of the main methods and objective functions. 
-
-The rows of the table display the line search method tested, the percentage of scenarios the algorithm solved called success rate, an average solution duration, an average main method iteration count, and function calls of the algorithm. The function call count includes all calls to the function, its gradients, and step size functions. In addition to these, the last two columns show average duration and iterations used by the line search algorithm alone.
+We measure the performances using the best parameters found for each scenario, as described in section \ref{sect:parameter_selection}. After running the performance tests, we get the results introduced in the tables \ref{tab:performance_results_MSS_NM} to \ref{tab:performance_results_NE_HBM}. Each table contains eight rows, one for each line search method, and there is a separate table for each permutation of the main methods and objective functions. The columns show the line search method used, percentage of correct solutions or the success rate $s$ (\%), solution time $t$ (ms), iteration count $k$, total function call count $f_n$, total time taken by line search algorithm alone $t_{LS}$ (ms) and iterations made by the line search $k_{LS}$. The function call count includes all calls to the function, including its gradient, step size function and its derivatives.
 
 
 \begin{center}
@@ -954,7 +953,7 @@ The rows of the table display the line search method tested, the percentage of s
 \begin{tabular}{|l|r|r|r|r|r|r|}
 \hline
 \rowcolor{gray!25}
-\multicolumn{1}{|c|}{Line Search Name} & \multicolumn{1}{c|}{$s$ (\%)} & \multicolumn{1}{c|}{$t$ (ms)} & \multicolumn{1}{c|}{$k$} & \multicolumn{1}{c|}{$f_n$} & \multicolumn{1}{c|}{$t_{LS}$ (ms)} & \multicolumn{1}{c|}{$k_{LS}$} \\
+\multicolumn{1}{|c|}{Line Search Method} & \multicolumn{1}{c|}{$s$ (\%)} & \multicolumn{1}{c|}{$t$ (ms)} & \multicolumn{1}{c|}{$k$} & \multicolumn{1}{c|}{$f_n$} & \multicolumn{1}{c|}{$t_{LS}$ (ms)} & \multicolumn{1}{c|}{$k_{LS}$} \\
 Constant search & 100.0 & 445.8 & 1.0 & 7.0 & 0.0 & 0.0 \\
 Golden section search & 100.0 & 445.0 & 1.0 & 101.0 & 2.6 & 47.0 \\
 Bisection search & 99.6 & 535.9 & 1.0 & 35.0 & 89.0 & 28.0 \\
@@ -974,7 +973,7 @@ Armijo's search & 100.0 & 424.2 & 1.0 & 10.0 & 0.9 & 0.0 \\
 \begin{tabular}{|l|r|r|r|r|r|r|}
 \hline
 \rowcolor{gray!25}
-\multicolumn{1}{|c|}{Line Search Name} & \multicolumn{1}{c|}{$s$ (\%)} & \multicolumn{1}{c|}{$t$ (ms)} & \multicolumn{1}{c|}{$k$} & \multicolumn{1}{c|}{$f_n$} & \multicolumn{1}{c|}{$t_{LS}$ (ms)} & \multicolumn{1}{c|}{$k_{LS}$} \\
+\multicolumn{1}{|c|}{Line Search Method} & \multicolumn{1}{c|}{$s$ (\%)} & \multicolumn{1}{c|}{$t$ (ms)} & \multicolumn{1}{c|}{$k$} & \multicolumn{1}{c|}{$f_n$} & \multicolumn{1}{c|}{$t_{LS}$ (ms)} & \multicolumn{1}{c|}{$k_{LS}$} \\
 Constant search & 98.9 & 4681.2 & 2942.0 & 8828.9 & 141.2 & 0.0 \\
 Golden section search & 99.4 & 283.7 & 33.1 & 1784.1 & 155.4 & 841.0 \\
 Bisection search & 99.4 & 823.5 & 33.0 & 696.6 & 749.8 & 594.5 \\
@@ -994,7 +993,7 @@ Armijo's search & 99.6 & 209.3 & 25.8 & 343.2 & 97.9 & 185.5 \\
 \begin{tabular}{|l|r|r|r|r|r|r|}
 \hline
 \rowcolor{gray!25}
-\multicolumn{1}{|c|}{Line Search Name} & \multicolumn{1}{c|}{$s$ (\%)} & \multicolumn{1}{c|}{$t$ (ms)} & \multicolumn{1}{c|}{$k$} & \multicolumn{1}{c|}{$f_n$} & \multicolumn{1}{c|}{$t_{LS}$ (ms)} & \multicolumn{1}{c|}{$k_{LS}$} \\
+\multicolumn{1}{|c|}{Line Search Method} & \multicolumn{1}{c|}{$s$ (\%)} & \multicolumn{1}{c|}{$t$ (ms)} & \multicolumn{1}{c|}{$k$} & \multicolumn{1}{c|}{$f_n$} & \multicolumn{1}{c|}{$t_{LS}$ (ms)} & \multicolumn{1}{c|}{$k_{LS}$} \\
 Constant search & 99.6 & 989.3 & 300.1 & 1216.2 & 23.9 & 0.0 \\
 Golden section search & 100.0 & 429.5 & 50.0 & 2722.9 & 198.9 & 1258.5 \\
 Bisection search & 100.0 & 1154.9 & 50.0 & 1106.0 & 1003.4 & 900.0 \\
@@ -1014,7 +1013,7 @@ Armijo's search & 100.0 & 405.3 & 50.0 & 914.8 & 157.6 & 558.8 \\
 \begin{tabular}{|l|r|r|r|r|r|r|}
 \hline
 \rowcolor{gray!25}
-\multicolumn{1}{|c|}{Line Search Name} & \multicolumn{1}{c|}{$s$ (\%)} & \multicolumn{1}{c|}{$t$ (ms)} & \multicolumn{1}{c|}{$k$} & \multicolumn{1}{c|}{$f_n$} & \multicolumn{1}{c|}{$t_{LS}$ (ms)} & \multicolumn{1}{c|}{$k_{LS}$} \\
+\multicolumn{1}{|c|}{Line Search Method} & \multicolumn{1}{c|}{$s$ (\%)} & \multicolumn{1}{c|}{$t$ (ms)} & \multicolumn{1}{c|}{$k$} & \multicolumn{1}{c|}{$f_n$} & \multicolumn{1}{c|}{$t_{LS}$ (ms)} & \multicolumn{1}{c|}{$k_{LS}$} \\
 Constant search & 98.9 & 4711.5 & 2941.9 & 8828.8 & 134.5 & 0.0 \\
 Golden section search & 99.4 & 227.7 & 24.3 & 1303.4 & 127.1 & 613.8 \\
 Bisection search & 99.4 & 666.6 & 24.4 & 514.9 & 607.0 & 438.8 \\
@@ -1035,7 +1034,7 @@ Armijo's search & 99.6 & 217.3 & 25.8 & 343.1 & 99.6 & 185.4 \\
 \begin{tabular}{|l|r|r|r|r|r|r|}
 \hline
 \rowcolor{gray!25}
-\multicolumn{1}{|c|}{Line Search Name} & \multicolumn{1}{c|}{$s$ (\%)} & \multicolumn{1}{c|}{$t$ (ms)} & \multicolumn{1}{c|}{$k$} & \multicolumn{1}{c|}{$f_n$} & \multicolumn{1}{c|}{$t_{LS}$ (ms)} & \multicolumn{1}{c|}{$k_{LS}$} \\
+\multicolumn{1}{|c|}{Line Search Method} & \multicolumn{1}{c|}{$s$ (\%)} & \multicolumn{1}{c|}{$t$ (ms)} & \multicolumn{1}{c|}{$k$} & \multicolumn{1}{c|}{$f_n$} & \multicolumn{1}{c|}{$t_{LS}$ (ms)} & \multicolumn{1}{c|}{$k_{LS}$} \\
 Constant search & 100.0 & 3718.1 & 10.7 & 45.7 & 1.0 & 0.0 \\
 Golden section search & 100.0 & 2038.3 & 5.6 & 426.9 & 29.4 & 200.7 \\
 Bisection search & 100.0 & 2191.6 & 5.6 & 116.9 & 161.4 & 91.5 \\
@@ -1055,7 +1054,7 @@ Armijo's search & 100.0 & 2206.9 & 6.3 & 52.6 & 3.1 & 5.5 \\
 \begin{tabular}{|l|r|r|r|r|r|r|}
 \hline
 \rowcolor{gray!25}
-\multicolumn{1}{|c|}{Line Search Name} & \multicolumn{1}{c|}{$s$ (\%)} & \multicolumn{1}{c|}{$t$ (ms)} & \multicolumn{1}{c|}{$k$} & \multicolumn{1}{c|}{$f_n$} & \multicolumn{1}{c|}{$t_{LS}$ (ms)} & \multicolumn{1}{c|}{$k_{LS}$} \\
+\multicolumn{1}{|c|}{Line Search Method} & \multicolumn{1}{c|}{$s$ (\%)} & \multicolumn{1}{c|}{$t$ (ms)} & \multicolumn{1}{c|}{$k$} & \multicolumn{1}{c|}{$f_n$} & \multicolumn{1}{c|}{$t_{LS}$ (ms)} & \multicolumn{1}{c|}{$k_{LS}$} \\
 Constant search & 100.0 & 13.1 & 16.3 & 51.8 & 0.8 & 0.0 \\
 Golden section search & 100.0 & 53.4 & 8.6 & 400.1 & 47.9 & 185.7 \\
 Bisection search & 100.0 & 92.2 & 8.6 & 158.4 & 87.0 & 129.7 \\
@@ -1075,7 +1074,7 @@ Armijo's search & 100.0 & 11.6 & 10.2 & 96.5 & 5.6 & 32.0 \\
 \begin{tabular}{|l|r|r|r|r|r|r|}
 \hline
 \rowcolor{gray!25}
-\multicolumn{1}{|c|}{Line Search Name} & \multicolumn{1}{c|}{$s$ (\%)} & \multicolumn{1}{c|}{$t$ (ms)} & \multicolumn{1}{c|}{$k$} & \multicolumn{1}{c|}{$f_n$} & \multicolumn{1}{c|}{$t_{LS}$ (ms)} & \multicolumn{1}{c|}{$k_{LS}$} \\
+\multicolumn{1}{|c|}{Line Search Method} & \multicolumn{1}{c|}{$s$ (\%)} & \multicolumn{1}{c|}{$t$ (ms)} & \multicolumn{1}{c|}{$k$} & \multicolumn{1}{c|}{$f_n$} & \multicolumn{1}{c|}{$t_{LS}$ (ms)} & \multicolumn{1}{c|}{$k_{LS}$} \\
 Constant search & 99.9 & 4393.4 & 163.2 & 663.3 & 4248.0 & 0.0 \\
 Golden section search & 100.0 & 539.7 & 100.0 & 4681.2 & 451.2 & 2136.6 \\
 Bisection search & 100.0 & 759.5 & 100.0 & 1228.3 & 672.9 & 777.8 \\
@@ -1095,7 +1094,7 @@ Armijo's search & 100.0 & 198.4 & 99.8 & 1119.4 & 112.0 & 412.8 \\
 \begin{tabular}{|l|r|r|r|r|r|r|}
 \hline
 \rowcolor{gray!25}
-\multicolumn{1}{|c|}{Line Search Name} & \multicolumn{1}{c|}{$s$ (\%)} & \multicolumn{1}{c|}{$t$ (ms)} & \multicolumn{1}{c|}{$k$} & \multicolumn{1}{c|}{$f_n$} & \multicolumn{1}{c|}{$t_{LS}$ (ms)} & \multicolumn{1}{c|}{$k_{LS}$} \\
+\multicolumn{1}{|c|}{Line Search Method} & \multicolumn{1}{c|}{$s$ (\%)} & \multicolumn{1}{c|}{$t$ (ms)} & \multicolumn{1}{c|}{$k$} & \multicolumn{1}{c|}{$f_n$} & \multicolumn{1}{c|}{$t_{LS}$ (ms)} & \multicolumn{1}{c|}{$k_{LS}$} \\
 Constant search & 100.0 & 8.3 & 14.0 & 45.0 & 0.3 & 0.0 \\
 Golden section search & 100.0 & 92.4 & 17.3 & 808.4 & 80.5 & 376.8 \\
 Bisection search & 100.0 & 131.7 & 11.8 & 223.7 & 124.6 & 185.4 \\
@@ -1119,7 +1118,7 @@ Even though the average solution times of the methods are not universally compar
 
 \begin{table}[H]
     \centering
-    \captionof{table}{Average duration of the algorithms using different line search methods for each main method when finding minimum for Matrix Square Sum function. Colored per column so that darker red is worse (slower) and darker green is better (faster).}
+    \captionof{table}{Average duration of the algorithms using different line search methods for each main method when finding minimum for the MSS problem. The color scale is applied to visualize the performance per column. The scale goes from dark red to dark green and respectively from the worst (slowest) to the best performance (fastest).}
     \label{tab:colors_mss_durations}
     \begin{tabular}{|l|r|r|r|r|}
     \hline
@@ -1138,7 +1137,7 @@ Even though the average solution times of the methods are not universally compar
 
 \begin{table}[H]
     \centering
-    \captionof{table}{Average duration of the algorithms using different line search methods for each main method when finding minimum for Negative Entropy function. Colored per column so that darker red is worse (slower) and darker green is better (faster).}
+    \captionof{table}{Average duration of the algorithms using different line search methods for each main method when finding minimum for the NE problem. The color scale is applied to visualize the performance per column. The scale goes from dark red to dark green and respectively from the worst (slowest) to the best performance (fastest).}
     \label{tab:colors_ne_durations}
     \begin{tabular}{|l|r|r|r|r|}
     \hline
@@ -1158,7 +1157,7 @@ Even though the average solution times of the methods are not universally compar
 
 \begin{table}[H]
     \centering
-    \captionof{table}{The average of the durations for finding the minimum for both Matrix Square Sum and Negative Entropy Functions. Results are listed separately for each main method and colored per column so that darker red is worse (slower) and darker green is better (faster).}
+    \captionof{table}{The average of the durations for finding the minimum for both the MSS and NE problems. Results are listed separately for each main method. The color scale is applied to visualize the performance per column. The scale goes from dark red to dark green and respectively from the worst (slowest) to the best performance (fastest).}
     \label{tab:colors_avg_overall_mm}
     \begin{tabular}{|l|r|r|r|r|}
     \hline
@@ -1178,7 +1177,7 @@ Even though the average solution times of the methods are not universally compar
 
 \begin{table}[H]
     \centering
-    \captionof{table}{The average of the durations for finding the minimum with all the main methods listed separately for each objective function. Colored per column so that darker red is worse (slower) and darker green is better (faster).}
+    \captionof{table}{The average of the durations for finding the minimum with all the main methods listed separately for each objective function. The color scale is applied to visualize the performance per column. The scale goes from dark red to dark green and respectively from the worst (slowest) to the best performance (fastest).}
     \label{tab:colors_avg_overall}
     \begin{tabular}{|l|r|r|r|}
     \hline
@@ -1201,7 +1200,7 @@ While the success rate is the primary metric for comparison, it does not offer a
 
 \begin{table}[H]
     \centering
-    \captionof{table}{The success rates of the main methods using each line search method for finding the minimum of Matrix Square Sum function. Darker red color means lower success rate.}
+    \captionof{table}{The success rates of the main methods using each line search method for finding the minimum of the MSS function. The color scale visualizes the success rate per column so that darker the red, the lower the success rate is.}
     \label{tab:colors_success_mss}
     \begin{tabular}{|l|r|r|r|r|}
     \hline
@@ -1221,7 +1220,7 @@ While the success rate is the primary metric for comparison, it does not offer a
 
 \begin{table}[H]
     \centering
-    \captionof{table}{The success rates of the main methods using each line search method for finding the minimum of Negative Entropy function. Darker red color means lower success rate.}
+    \captionof{table}{The success rates of the main methods using each line search method for finding the minimum of the NE function. The color scale visualizes the success rate per column so that darker the red, the lower the success rate is.}
     \label{tab:colors_success_ne}
     \begin{tabular}{|l|r|r|r|r|}
     \hline
@@ -1241,13 +1240,13 @@ While the success rate is the primary metric for comparison, it does not offer a
 
 In addition to comparing the average performance, an essential factor to consider is the consistency of the results. The boxplots in figures \ref{fig:boxplot_mss} and \ref{fig:boxplot_ne} give us valuable insight into the variance of the algorithms' performance.
 
-The durations in the box plots are scaled logarithmically to improve the readability of the figures in scenarios where some methods perform a lot differently from others. The box plot displays half of the data points within the main box area. Together with the box area, the whiskers above and belove the box cover 95\% of the data points. The rest of the points are considered outliers and left out entirely. The orange line inside the boxes shows the exact mean of the data points.
+The durations in the box plots are scaled logarithmically to improve the readability of the figures in scenarios where some methods perform drastically different from others. The box plot displays half of the data points within the main box area. Together with the box area, the whiskers above and belove the box cover 95\% of the data points. The rest of the points are considered outliers and left out entirely. The orange line inside the boxes shows the exact mean of the data points.
 
 
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=1.0\textwidth]{images/boxplot_mss.png}
-	\caption{Box plot of solution times per line search and main method for MatrixSquareSum objective function.}
+	\caption{Box plot of solution times per line search and main method for the MSS problem.}
 	\label{fig:boxplot_mss}
 \end{figure}
 
@@ -1255,7 +1254,7 @@ The durations in the box plots are scaled logarithmically to improve the readabi
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=1.0\textwidth]{images/boxplot_ne.png}
-	\caption{Box plot of solution times per line search and main method for NegativeEntropy objective function.}
+	\caption{Box plot of solution times per line search and main method for the NE problem.}
 	\label{fig:boxplot_ne}
 \end{figure}
 
@@ -1270,7 +1269,7 @@ In this paper, we mainly focus on comparing the line search methods, but it is c
 
 We know that Newton's method has the property that it solves any convex quadratic problem, such as the MSS problem, in one step \cite{book:convex_optimization}. We can see this behavior in table \ref{tab:performance_results_MSS_NM}, where the iterations column has the value $k = 1$ for each line search. We can also see that some line searches have proceeded to execute several iterations, even though the main method would note require that. In this case, a constant step size should be the fastest option since it does not even make the unnecessary function call to the line search algorithm, but we can see that this is not the case. The unexpected difference of ~20-30ms, which the methods mostly share between each other, can be explained by random variation. The fact that the bisection search is also able to cause Newton's method not to converge in 0.4\% of the 1000 starting point setups implies that there is likely some improvements to be made to that line search at least. 
 
-Newton's method generally seems slower for the Negative Entropy problem. Since the problem is not quadratic, Newton's method needs several iterations with heavy calculations, such as calculating the Hessian, which is a possible cause for the added delay. Newton's method performs well on the MSS problem, but the performance on the NE problem is so weak that Newton's method ends up being the slowest main method in general, as seen in table \ref{tab:colors_avg_overall}.
+Newton's method generally seems slower for the negative entropy problem. Since the problem is not quadratic, Newton's method needs several iterations with heavy calculations, such as calculating the Hessian, which is a possible cause for the added delay. Newton's method performs well on the MSS problem, but the performance on the NE problem is so weak that Newton's method ends up being the slowest main method in general, as seen in table \ref{tab:colors_avg_overall}.
 
 \subsubsection*{Gradient descent method}
 
@@ -1346,10 +1345,10 @@ Some performance factors are challenging to evaluate accurately. One example of 
 
 Another possible implementation related optimization would be the pre-calculation of line search values. In some scenarios, it could be beneficial to pre-evaluate and save the step sizes for each different input instead of calculating them during run time. \cite{book:convex_optimization}
 
-Factors like the choice of programming language, and CPU, GPU, and RAM performance may affect the optimal results as well. In this thesis, we do all of the performance testings using Python 3.7.3 with numpy, autograd, and multiprocessing libraries. One can find the source code used to produce the results as an appendix A. We run the software on 64bit Linux desktop PC with an Intel i5-8500K (6 cores @ 3.60GHz) CPU and 16 GB of RAM. Different implementations and programming languages may, for example, optimize matrix calculations differently, causing potentially unexpected differences within otherwise identical test scenarios. For this reason alone, we consider none of the results as universally accurate and instead suggest evaluating each problem and scenario separately.
+Factors like the choice of programming language, and CPU, GPU, and RAM performance may affect the optimal results as well. In this thesis, we do all of the performance testings using Python 3.7.3 with numpy, autograd, and multiprocessing libraries. One can find the source code used to produce the results from the appendix \ref{sect:appendix}. We run the software on 64bit Linux desktop PC with an Intel i5-8500K (6 cores @ 3.60GHz) CPU and 16 GB of RAM. Different implementations and programming languages may, for example, optimize matrix calculations differently, causing potentially unexpected differences within otherwise identical test scenarios. For this reason alone, we consider none of the results as universally accurate and instead suggest evaluating each problem and scenario separately.
 
 
-\section{Conclusion and Future Research}
+\section{Conclusion}
 \label{sect:conclusion}
 
 
@@ -1391,6 +1390,12 @@ Is it worth it to optimize the choice of line search method as an additional par
 \appendix
 \section{Appendix}
 \label{sect:appendix}
+
+\subsection{Source code}
+All source code in full is available in Github: \\
+\url{https://github.com/EinariTuukkanen/line-search-comparison}
+
+\subsection{Parameter comparison results}
 % TODO: enable
 \input{parameters.tex}
 

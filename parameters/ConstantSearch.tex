@@ -1,7 +1,9 @@
 \begin{figure}[H]
 \captionof{figure}{Best parameter permutations for different main methods using ConstantSearch for optimizing the MatrixSquareSum function with 10 sample points.}
 \label{fig:param_comp_MatrixSquareSum_ConstantSearch}
-\begin{subfigure}[ht]{.5\textwidth}
+\makebox[\linewidth][c]{
+\begin{subfigure}[ht]{.6\textwidth}
+\centering
 \rowcolors{2}{white}{gray!5}
 \begin{tabular}{|c|c|c|}
 \hline
@@ -22,7 +24,8 @@ $(\lambda)$ & $s$ (\%) & $t$ (ms) \\
 \label{subfig:param_comp_MatrixSquareSum_NewtonsMethod_ConstantSearch}
 \end{subfigure}
 \hfill
-\begin{subfigure}[ht]{.5\textwidth}
+\begin{subfigure}[ht]{.6\textwidth}
+\centering
 \rowcolors{2}{white}{gray!5}
 \begin{tabular}{|c|c|c|}
 \hline
@@ -42,8 +45,10 @@ $(\lambda)$ & $s$ (\%) & $t$ (ms) \\
 \caption{Top 5 permutations with GradientDescentMethod}
 \label{subfig:param_comp_MatrixSquareSum_GradientDescentMethod_ConstantSearch}
 \end{subfigure}
-\hfill
-\begin{subfigure}[ht]{.5\textwidth}
+}
+\makebox[\linewidth][c]{
+\begin{subfigure}[ht]{.6\textwidth}
+\centering
 \rowcolors{2}{white}{gray!5}
 \begin{tabular}{|c|c|c|}
 \hline
@@ -64,7 +69,8 @@ $(\lambda)$ & $s$ (\%) & $t$ (ms) \\
 \label{subfig:param_comp_MatrixSquareSum_ConjugateGradientMethod_ConstantSearch}
 \end{subfigure}
 \hfill
-\begin{subfigure}[ht]{.5\textwidth}
+\begin{subfigure}[ht]{.6\textwidth}
+\centering
 \rowcolors{2}{white}{gray!5}
 \begin{tabular}{|c|c|c|}
 \hline
@@ -84,12 +90,15 @@ $(\lambda,\beta_{HBM})$ & $s$ (\%) & $t$ (ms) \\
 \caption{Top 5 permutations with HeavyBallMethod}
 \label{subfig:param_comp_MatrixSquareSum_HeavyBallMethod_ConstantSearch}
 \end{subfigure}
+}
 \end{figure}
 
 \begin{figure}[H]
 \captionof{figure}{Best parameter permutations for different main methods using ConstantSearch for optimizing the NegativeEntropy function with 10 sample points.}
 \label{fig:param_comp_NegativeEntropy_ConstantSearch}
-\begin{subfigure}[ht]{.5\textwidth}
+\makebox[\linewidth][c]{
+\begin{subfigure}[ht]{.6\textwidth}
+\centering
 \rowcolors{2}{white}{gray!5}
 \begin{tabular}{|c|c|c|}
 \hline
@@ -105,11 +114,12 @@ $(\lambda)$ & $s$ (\%) & $t$ (ms) \\
 (0.1,) & 100.0 & 46295.4 \\
 \hline
 \end{tabular}
-\caption{Top 5 permutations with NewtonsMethod}
+\caption{Top 4 permutations with NewtonsMethod}
 \label{subfig:param_comp_NegativeEntropy_NewtonsMethod_ConstantSearch}
 \end{subfigure}
 \hfill
-\begin{subfigure}[ht]{.5\textwidth}
+\begin{subfigure}[ht]{.6\textwidth}
+\centering
 \rowcolors{2}{white}{gray!5}
 \begin{tabular}{|c|c|c|}
 \hline
@@ -124,11 +134,13 @@ $(\lambda)$ & $s$ (\%) & $t$ (ms) \\
 (0.1,) & 100.0 & 226.9 \\
 \hline
 \end{tabular}
-\caption{Top 5 permutations with GradientDescentMethod}
+\caption{Top 3 permutations with GradientDescentMethod}
 \label{subfig:param_comp_NegativeEntropy_GradientDescentMethod_ConstantSearch}
 \end{subfigure}
-\hfill
-\begin{subfigure}[ht]{.5\textwidth}
+}
+\makebox[\linewidth][c]{
+\begin{subfigure}[ht]{.6\textwidth}
+\centering
 \rowcolors{2}{white}{gray!5}
 \begin{tabular}{|c|c|c|}
 \hline
@@ -144,11 +156,12 @@ $(\lambda)$ & $s$ (\%) & $t$ (ms) \\
 (0.2,) & 100.0 & 6062.7 \\
 \hline
 \end{tabular}
-\caption{Top 5 permutations with ConjugateGradientMethod}
+\caption{Top 4 permutations with ConjugateGradientMethod}
 \label{subfig:param_comp_NegativeEntropy_ConjugateGradientMethod_ConstantSearch}
 \end{subfigure}
 \hfill
-\begin{subfigure}[ht]{.5\textwidth}
+\begin{subfigure}[ht]{.6\textwidth}
+\centering
 \rowcolors{2}{white}{gray!5}
 \begin{tabular}{|c|c|c|}
 \hline
@@ -168,4 +181,5 @@ $(\lambda,\beta_{HBM})$ & $s$ (\%) & $t$ (ms) \\
 \caption{Top 5 permutations with HeavyBallMethod}
 \label{subfig:param_comp_NegativeEntropy_HeavyBallMethod_ConstantSearch}
 \end{subfigure}
+}
 \end{figure}
